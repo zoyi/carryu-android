@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/layoutred"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_alignParentTop="true" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_red"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_blue"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_check" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_green"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_comment" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_gray"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_heart" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_lilac"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_person" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_orange"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_plus" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutblue"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutred" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_purple"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_list" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_yellow"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_reload" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_red"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_star" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_blue"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_settings" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_green"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_left" />
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_gray"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_right" />
+    </LinearLayout>
+
+</RelativeLayout>

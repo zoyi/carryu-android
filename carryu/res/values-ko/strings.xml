@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lol_user_id">LOL ID</string>
+    <string name="lol_user_password">LOL Password</string>
+    <string name="login">로그인</string>
+</resources>

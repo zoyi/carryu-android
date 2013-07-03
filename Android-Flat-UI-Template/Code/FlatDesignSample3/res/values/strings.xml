@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FlatDesignSample3</string>
+    <string name="main_header">FLAT CONTROLS</string>    
+    <string name="txt_some_header">Some Text Here</string>
+    <string name="txt_menu_swipe">Swipe Example</string>
+    <string name="txt_menu_masterdetail">Master Detail</string>
+    <string name="txt_menu_CheckList">Check List</string>
+    
+  <string name="txt_some_title">Hotel Havana</string>
+    <string name="txt_some_longtext">Manny, Diego, and Sid embark upon another adventure after their continent is set adrift. Using an iceberg as a ship, they encounter sea creatures and battle pirates as they explore a new world.</string>
+    <string name="txt_some_price">$60</string>
+
+    <string name="desc"></string>
+    <string name="txt_read_more">READ MORE</string>
+
+</resources>

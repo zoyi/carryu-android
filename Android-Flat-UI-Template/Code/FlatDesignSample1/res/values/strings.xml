@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FlatDesign</string>
+    <string name="main_header">FLAT CONTROLS</string>
+    <string name="btn_name">Button</string>
+    <string name="txt_some_header">Some Text Here</string>
+    <string name="txt_yes">YES</string>
+    <string name="txt_no">NO</string>
+    <string name="txt_maybe">MAYBE</string>
+    <string name="txt_android">Adroid</string>
+    <string name="txt_ios">iOS</string>
+    <string name="desc"></string>
+
+</resources>

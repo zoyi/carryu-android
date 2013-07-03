@@ -1,0 +1,147 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/layoutred"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_alignParentTop="true" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_red"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Red"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutblue"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutred" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_blue"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Blue"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutgreen"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutblue" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_green"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Green"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutlilac"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutgreen" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_lilac"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Lilac"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutorange"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutlilac" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_orange"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Orange"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutpurple"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutorange" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_purple"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Purple"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutyellow"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/height"
+        android:layout_below="@id/layoutpurple" >
+
+        <ImageButton
+            android:layout_width="@dimen/width"
+            android:layout_height="fill_parent"
+            android:background="@drawable/ui_button_yellow"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/ico_search" />
+
+        <EditText
+            style="@style/EditText_Yellow"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/txt_some_header" />
+    </LinearLayout>
+
+</RelativeLayout>
