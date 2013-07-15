@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Carry U</string>
+    <string name="lol_user_id">ID</string>
+    <string name="lol_user_password">Password</string>
+    <string name="login">Log In</string>
+    <string name="our_summoner">Our Team</string>
+    <string name="enemy_summoner">Enemies</string>
+    <string name="champion_guide">Champion Guide</string>
+    <string name="ko_server">Korea</string>
+    <string name="na_server">North America</string>
+</resources>

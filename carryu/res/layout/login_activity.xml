@@ -1,27 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
+        android:id="@+id/login_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
+    <include layout="@layout/login_header" />
+
     <EditText
+            style="@style/EditText_Blue"
             android:id="@+id/user_id"
+            android:text="walsub"
+            android:textColor="@color/white"
+            android:singleLine="true"
             android:hint="@string/lol_user_id"
+            android:layout_margin="@dimen/dim_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     <EditText
+            style="@style/EditText_Blue"
             android:id="@+id/user_password"
+            android:text="wldudtjq1"
+            android:textColor="@color/white"
+            android:singleLine="true"
             android:hint="@string/lol_user_password"
+            android:inputType="textPassword"
+            android:layout_margin="@dimen/dim_10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     <Button
+            style="@style/Button_Blue"
             android:id="@+id/login"
             android:text="@string/login"
+            android:textColor="@color/white"
+            android:textSize="@dimen/tex_size_xlarge"
+            android:layout_height="@dimen/dim_50"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_marginBottom="@dimen/dim_20"
+            android:layout_marginRight="@dimen/dim_20"
+            android:layout_margin="@dimen/dim_10"
+            android:onClick="onLoginButtonClick" />
+
+    <RadioGroup
+            android:id="@+id/server_select_group"
+            android:layout_margin="@dimen/dim_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dim_20"
+            android:orientation="vertical" >
+
+        <RadioButton
+                android:id="@+id/kr_server"
+                style="@style/RadioButton_Blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dim_10"
+                android:checked="true"
+                android:text="@string/ko_server"
+                android:textColor="@color/white"/>
+
+        <RadioButton
+                android:id="@+id/na_server"
+                style="@style/RadioButton_Blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dim_10"
+                android:text="@string/na_server"
+                android:textColor="@color/white" />
+
+    </RadioGroup>
 
 </LinearLayout>

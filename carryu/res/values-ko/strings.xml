@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lol_user_id">LOL ID</string>
-    <string name="lol_user_password">LOL Password</string>
+    <string name="app_name">Carry U</string>
+    <string name="lol_user_id">아이디</string>
+    <string name="lol_user_password">비밀번호</string>
     <string name="login">로그인</string>
+    <string name="our_summoner">아군</string>
+    <string name="enemy_summoner">적군</string>
+    <string name="champion_guide">챔피언 가이드</string>
+    <string name="ko_server">Korea</string>
+    <string name="na_server">North America</string>
 </resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:padding="@dimen/dim_5"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <com.loopj.android.image.SmartImageView
+            android:id="@+id/profile_image"
+            android:src="@drawable/placeholder_128"
+            android:layout_height="80dp"
+            android:layout_width="80dp" />
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:padding="@dimen/dim_10"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/summoner_name"
+                android:text="AllenJee"
+                android:textColor="@color/white"
+                android:textSize="@dimen/tex_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.loopj.android.image.SmartImageView
+                        android:id="@+id/rank_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                <TextView
+                        android:id="@+id/summoner_level"
+                        android:text="Diamond III / Lv 30"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/tex_size_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+                android:id="@+id/summoner_stat"
+                android:text="Normal 200wins / Rank 100wins"
+                android:textSize="@dimen/tex_size_small"
+                android:textColor="@color/gray_167"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <com.loopj.android.image.SmartImageView
+            android:src="@drawable/ico_right"
+            android:layout_marginRight="-5dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+</LinearLayout>

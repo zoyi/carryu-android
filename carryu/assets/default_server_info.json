@@ -1,0 +1,16 @@
+{
+    "kr" : {
+        "rails_host" : "http://kr.carryu.co",
+        "rtmp_host" : "http://kr.rtmp.carryu.co",
+        "xmpp_host" : "chat.kr.lol.riotgames.com",
+        "xmpp_port" : 5223,
+        "api_version" : "v1"
+    },
+    "na" : {
+        "rails_host" : "http://na.carryu.co",
+        "rtmp_host" : "http://na.rtmp.carryu.co",
+        "xmpp_host" : "chat.na1.lol.riotgames.com",
+        "xmpp_port" : 5223,
+        "api_version" : "v1"
+    }
+}
