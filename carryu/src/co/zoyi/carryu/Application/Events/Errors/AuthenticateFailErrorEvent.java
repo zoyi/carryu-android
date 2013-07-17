@@ -1,4 +1,4 @@
 package co.zoyi.carryu.Application.Events.Errors;
 
-public class AuthenticateFailErrorEvent extends CUErrorEvent {
+public class AuthenticateFailErrorEvent extends ErrorEvent {
 }

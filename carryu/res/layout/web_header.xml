@@ -18,11 +18,11 @@
             android:layout_above="@id/line" >
 
         <ImageButton
-                android:id="@+id/menu"
+                android:id="@+id/back"
                 android:layout_width="@dimen/width"
                 android:layout_height="match_parent"
                 android:background="@drawable/ui_button_gray"
-                android:src="@drawable/ico_list" />
+                android:src="@drawable/ico_left" />
 
         <LinearLayout
                 android:layout_width="@dimen/divider_size"
@@ -46,11 +46,11 @@
                 android:background="@color/gray_79" />
 
         <ImageButton
-                android:id="@+id/search"
+                android:id="@+id/refresh"
                 android:layout_width="@dimen/width"
                 android:layout_height="match_parent"
                 android:background="@drawable/ui_button_gray"
-                android:src="@drawable/ico_search" />
+                android:src="@drawable/ico_reload" />
 
     </LinearLayout>
 

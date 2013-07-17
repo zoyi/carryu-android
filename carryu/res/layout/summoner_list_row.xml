@@ -23,7 +23,6 @@
 
         <TextView
                 android:id="@+id/summoner_name"
-                android:text="AllenJee"
                 android:textColor="@color/white"
                 android:textSize="@dimen/tex_size_large"
                 android:layout_width="match_parent"
@@ -31,17 +30,18 @@
 
         <LinearLayout
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.loopj.android.image.SmartImageView
                         android:id="@+id/rank_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:visibility="gone"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp" />
 
                 <TextView
                         android:id="@+id/summoner_level"
-                        android:text="Diamond III / Lv 30"
                         android:textColor="@color/white"
                         android:textSize="@dimen/tex_size_small"
                         android:layout_width="match_parent"
@@ -51,7 +51,6 @@
 
         <TextView
                 android:id="@+id/summoner_stat"
-                android:text="Normal 200wins / Rank 100wins"
                 android:textSize="@dimen/tex_size_small"
                 android:textColor="@color/gray_167"
                 android:layout_width="match_parent"
@@ -60,6 +59,8 @@
     </LinearLayout>
 
     <com.loopj.android.image.SmartImageView
+            android:id="@+id/more_arrow"
+            android:visibility="gone"
             android:src="@drawable/ico_right"
             android:layout_marginRight="-5dp"
             android:layout_gravity="center_vertical"

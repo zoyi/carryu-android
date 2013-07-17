@@ -5,15 +5,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import co.zoyi.Chat.Datas.ChatServerInfo;
+import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.*;
+import co.zoyi.carryu.Application.Etc.API.DataCallback;
+import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Events.Errors.AuthenticateFailErrorEvent;
 import co.zoyi.carryu.Application.Events.Errors.ConnectionClosedErrorEvent;
-import co.zoyi.carryu.Application.Events.HttpResponses.FetchServerInfoEvent;
-import co.zoyi.carryu.Application.Registries.CURegistry;
-import co.zoyi.carryu.Chat.Datas.ChatServerInfo;
-import co.zoyi.carryu.Chat.Events.ChatStatusChangeEvent;
-import co.zoyi.carryu.Chat.Services.ChatService;
+import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.ValueObjects.UserLoginData;
+import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
 
@@ -32,10 +35,22 @@ public class LoginActivity extends CUActivity {
             EventBus.getDefault().post(new ConnectionClosedErrorEvent());
         }
 
-        restoreViewPreferences();
+        chatService = Registry.getChatService();
 
+        restoreViewPreferences();
         restoreServerInfo();
-        HttpRequestDelegate.fetchServerInfo(this);
+        fetchServerInfo();
+    }
+
+    private void fetchServerInfo() {
+        HttpRequestDelegate.fetchServerInfo(this, new DataCallback<ServerList>() {
+            @Override
+            public void onSuccess(ServerList serverList) {
+                super.onSuccess(serverList);
+                LoginActivity.this.serverList = serverList;
+                storeServerInfo();
+            }
+        });
     }
 
     private void storeViewPreferences() {
@@ -51,7 +66,7 @@ public class LoginActivity extends CUActivity {
     }
 
     private void storeServerInfo() {
-        String serverListJsonString = CURegistry.getSharedGsonInstance().toJson(this.serverList);
+        String serverListJsonString = JSONSerializer.getGsonInstance().toJson(this.serverList);
         SharedPreferences.Editor editor = getSharedPreferences("ServerInfo", MODE_PRIVATE).edit();
         editor.putString("server_info", serverListJsonString);
     }
@@ -59,54 +74,54 @@ public class LoginActivity extends CUActivity {
     private void restoreServerInfo() {
         SharedPreferences sharePreference = getSharedPreferences("ServerInfo", MODE_PRIVATE);
         if (sharePreference.contains("server_info") == false) {
-            this.serverList = CURegistry.getSharedGsonInstance().fromJson(AssetReader.readString(this, "default_server_info.json"), ServerList.class);
+            this.serverList = JSONSerializer.getGsonInstance().fromJson(AssetReader.readString(this, "default_server_info.json"), ServerList.class);
         } else {
-            this.serverList = CURegistry.getSharedGsonInstance().fromJson(sharePreference.getString("server_info", ""), ServerList.class);
+            this.serverList = JSONSerializer.getGsonInstance().fromJson(sharePreference.getString("server_info", ""), ServerList.class);
         }
     }
 
-    public void onEventMainThread(FetchServerInfoEvent fetchServerInfoEvent) {
-        this.serverList = fetchServerInfoEvent.getServerList();
-        storeServerInfo();
-    }
-
     public void onEventMainThread(ChatStatusChangeEvent event) {
-        switch (event.status) {
+        switch (event.getStatus()) {
             case CONNECTED:
-                chatService.login(userLoginData.getUserID(), userLoginData.getUserPassword());
+                login();
                 break;
             case AUTHENTICATED:
                 storeViewPreferences();
                 ActivityDelegate.openLobbyActivity(this);
+                break;
+            case FAILED_AUTHENTICATE:
+                EventBus.getDefault().post(new AuthenticateFailErrorEvent());
                 break;
             default:
                 break;
         }
     }
 
-    public void onLoginButtonClick(View loginButton) {
-        HttpRequestDelegate.setRegion("na");
-        ActivityDelegate.openLobbyActivity(this);
+    private void login() {
+        chatService.login(userLoginData.getUserID(), userLoginData.getUserPassword());
+    }
 
-//        ServerList.ServerInfo serverInfo;
-//        String region;
-//        if (RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked()) {
-//            serverInfo = serverList.getKoreaServer();
-//            region = "kr";
-//        } else {
-//            serverInfo = serverList.getNorthAmericaServer();
-//            region = "na";
-//        }
-//
-//        HttpRequestDelegate.setRegion(region);
-//
-//        userLoginData = new UserLoginData(
-//            EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
-//            EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
-//        );
-//
-//        chatService = CURegistry.getChatService();
-//        chatService.setServerInfo(new ChatServerInfo(region, serverInfo.getXmppHost(), serverInfo.getXmppPort()));
-//        chatService.connect();
+    private void connect() {
+        if (chatService != null && chatService.isConnected()) {
+            login();
+        } else {
+            ServerList.ServerInfo serverInfo;
+            serverInfo = RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked() ? serverList.getKoreaServer() : serverList.getNorthAmericaServer();
+
+            HttpRequestDelegate.setRegion(serverInfo.getRegion());
+
+            userLoginData = new UserLoginData(
+                EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
+                EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
+            );
+
+            chatService.setServerInfo(new ChatServerInfo(serverInfo.getRegion(), serverInfo.getXmppHost(), serverInfo.getXmppPort()));
+            chatService.connect();
+        }
+    }
+
+    public void onLoginButtonClick(View loginButton) {
+//        ActivityDelegate.openLobbyActivity(this);
+        connect();
     }
 }

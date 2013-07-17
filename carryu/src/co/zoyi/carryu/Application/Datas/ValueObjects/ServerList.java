@@ -2,21 +2,7 @@ package co.zoyi.carryu.Application.Datas.ValueObjects;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ServerList extends CUValueObject {
-    @SerializedName("kr")
-    private ServerInfo koreaServer;
-
-    @SerializedName("na")
-    private ServerInfo northAmericaServer;
-
-    public ServerInfo getNorthAmericaServer() {
-        return northAmericaServer;
-    }
-
-    public ServerInfo getKoreaServer() {
-        return koreaServer;
-    }
-
+public class ServerList extends ValueObject {
     public static class ServerInfo {
         @SerializedName("rails_host")
         private String railsHost;
@@ -48,5 +34,25 @@ public class ServerList extends CUValueObject {
         public String getApiVersion() {
             return apiVersion;
         }
+
+        transient String region;
+        public String getRegion() {
+            return region;
+        }
+    }
+
+    @SerializedName("kr")
+    private ServerInfo koreaServer;
+    @SerializedName("na")
+    private ServerInfo northAmericaServer;
+
+    public ServerInfo getNorthAmericaServer() {
+        northAmericaServer.region = "na";
+        return northAmericaServer;
+    }
+
+    public ServerInfo getKoreaServer() {
+        koreaServer.region = "kr";
+        return koreaServer;
     }
 }

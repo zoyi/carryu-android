@@ -3,7 +3,7 @@ package co.zoyi.carryu.Application;
 import android.app.Application;
 import android.content.Context;
 import co.zoyi.carryu.Application.Etc.CUUtil;
-import co.zoyi.carryu.Application.Registries.CURegistry;
+import co.zoyi.carryu.Application.Registries.Registry;
 
 public class CUApplication extends Application {
     private static CUApplication instance;
@@ -15,14 +15,14 @@ public class CUApplication extends Application {
 
     @Override
     public void onTerminate() {
-        CURegistry.getChatService().disconnect();
+        Registry.getChatService().disconnect();
         super.onTerminate();
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        CURegistry.initialize();
+        Registry.initialize();
         CUUtil.loadFonts();
     }
 

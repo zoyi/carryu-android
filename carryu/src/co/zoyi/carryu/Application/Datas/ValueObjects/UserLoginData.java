@@ -1,6 +1,6 @@
 package co.zoyi.carryu.Application.Datas.ValueObjects;
 
-public class UserLoginData extends CUValueObject {
+public class UserLoginData extends ValueObject {
     private String userID, userPassword;
 
     public String getUserID() {

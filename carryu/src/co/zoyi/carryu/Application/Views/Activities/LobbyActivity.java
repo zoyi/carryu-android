@@ -4,9 +4,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CUCroutonStyle;
-import co.zoyi.carryu.Application.Registries.CURegistry;
-import co.zoyi.carryu.Chat.Events.ChatStatusChangeEvent;
-import co.zoyi.carryu.Chat.Services.ChatService;
+import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.R;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 
@@ -23,25 +23,25 @@ public class LobbyActivity extends CUActivity {
         } else if (status == ChatService.Status.CONNECTION_CLOSED){
             ActivityDelegate.openLoginActivityWithConnectionClosedCrouton(this);
         } else if (status == ChatService.Status.CHAMPION_SELECT) {
-            ActivityDelegate.openHomeActivity(this);
+            ActivityDelegate.openChampionSelectActivity(this);
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        setStatus(CURegistry.getChatService().getStatus());
+        setStatus(Registry.getChatService().getStatus());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityDelegate.openHomeActivity(this);
-//        setContentView(R.layout.lobby_activity);
+//        ActivityDelegate.openChampionSelectActivity(this);
+        setContentView(R.layout.lobby_activity);
     }
 
     public void onEventMainThread(ChatStatusChangeEvent event) {
-        Crouton.makeText(this, event.status.toString(), CUCroutonStyle.INFO).show();
-        setStatus(event.status);
+        Crouton.makeText(this, event.getStatus().toString(), CUCroutonStyle.INFO).show();
+        setStatus(event.getStatus());
     }
 }

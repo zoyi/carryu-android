@@ -5,10 +5,12 @@ import android.support.v4.app.FragmentActivity;
 import android.view.ViewGroup;
 import co.zoyi.carryu.Application.Etc.ErrorCroutonDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
-import co.zoyi.carryu.Application.Events.Errors.CUErrorEvent;
+import co.zoyi.carryu.Application.Events.Errors.ErrorEvent;
 import de.greenrobot.event.EventBus;
 
 public class CUActivity extends FragmentActivity {
+    private int countOfWaitingDialog = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,23 @@ public class CUActivity extends FragmentActivity {
         CUUtil.setFontAllView((ViewGroup) getWindow().getDecorView());
     }
 
-    public void onEvent(CUErrorEvent errorEvent) {
+    public void onEvent(ErrorEvent errorEvent) {
         ErrorCroutonDelegate.showErrorMessage(this, errorEvent);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (countOfWaitingDialog > 0) {
+
+        }
+    }
+
+    protected void hideWaitingDialog() {
+        --countOfWaitingDialog;
+    }
+
+    protected void showWaitingDialog() {
+        ++countOfWaitingDialog;
     }
 }
