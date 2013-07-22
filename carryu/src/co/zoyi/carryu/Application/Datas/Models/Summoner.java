@@ -31,6 +31,27 @@ public class Summoner extends Model {
     private RankStat leagueSoloFiveToFiveStat;
     @SerializedName("player_stat_unranked")
     private Stat normalStat;
+    @SerializedName("champion")
+    private Champion champion;
+    @SerializedName("spell1")
+    private int firstSpell;
+    @SerializedName("spell2")
+    private int secondSpell;
+    @SerializedName("is_bot")
+    private boolean isBot;
+
+    public Champion getChampion() {
+        return champion;
+    }
+
+    public int getFirstSpell() {
+        return firstSpell;
+    }
+
+    public int getSecondSpell() {
+        return secondSpell;
+    }
+
     transient boolean isUpdated;
 
     public Summoner(String name) {

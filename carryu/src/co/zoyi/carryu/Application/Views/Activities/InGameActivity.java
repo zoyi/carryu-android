@@ -9,45 +9,64 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import co.zoyi.carryu.Application.Etc.CUCroutonStyle;
+import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
+import co.zoyi.carryu.Application.Datas.Models.Summoner;
+import co.zoyi.carryu.Application.Etc.API.DataCallback;
+import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
-import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Views.Fragments.ChampionGuideFragment;
 import co.zoyi.carryu.Application.Views.Fragments.SummonerListFragment;
 import co.zoyi.carryu.Application.Views.Fragments.TabContentFragment;
-import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.R;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class GameActivity extends CUActivity implements TabHost.OnTabChangeListener {
+import java.util.List;
+
+public class InGameActivity extends CUActivity implements TabHost.OnTabChangeListener {
     private TabHost tabHost;
-
     private TabContentFragment lastFragment;
     private ChampionGuideFragment championGuideFragment;
     private SummonerListFragment ourTeamListFragment;
     private SummonerListFragment enemyTeamListFragment;
-
-    public void onEventMainThread(ChatStatusChangeEvent event) {
-        Crouton.makeText(this, event.getStatus().toString(), CUCroutonStyle.INFO).show();
-
-        if (event.getStatus() == ChatService.Status.CHAMPION_SELECT) {
-            tabHost.getTabWidget().setVisibility(View.VISIBLE);
-            showFragment(ourTeamListFragment);
-        } else if (event.getStatus() == ChatService.Status.IN_GAME) {
-            tabHost.getTabWidget().setVisibility(View.VISIBLE);
-        } else {
-            CUUtil.log("Connection was closed");
-            finish();
-        }
-    }
+    private List<Summoner> ourTeamSummoners, enemyTeamSummoners;
+    private boolean isFetchingSummoners = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity);
-
         initializeTabs();
         showFragment(ourTeamListFragment);
+    }
+
+    public void onEventMainThread(NeedRefreshFragmentEvent event) {
+        CUUtil.log(this, "onEventMainThread [NeedRefreshFragmentEvent]");
+        startFetchSummonersInGame();
+    }
+
+    private void startFetchSummonersInGame() {
+        if (isFetchingSummoners == false) {
+            isFetchingSummoners = true;
+            HttpRequestDelegate.fetchSummonersInGame(getMe(), new DataCallback<ActiveGame>() {
+                @Override
+                public void onSuccess(ActiveGame activeGame) {
+                    super.onSuccess(activeGame);
+                    if (activeGame == null) {
+                        ourTeamListFragment.updateSummoners(null);
+                        enemyTeamListFragment.updateSummoners(null);
+                    } else {
+                        ourTeamListFragment.updateSummoners(activeGame.getOurTeamSummoners());
+                        enemyTeamListFragment.updateSummoners(activeGame.getEnemyTeamSummoners());
+                    }
+                }
+
+                @Override
+                public void onFinish() {
+                    super.onFinish();
+                    isFetchingSummoners = false;
+                }
+            });
+        }
     }
 
     private void initializeTabs() {
@@ -55,7 +74,6 @@ public class GameActivity extends CUActivity implements TabHost.OnTabChangeListe
             tabHost = (TabHost) findViewById(android.R.id.tabhost);
             tabHost.setup();
             tabHost.setOnTabChangedListener(this);
-//            tabHost.getTabWidget().setVisibility(View.GONE);
 
             addTab(R.string.our_summoner, R.drawable.ico_star);
             addTab(R.string.enemy_summoner, R.drawable.ico_heart);
@@ -69,10 +87,10 @@ public class GameActivity extends CUActivity implements TabHost.OnTabChangeListe
 
     private void showFragment(TabContentFragment fragment) {
         if (fragment != lastFragment) {
+            lastFragment = fragment;
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-            fragment.refresh();
         }
     }
 

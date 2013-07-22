@@ -2,18 +2,15 @@ package co.zoyi.Chat.Services;
 
 import co.zoyi.Chat.Etc.Util;
 import co.zoyi.carryu.Application.Etc.CUUtil;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
-import java.util.ArrayList;
 
 public class ChatPacketProcessor {
     private ChatService chatService;
@@ -61,26 +58,13 @@ public class ChatPacketProcessor {
         }
     }
 
-//    protected void processIQ(IQ iq) {
-//        CUUtil.log("processIQ getXmlns: " + iq.getXmlns());
-//        CUUtil.log("processIQ getChildElementXML: " + iq.getChildElementXML());
-//        if (iq.getType().equals(IQ.Type.RESULT)) {
-//            XPath xPath = XPathFactory.newInstance().newXPath();
-//            InputSource IQXmlInputSource = new InputSource(new StringReader(iq.getChildElementXML()));
-//            ArrayList<String> nameList = new ArrayList<String>();
-//
-//            try {
-//                NodeList nodeList = (NodeList) xPath.evaluate("//@name", IQXmlInputSource, XPathConstants.NODESET);
-//                for (int i=0; i<nodeList.getLength(); i++) {
-//                    nameList.add(nodeList.item(i).getNodeValue());
-//                }
-//                chatService.fireFetchOurSummonerNamePacketCallback(iq, nameList);
-//            } catch (XPathExpressionException e) {
-//                e.printStackTrace();
-//                chatService.fireFetchOurSummonerNamePacketCallbackToFail(iq);
-//            }
-//        }
-//    }
+    private void processOurTeamNamesIQ(OurTeamNamesIQ iq) {
+        if (iq.getNames().size() == 0) {
+            this.chatService.onFailFetchOurTeamNames();
+        } else {
+            this.chatService.onCompleteFetchOurTeamNames(iq.getNames());
+        }
+    }
 
     public void processPacket(Packet packet) {
 //        CUUtil.log("processPacket: " + packet.toXML());
@@ -89,8 +73,8 @@ public class ChatPacketProcessor {
             processPresence((Presence) packet);
         } else if (packet instanceof Message) {
             processMessage((Message) packet);
-        } else if (packet instanceof IQ){
-//            processIQ((IQ) packet);
+        } else if (packet instanceof OurTeamNamesIQ){
+            processOurTeamNamesIQ((OurTeamNamesIQ) packet);
         }
     }
 }

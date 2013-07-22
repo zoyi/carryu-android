@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OurTeamNamesIQ extends IQ {
+    private List<String> names = new ArrayList<String>();
+
+    public List<String> getNames() {
+        return names;
+    }
+
+    public void addName(String name) {
+        this.names.add(name);
+    }
+
     public OurTeamNamesIQ() {
         super();
     }
@@ -20,11 +30,5 @@ public class OurTeamNamesIQ extends IQ {
     @Override
     public String getChildElementXML() {
         return "<query xmlns=\"http://jabber.org/protocol/disco#items\" />";
-    }
-
-    private List<String> names = new ArrayList<String>();
-
-    public void addName(String name) {
-        this.names.add(name);
     }
 }

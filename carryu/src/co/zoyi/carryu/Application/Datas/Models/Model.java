@@ -12,6 +12,5 @@ public abstract class Model {
     }
 
     @SerializedName("id")
-
     private int id;
 }

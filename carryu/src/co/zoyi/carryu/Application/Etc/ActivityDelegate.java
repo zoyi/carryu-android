@@ -6,7 +6,7 @@ import co.zoyi.carryu.Application.Views.Activities.*;
 
 public class ActivityDelegate {
     static public void openHomeActivity(Context context) {
-        context.startActivity(new Intent(context, GameActivity.class));
+        context.startActivity(new Intent(context, InGameActivity.class));
     }
 
     static public void openLobbyActivity(Context context) {
@@ -21,15 +21,20 @@ public class ActivityDelegate {
     }
 
     static public void openChampionSelectActivity(Context context) {
-        context.startActivity(new Intent(context, ChampionSelectActivity.class));
+        Intent intent = new Intent(context, ChampionSelectActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
-    static public void openGameActivity(Context context) {
-        context.startActivity(new Intent(context, GameActivity.class));
+    static public void openInGameActivity(Context context) {
+        Intent intent = new Intent(context, InGameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
     static public void openSummonerDetailActivity(Context context, String summonerName) {
         Intent intent = new Intent(context, SummonerDetailActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("SUMMONER_NAME", summonerName);
         context.startActivity(intent);
     }

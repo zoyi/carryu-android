@@ -21,15 +21,13 @@
         <activity android:name=".Application.Views.Activities.LobbyActivity"
                   android:theme="@style/AppTheme"/>
 
-        <activity android:name=".Application.Views.Activities.GameActivity"
-                  android:noHistory="true"
-                  android:theme="@style/AppTheme"/>
-
         <activity android:name=".Application.Views.Activities.ChampionSelectActivity"
                   android:theme="@style/AppTheme"/>
 
+        <activity android:name=".Application.Views.Activities.InGameActivity"
+                  android:theme="@style/AppTheme"/>
+
         <activity android:name=".Application.Views.Activities.SummonerDetailActivity"
-                  android:noHistory="true"
                   android:theme="@style/AppTheme"/>
 
     </application>

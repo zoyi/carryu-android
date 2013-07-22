@@ -10,12 +10,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.xmlpull.v1.XmlPullParser;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ChatService {
@@ -25,10 +21,10 @@ public class ChatService {
     private String groupChatId;
     private ChatStatusChangeListener chatStatusChangeListener;
     private ChatPacketProcessor chatPacketProcessor = new ChatPacketProcessor(this);
-    private FetchOurTeamNameListListener fetchOurTeamNameListListener;
+    private FetchOurTeamNamesListener fetchOurTeamNamesListener;
     private OurTeamNamesIQ lastOurTeamNamesIQ;
-    private List<String> lastUpdatedTeamNames;
-//    private HashMap<String, FetchOurTeamNameListListener> fetchOurTeamNameListListenerMap = new HashMap<String, FetchOurTeamNameListListener>();
+    private List<String> ourTeamNames;
+//    private HashMap<String, FetchOurTeamNamesListener> fetchOurTeamNameListListenerMap = new HashMap<String, FetchOurTeamNamesListener>();
 
     public enum Status {
         PENDING,
@@ -119,8 +115,7 @@ public class ChatService {
             }
 
             if (connection.isAuthenticated()) {
-                addIQProvider();
-                addPacketListeners();
+                addPacketProcessors();
                 setStatus(Status.AUTHENTICATED);
             } else {
                 setStatus(Status.FAILED_AUTHENTICATE);
@@ -136,9 +131,14 @@ public class ChatService {
         }
     };
 
-    private void addPacketListeners() {
+    private void addPacketProcessors() {
+        ProviderManager.getInstance().addIQProvider("query", "http://jabber.org/protocol/disco#items", new OurTeamNamesIQProvider());
+
         PacketFilter filter = new OrFilter(
-            new PacketTypeFilter(Presence.class),
+            new OrFilter(
+                new PacketTypeFilter(Presence.class),
+                new IQTypeFilter(IQ.Type.RESULT)
+            ),
             new AndFilter(
                 new ToContainsFilter(Util.toGameClientJabberId(getUser())),
                 new PacketTypeFilter(Message.class)
@@ -148,47 +148,18 @@ public class ChatService {
         this.connection.addPacketListener(packetListener, filter);
     }
 
-    private void addIQProvider() {
-        ProviderManager.getInstance().addIQProvider("query", "http://jabber.org/protocol/disco#items", new IQProvider() {
-            @Override
-            public IQ parseIQ(XmlPullParser xmlPullParser) {
-                try {
-                    List<String> names = new ArrayList<String>();
-                    int eventType = xmlPullParser.getEventType();
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        if(eventType == XmlPullParser.START_TAG) {
-                            if (xmlPullParser.getName().equals("item")) {
-                                for (int indexOfAttr=0; indexOfAttr<xmlPullParser.getAttributeCount(); indexOfAttr++ ){
-                                    String attrName = xmlPullParser.getAttributeName(indexOfAttr);
-                                    if (attrName.equals("name")) {
-                                        names.add(xmlPullParser.getAttributeValue(indexOfAttr));
-//                                        CUUtil.log(xmlPullParser.getAttributeValue(indexOfAttr));
-                                    }
-                                }
-                            }
-                        } else if (eventType == XmlPullParser.END_TAG) {
-                            if (xmlPullParser.getName().equals("query")) {
-                                break;
-                            }
-                        }
-
-                        eventType = xmlPullParser.next();
-                    }
-
-                    fireFetchOurSummonerNamePacketCallback(names);
-                } catch(Exception e) {
-                    fireFetchOurSummonerNamePacketCallbackToFail();
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-        });
-    }
-
     public String getUser() {
         return connection.getUser();
     }
+
+    public String getUserId() {
+        if (connection != null && connection.getUser() != null) {
+            return Util.getUserIDFromJabberID(connection.getUser());
+        }
+        return null;
+    }
+
+//    public String
 
     public void setChatStatusChangeListener(ChatStatusChangeListener chatStatusChangeListener) {
         this.chatStatusChangeListener = chatStatusChangeListener;
@@ -211,12 +182,22 @@ public class ChatService {
         this.connectionConfiguration.setDebuggerEnabled(true); // TODO: debug code
     }
 
+    private void processStatus(Status status) {
+        if (status == Status.OUT_OF_GAME) {
+            ourTeamNames = null;
+        }
+    }
+
     void setStatus(Status status) {
         if (status != this.status) {
             CUUtil.log(String.format("ChatServer Status [%s]", status.toString()));
+
             if (this.chatStatusChangeListener != null) {
                 this.chatStatusChangeListener.onStatusChanged(status);
             }
+
+            processStatus(status);
+
             this.status = status;
         }
     }
@@ -229,34 +210,31 @@ public class ChatService {
         this.groupChatId = groupChatId;
     }
 
-    public String getGroupChatId() {
-        return groupChatId;
+    public List<String> getOurTeamNames() {
+        return ourTeamNames;
     }
 
-    public void fireFetchOurSummonerNamePacketCallback(List<String> names) {
-        CUUtil.log(String.format("fireFetchOurSummonerNamePacketCallbackToFail onCompleted # %d", names.size()));
-        lastUpdatedTeamNames = names;
-        fetchOurTeamNameListListener.onCompleted(names);
+    public void onCompleteFetchOurTeamNames(List<String> names) {
+        CUUtil.log(String.format("onFailFetchOurTeamNames onCompleted # %d", names.size()));
+        ourTeamNames = names;
+        fetchOurTeamNamesListener.onCompleted(names);
         lastOurTeamNamesIQ = null;
     }
 
-    public List<String> getLastUpdatedTeamNames() {
-        return lastUpdatedTeamNames;
-    }
-
-    public void fireFetchOurSummonerNamePacketCallbackToFail() {
-        CUUtil.log("fireFetchOurSummonerNamePacketCallbackToFail: onFailed");
-        fetchOurTeamNameListListener.onFailed();
+    public void onFailFetchOurTeamNames() {
+        CUUtil.log("onFailFetchOurTeamNames: onFailed");
+        fetchOurTeamNamesListener.onFailed();
         lastOurTeamNamesIQ = null;
     }
 
-    public void fetchOurSummonerNameList(FetchOurTeamNameListListener callback) {
-        CUUtil.log("fetchOurSummonerNameList");
-        if (lastOurTeamNamesIQ == null) {
-            lastUpdatedTeamNames = null;
+    public void fetchOurTeamNames(FetchOurTeamNamesListener callback) {
+        CUUtil.log("fetchOurTeamNames");
+        if (status == Status.CHAMPION_SELECT && lastOurTeamNamesIQ == null) {
             lastOurTeamNamesIQ = new OurTeamNamesIQ(connection.getUser(), this.groupChatId);
             this.connection.sendPacket(lastOurTeamNamesIQ);
-            fetchOurTeamNameListListener = callback;
+            fetchOurTeamNamesListener = callback;
+        } else {
+            onFailFetchOurTeamNames();
         }
     }
 }

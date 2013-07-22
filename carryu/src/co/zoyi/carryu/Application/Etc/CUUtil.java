@@ -22,7 +22,11 @@ public class CUUtil {
         Log.d(activity.getPackageName() + String.format(" [%s]", activity.getClass().getSimpleName()), message);
     }
     public static void log(Fragment fragment, String message) {
-        Log.d(fragment.getActivity().getPackageName() + String.format(" [%s][%s]", fragment.getActivity().getClass().getSimpleName(), fragment.getClass().getSimpleName()), message);
+        if (fragment != null && fragment.getActivity() != null) {
+            Log.d(fragment.getActivity().getPackageName() + String.format(" [%s][%s]", fragment.getActivity().getClass().getSimpleName(), fragment.getClass().getSimpleName()), message);
+        } else {
+            log(message);
+        }
     }
 
     public static void log(Object object, String message) {

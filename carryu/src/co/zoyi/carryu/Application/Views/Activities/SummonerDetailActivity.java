@@ -3,10 +3,12 @@ package co.zoyi.carryu.Application.Views.Activities;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
+import co.zoyi.Chat.Services.ChatService;
+import co.zoyi.carryu.Application.Etc.ActivityDelegate;
+import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
 import co.zoyi.carryu.R;
 
 public class SummonerDetailActivity extends CUActivity {
@@ -60,5 +62,13 @@ public class SummonerDetailActivity extends CUActivity {
         });
 
         webView.loadUrl(String.format("http://carryu.co/summoners/%s?region=%s&query=%s", "AllenJee", "kr", "AllenJee"));
+    }
+
+    public void onEventMainThread(ChatStatusChangeEvent event) {
+        if (event.getStatus() == ChatService.Status.OUT_OF_GAME) {
+            finish();
+        } else if (event.getStatus() == ChatService.Status.IN_GAME) {
+            ActivityDelegate.openInGameActivity(this);
+        }
     }
 }
