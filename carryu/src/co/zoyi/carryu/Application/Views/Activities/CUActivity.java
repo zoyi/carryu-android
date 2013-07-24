@@ -8,29 +8,22 @@ import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Etc.API.DataCallback;
 import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
-import co.zoyi.carryu.Application.Etc.CUCroutonStyle;
 import co.zoyi.carryu.Application.Etc.ErrorCroutonDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
-import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Events.UpdatedMeEvent;
 import co.zoyi.carryu.Application.Events.Errors.ErrorEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Dialogs.MessageDialog;
 import de.greenrobot.event.EventBus;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
 
-public class CUActivity extends FragmentActivity {
+public abstract class CUActivity extends FragmentActivity {
     private static Summoner me;
     private int countOfWaitingDialog = 0;
+    private MessageDialog messageDialog;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
+    protected boolean preventBackButton() {
+        return true;
     }
 
     @Override
@@ -40,26 +33,44 @@ public class CUActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         if (me == null) {
             fetchMe();
         }
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onStop() {
+        EventBus.getDefault().unregister(this);
         super.onStop();
-        if (countOfWaitingDialog > 0) {
-        }
     }
 
     protected void hideWaitingDialog() {
-        --countOfWaitingDialog;
+        if (--countOfWaitingDialog == 0) {
+            messageDialog.dismiss();
+        }
     }
 
     protected void showWaitingDialog() {
-        ++countOfWaitingDialog;
+        if (++countOfWaitingDialog == 1) {
+            messageDialog = new MessageDialog(this);
+            messageDialog.show();
+        }
+    }
+
+    protected void showWaitingDialog(String message) {
+        if (++countOfWaitingDialog == 1) {
+            messageDialog = new MessageDialog(this, message);
+            messageDialog.show();
+        }
     }
 
     private static void fetchMe() {
@@ -68,9 +79,23 @@ public class CUActivity extends FragmentActivity {
                 @Override
                 public void onSuccess(Summoner object) {
                     super.onSuccess(object);
-                    me = object;
+                    if (object != null) {
+                        setMe(object);
+                    }
                 }
             });
+        }
+    }
+
+    public static void setMe(Summoner me) {
+        CUActivity.me = me;
+        EventBus.getDefault().post(new UpdatedMeEvent(me));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (preventBackButton() == false) {
+            finish();
         }
     }
 
@@ -85,24 +110,28 @@ public class CUActivity extends FragmentActivity {
         ErrorCroutonDelegate.showErrorMessage(this, errorEvent);
     }
 
-    public void onEventMainThread(ChatStatusChangeEvent event) {
-        Crouton.makeText(this, event.getStatus().toString(), CUCroutonStyle.INFO).show();
-
-        if (event.getStatus() == ChatService.Status.CHAMPION_SELECT) {
+    protected void processChatStatus(ChatService.Status status) {
+        if (status == ChatService.Status.CHAMPION_SELECT) {
             if (getClass() != ChampionSelectActivity.class) {
                 ActivityDelegate.openChampionSelectActivity(this);
             }
-        } else if (event.getStatus() == ChatService.Status.IN_GAME) {
+        } else if (status == ChatService.Status.IN_GAME) {
             if (getClass() != InGameActivity.class) {
                 ActivityDelegate.openInGameActivity(this);
             }
-        } else if (event.getStatus() == ChatService.Status.OUT_OF_GAME ||
-            event.getStatus() == ChatService.Status.IN_QUEUE ) {
+        } else if (status == ChatService.Status.OUT_OF_GAME || status == ChatService.Status.IN_QUEUE) {
             if (getClass() != LobbyActivity.class) {
                 ActivityDelegate.openLobbyActivity(this);
             }
-        } else if (event.getStatus() == ChatService.Status.CONNECTION_CLOSED){
-            ActivityDelegate.openLoginActivityWithConnectionClosedCrouton(this);
+        } else if (status == ChatService.Status.CONNECTION_CLOSED){
+            if (getClass() != LoginActivity.class) {
+                ActivityDelegate.openLoginActivityWithConnectionClosedCrouton(this);
+            }
         }
+    }
+
+    public void onEventMainThread(ChatStatusChangeEvent event) {
+//        Crouton.makeText(this, event.getStatus().toString(), CUCroutonStyle.INFO).show();
+        processChatStatus(event.getStatus());
     }
 }

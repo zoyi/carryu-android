@@ -4,7 +4,7 @@ import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.Chat.Services.ChatStatusChangeListener;
 import co.zoyi.carryu.Application.Datas.Serializers.ActiveGameJSONSerializer;
 import co.zoyi.carryu.Application.Datas.Serializers.SummonerJSONSerializer;
-import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
 import de.greenrobot.event.EventBus;
 
 public class Registry {

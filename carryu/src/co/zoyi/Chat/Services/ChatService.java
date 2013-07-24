@@ -24,6 +24,7 @@ public class ChatService {
     private FetchOurTeamNamesListener fetchOurTeamNamesListener;
     private OurTeamNamesIQ lastOurTeamNamesIQ;
     private List<String> ourTeamNames;
+    private ChatServerInfo chatServerInfo;
 //    private HashMap<String, FetchOurTeamNamesListener> fetchOurTeamNameListListenerMap = new HashMap<String, FetchOurTeamNamesListener>();
 
     public enum Status {
@@ -173,7 +174,12 @@ public class ChatService {
         return isConnected() && connection.isAuthenticated();
     }
 
+    public ChatServerInfo getChatServerInfo() {
+        return chatServerInfo;
+    }
+
     public void setServerInfo(ChatServerInfo chatServerInfo) {
+        this.chatServerInfo = chatServerInfo;
         this.connectionConfiguration = new ConnectionConfiguration(chatServerInfo.host, chatServerInfo.port, "pvp.net");
         this.connectionConfiguration.setSASLAuthenticationEnabled(true);
         this.connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);

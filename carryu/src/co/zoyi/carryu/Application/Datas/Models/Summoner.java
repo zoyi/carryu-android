@@ -97,6 +97,20 @@ public class Summoner extends Model {
         return String.format("http://carryu.co/assets/league/%s_%d.png", leagueSoloFiveToFiveStat.getTier().toLowerCase(), leagueSoloFiveToFiveStat.getRank());
     }
 
+    public String getFirstSpellImageUrl() {
+        if (firstSpell == 0) {
+            return "";
+        }
+        return String.format("http://kr.carryu.co/spells/%d/image", firstSpell);
+    }
+
+    public String getSecondSpellImageUrl() {
+        if (secondSpell == 0) {
+            return "";
+        }
+        return String.format("http://kr.carryu.co/spells/%d/image", secondSpell);
+    }
+
     public String getDisplayLevel() {
         if (leagueSoloFiveToFiveStat == null) {
             if (level == 0) {

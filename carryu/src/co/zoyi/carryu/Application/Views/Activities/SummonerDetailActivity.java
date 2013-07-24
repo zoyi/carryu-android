@@ -8,8 +8,12 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
-import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
+import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SummonerDetailActivity extends CUActivity {
     private WebView webView;
@@ -25,7 +29,7 @@ public class SummonerDetailActivity extends CUActivity {
     private View.OnClickListener onRefreshButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            webView.reload();
+            refresh();
         }
     };
 
@@ -36,12 +40,14 @@ public class SummonerDetailActivity extends CUActivity {
 
         summonerName = getIntent().getStringExtra("SUMMONER_NAME");
 
-        ((TextView)findViewById(R.id.tv_title)).setText(summonerName);
+        ((TextView)findViewById(R.id.title)).setText(summonerName);
 
         findViewById(R.id.back).setOnClickListener(onBackButtonClickListener);
         findViewById(R.id.refresh).setOnClickListener(onRefreshButtonClickListener);
 
         initializeWebView();
+
+        refresh();
     }
 
     private void initializeWebView() {
@@ -51,17 +57,22 @@ public class SummonerDetailActivity extends CUActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                showWaitingDialog();
+                ((TextView)findViewById(R.id.title)).setText(getString(R.string.loading));
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                hideWaitingDialog();
+                ((TextView)findViewById(R.id.title)).setText(summonerName);
             }
         });
+    }
 
-        webView.loadUrl(String.format("http://carryu.co/summoners/%s?region=%s&query=%s", "AllenJee", "kr", "AllenJee"));
+    public void refresh() {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("User-Agent", "CarryU");
+        ((TextView)findViewById(R.id.title)).setText(getString(R.string.loading));
+        webView.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName), headers);
     }
 
     public void onEventMainThread(ChatStatusChangeEvent event) {
@@ -69,6 +80,15 @@ public class SummonerDetailActivity extends CUActivity {
             finish();
         } else if (event.getStatus() == ChatService.Status.IN_GAME) {
             ActivityDelegate.openInGameActivity(this);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (this.webView.canGoBack()) {
+            this.webView.goBack();
+        } else {
+            finish();
         }
     }
 }

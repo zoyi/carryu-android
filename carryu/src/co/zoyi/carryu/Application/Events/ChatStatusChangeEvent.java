@@ -1,4 +1,4 @@
-package co.zoyi.carryu.Application.Events.Chat;
+package co.zoyi.carryu.Application.Events;
 
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Events.Event;

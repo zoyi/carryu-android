@@ -9,63 +9,140 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Etc.API.DataCallback;
 import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
-import co.zoyi.carryu.Application.Etc.CUUtil;
+import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
+import co.zoyi.carryu.Application.Events.UpdatedMeEvent;
+import co.zoyi.carryu.Application.Events.WebViewFragmentStatusChangedEvent;
+import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
 import co.zoyi.carryu.Application.Views.Fragments.ChampionGuideFragment;
 import co.zoyi.carryu.Application.Views.Fragments.SummonerListFragment;
 import co.zoyi.carryu.Application.Views.Fragments.TabContentFragment;
 import co.zoyi.carryu.R;
 
-import java.util.List;
-
 public class InGameActivity extends CUActivity implements TabHost.OnTabChangeListener {
+    private boolean isSample;
+    public static String SAMPLE_IN_GAME_INTENT_KEY = "is_sample";
+
     private TabHost tabHost;
+    private ActiveGame activeGame;
     private TabContentFragment lastFragment;
     private ChampionGuideFragment championGuideFragment;
     private SummonerListFragment ourTeamListFragment;
     private SummonerListFragment enemyTeamListFragment;
-    private List<Summoner> ourTeamSummoners, enemyTeamSummoners;
-    private boolean isFetchingSummoners = false;
+
+    private View.OnClickListener refreshClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (lastFragment != null) {
+                lastFragment.refresh();
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+
+        setContentView(R.layout.in_game_activity);
+
+        if (ActivityDelegate.hasIntentExtra(this, SAMPLE_IN_GAME_INTENT_KEY)) {
+            isSample = getIntent().getBooleanExtra(SAMPLE_IN_GAME_INTENT_KEY, false);
+        }
+
+        findViewById(R.id.refresh).setOnClickListener(refreshClickListener);
+
         initializeTabs();
+
         showFragment(ourTeamListFragment);
     }
 
     public void onEventMainThread(NeedRefreshFragmentEvent event) {
-        CUUtil.log(this, "onEventMainThread [NeedRefreshFragmentEvent]");
-        startFetchSummonersInGame();
+        if (event.getFragment().getClass() == SummonerListFragment.class) {
+            startFetchSummonersInGame((SummonerListFragment) event.getFragment());
+        }
     }
 
-    private void startFetchSummonersInGame() {
-        if (isFetchingSummoners == false) {
-            isFetchingSummoners = true;
-            HttpRequestDelegate.fetchSummonersInGame(getMe(), new DataCallback<ActiveGame>() {
-                @Override
-                public void onSuccess(ActiveGame activeGame) {
-                    super.onSuccess(activeGame);
-                    if (activeGame == null) {
-                        ourTeamListFragment.updateSummoners(null);
-                        enemyTeamListFragment.updateSummoners(null);
-                    } else {
-                        ourTeamListFragment.updateSummoners(activeGame.getOurTeamSummoners());
-                        enemyTeamListFragment.updateSummoners(activeGame.getEnemyTeamSummoners());
+    public void onEventMainThread(UpdatedMeEvent event) {
+        if (lastFragment == ourTeamListFragment || lastFragment == enemyTeamListFragment) {
+            startFetchSummonersInGame((SummonerListFragment) lastFragment);
+        }
+    }
+
+    public void onEventMainThread(WebViewFragmentStatusChangedEvent event) {
+        if (lastFragment == championGuideFragment && event.getFragment().equals(championGuideFragment)) {
+            if (event.getStatus() == WebViewFragmentStatusChangedEvent.Status.STARTED) {
+                TextView.class.cast(findViewById(R.id.title)).setText(getString(R.string.loading));
+            } else {
+                TextView.class.cast(findViewById(R.id.title)).setText(getString(R.string.app_name));
+            }
+        }
+    }
+
+    private void startFetchSummonersInGame(final SummonerListFragment fragment) {
+        if (this.activeGame == null) {
+            if (isSample == false) {
+                if (getMe() != null) {
+                    HttpRequestDelegate.fetchActiveGame(getMe(), new DataCallback<ActiveGame>() {
+                        @Override
+                        public void onSuccess(ActiveGame activeGame) {
+                            super.onSuccess(activeGame);
+                            updateActiveGameAndSummoners(activeGame, fragment);
+                        }
+                    });
+                }
+            } else {
+                HttpRequestDelegate.fetchActiveGameSample(new DataCallback<ActiveGame>() {
+                    @Override
+                    public void onSuccess(ActiveGame activeGame) {
+                        super.onSuccess(activeGame);
+                        updateActiveGameAndSummoners(activeGame, fragment);
+                    }
+                });
+            }
+        } else {
+            updateActiveGameAndSummoners(this.activeGame, fragment);
+        }
+    }
+
+    private void updateActiveGameAndSummoners(ActiveGame activeGame, SummonerListFragment fragment) {
+        if (activeGame != null) {
+            this.activeGame = activeGame;
+
+            if (fragment == ourTeamListFragment) {
+                fragment.updateSummoners(activeGame.getOurTeamSummoners());
+            } else {
+                fragment.updateSummoners(activeGame.getEnemyTeamSummoners());
+            }
+
+            if (isSample == false) {
+                for (Summoner summoner : activeGame.getOurTeamSummoners()) {
+                    if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
+                        championGuideFragment.setChampionId(summoner.getChampion().getId());
                     }
                 }
+            } else {
+                championGuideFragment.setChampionId(98);
+            }
+        } else {
+            AlertDialog alertDialog = new AlertDialog(this, getString(R.string.not_support_ai_mode));
+            alertDialog.show();
 
-                @Override
-                public void onFinish() {
-                    super.onFinish();
-                    isFetchingSummoners = false;
-                }
-            });
+            finish();
+
+            ActivityDelegate.openLobbyActivity(this);
+        }
+    }
+
+    @Override
+    protected void processChatStatus(ChatService.Status status) {
+        if (isSample == false) {
+            super.processChatStatus(status);
         }
     }
 
@@ -91,6 +168,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
+            TextView.class.cast(findViewById(R.id.title)).setText(getString(R.string.app_name));
         }
     }
 
@@ -141,6 +219,14 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             v.setMinimumWidth(0);
             v.setMinimumHeight(0);
             return v;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (lastFragment != championGuideFragment ||
+            championGuideFragment.onBackPressed() == false) {
+            finish();
         }
     }
 }

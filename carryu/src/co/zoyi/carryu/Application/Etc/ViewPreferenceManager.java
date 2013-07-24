@@ -45,7 +45,6 @@ public class ViewPreferenceManager {
         for(String key : allKeys) {
             int id = Integer.parseInt(key);
             View view = activity.findViewById(id);
-
             if (view instanceof RadioButton) {
                 RadioButton.class.cast(view).setChecked(sharedPreferences.getBoolean(key, false));
             } else if (view instanceof EditText) {

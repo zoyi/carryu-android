@@ -30,7 +30,7 @@
                 android:background="@color/gray_79" />
 
         <TextView
-                android:id="@+id/tv_title"
+                android:id="@+id/title"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -46,11 +46,11 @@
                 android:background="@color/gray_79" />
 
         <ImageButton
-                android:id="@+id/search"
+                android:id="@+id/refresh"
                 android:layout_width="@dimen/width"
                 android:layout_height="match_parent"
                 android:background="@drawable/ui_button_gray"
-                android:src="@drawable/ico_search" />
+                android:src="@drawable/ico_reload"/>
 
     </LinearLayout>
 

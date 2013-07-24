@@ -11,7 +11,6 @@ import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.*;
 import co.zoyi.carryu.Application.Etc.API.DataCallback;
 import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
-import co.zoyi.carryu.Application.Events.Chat.ChatStatusChangeEvent;
 import co.zoyi.carryu.Application.Events.Errors.AuthenticateFailErrorEvent;
 import co.zoyi.carryu.Application.Events.Errors.ConnectionClosedErrorEvent;
 import co.zoyi.Chat.Services.ChatService;
@@ -21,9 +20,15 @@ import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
 
 public class LoginActivity extends CUActivity {
-    private ChatService chatService;
-    private UserLoginData userLoginData;
+    public static String CONNECTION_CLOSED_INTENT_KEY = "connection_closed";
+
     private ServerList serverList;
+    private UserLoginData userLoginData;
+
+    @Override
+    protected boolean preventBackButton() {
+        return false;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,11 +36,9 @@ public class LoginActivity extends CUActivity {
 
         setContentView(R.layout.login_activity);
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("CONNECTION_CLOSED")) {
+        if (ActivityDelegate.hasIntentExtra(this, CONNECTION_CLOSED_INTENT_KEY)) {
             EventBus.getDefault().post(new ConnectionClosedErrorEvent());
         }
-
-        chatService = Registry.getChatService();
 
         restoreViewPreferences();
         restoreServerInfo();
@@ -69,6 +72,7 @@ public class LoginActivity extends CUActivity {
         String serverListJsonString = JSONSerializer.getGsonInstance().toJson(this.serverList);
         SharedPreferences.Editor editor = getSharedPreferences("ServerInfo", MODE_PRIVATE).edit();
         editor.putString("server_info", serverListJsonString);
+        editor.commit();
     }
 
     private void restoreServerInfo() {
@@ -80,48 +84,56 @@ public class LoginActivity extends CUActivity {
         }
     }
 
-    public void onEventMainThread(ChatStatusChangeEvent event) {
-        switch (event.getStatus()) {
-            case CONNECTED:
-                login();
-                break;
-            case AUTHENTICATED:
-                storeViewPreferences();
-                ActivityDelegate.openLobbyActivity(this);
-                break;
-            case FAILED_AUTHENTICATE:
-                EventBus.getDefault().post(new AuthenticateFailErrorEvent());
-                break;
-            default:
-                break;
+    @Override
+    protected void processChatStatus(ChatService.Status status) {
+        super.processChatStatus(status);
+
+        if (status == ChatService.Status.CONNECTED) {
+            login();
+        } else if (status == ChatService.Status.AUTHENTICATED) {
+            storeViewPreferences();
+        } else if (status == ChatService.Status.FAILED_AUTHENTICATE) {
+            hideWaitingDialog();
+            EventBus.getDefault().post(new AuthenticateFailErrorEvent());
+        } else if (status == ChatService.Status.OUT_OF_GAME) {
+            hideWaitingDialog();
         }
     }
 
     private void login() {
-        chatService.login(userLoginData.getUserID(), userLoginData.getUserPassword());
+        userLoginData = new UserLoginData(
+            EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
+            EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
+        );
+
+        Registry.getChatService().login(userLoginData.getUserID(), userLoginData.getUserPassword());
     }
 
     private void connect() {
-        if (chatService != null && chatService.isConnected()) {
-            login();
-        } else {
-            ServerList.ServerInfo serverInfo;
-            serverInfo = RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked() ? serverList.getKoreaServer() : serverList.getNorthAmericaServer();
+        ServerList.ServerInfo serverInfo;
+        serverInfo = getSelectedServerInfo();
 
-            HttpRequestDelegate.setRegion(serverInfo.getRegion());
+        HttpRequestDelegate.setRegion(serverInfo.getRegion());
 
-            userLoginData = new UserLoginData(
-                EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
-                EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
-            );
+        Registry.getChatService().setServerInfo(new ChatServerInfo(serverInfo.getRegion(), serverInfo.getXmppHost(), serverInfo.getXmppPort()));
+        Registry.getChatService().connect();
+    }
 
-            chatService.setServerInfo(new ChatServerInfo(serverInfo.getRegion(), serverInfo.getXmppHost(), serverInfo.getXmppPort()));
-            chatService.connect();
-        }
+    private ServerList.ServerInfo getSelectedServerInfo() {
+        return RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked() ? serverList.getKoreaServer() : serverList.getNorthAmericaServer();
     }
 
     public void onLoginButtonClick(View loginButton) {
-//        ActivityDelegate.openLobbyActivity(this);
-        connect();
+        showWaitingDialog(getString(R.string.logging_in));
+
+        if (Registry.getChatService().isConnected() &&
+            Registry.getChatService().getChatServerInfo().getRegion().equals(getSelectedServerInfo())) {
+            login();
+        } else {
+            if (Registry.getChatService().isConnected()) {
+                Registry.getChatService().disconnect();
+            }
+            connect();
+        }
     }
 }

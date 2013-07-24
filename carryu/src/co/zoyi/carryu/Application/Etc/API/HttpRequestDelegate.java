@@ -62,17 +62,17 @@ public class HttpRequestDelegate {
     }
 
     public static void get(String url, RequestParams params, HttpResponseHandler responseHandler) {
-        CUUtil.log("REQ[GET] " + url);
+        CUUtil.log("REQ[GET] " + baseUrl + url);
         client.get(baseUrl + url, params, responseHandler);
     }
 
     public static void getRtmp(String url, RequestParams params, HttpResponseHandler responseHandler) {
-        CUUtil.log("REQ[RTMP_GET] " + url);
+        CUUtil.log("REQ[RTMP_GET] " + baseRtmpUrl + url);
         client.get(baseRtmpUrl + url, params, responseHandler);
     }
 
     public static void fetchServerInfo(final Context context, final DataCallback<ServerList> cb) {
-        get("http://lol-gist.wudi.me", null, new HttpResponseHandler(cb) {
+        client.get("http://lol-gist.wudi.me", null, new HttpResponseHandler(cb) {
             @Override
             public void onSuccess(String s) {
                 super.onSuccess(s);
@@ -111,7 +111,7 @@ public class HttpRequestDelegate {
         });
     }
 
-    public static void fetchSummonersInGame(final Summoner me, final DataCallback<ActiveGame> cb) {
+    public static void fetchActiveGame(final Summoner me, final DataCallback<ActiveGame> cb) {
         try {
             getRtmp("/active_game/" + getEncodedSummonerName(me), null, new HttpResponseHandler(cb) {
                 @Override
@@ -124,5 +124,16 @@ public class HttpRequestDelegate {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void fetchActiveGameSample(final DataCallback<ActiveGame> cb) {
+        get("/active_game/sample", null, new HttpResponseHandler(cb) {
+            @Override
+            public void onSuccess(String s) {
+                super.onSuccess(s);
+                ActiveGame activeGame = Registry.getActiveGameSerializer().toObject(s, ActiveGame.class);
+                cb.onSuccess(activeGame);
+            }
+        });
     }
 }

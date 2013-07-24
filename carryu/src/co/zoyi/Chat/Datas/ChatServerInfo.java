@@ -5,6 +5,10 @@ public class ChatServerInfo {
     public String region;
     public int port;
 
+    public String getRegion() {
+        return region;
+    }
+
     public ChatServerInfo(String region, String host, int port) {
         this.region = region;
         this.host = host;

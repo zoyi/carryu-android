@@ -45,23 +45,29 @@ public class SummonerListFragment extends TabContentFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        CUUtil.log(this, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
+
+        this.summonersArrayAdapter = new SummonersArrayAdapter(getActivity(), 0, summoners);
 
         this.summonerListView = (ListView) view.findViewById(R.id.summoner_list);
         this.summonerListView.setOnItemClickListener(summonerClickListener);
-        ImageButton.class.cast(view.findViewById(R.id.reload)).setOnClickListener(reloadButtonClickListener);
+        this.summonerListView.setAdapter(summonersArrayAdapter);
 
-        refresh();
+        ImageButton.class.cast(view.findViewById(R.id.reload)).setOnClickListener(reloadButtonClickListener);
     }
 
     @Override
     public void refresh() {
         CUUtil.log(this, "refresh");
-        EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
+        if (this.summoners.size() == 0) {
+            EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
+        } else {
+            refreshViews();
+        }
     }
 
     private void refreshViews() {
+        CUUtil.log(SummonerListFragment.this, "refreshViews # " + String.valueOf(this.summoners.size()));
         if (this.summoners.size() == 0) {
             this.summonerListView.setVisibility(View.GONE);
             LinearLayout.class.cast(getView().findViewById(R.id.loading_layout)).setVisibility(View.VISIBLE);
@@ -74,21 +80,17 @@ public class SummonerListFragment extends TabContentFragment {
         }
     }
 
-    private Runnable createListViewAdapterAndRefreshViews = new Runnable() {
-        @Override
-        public void run() {
-            summonersArrayAdapter = new SummonersArrayAdapter(getActivity(), 0, summoners);
-            summonerListView.setAdapter(summonersArrayAdapter);
-            refreshViews();
+    protected void refreshViewsOnUiThread() {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    refresh();
+                    CUUtil.log(SummonerListFragment.this, "refreshViewsRunnable");
+                }
+            });
         }
-    };
-
-//    private Runnable notifyListViewAdapterDataChanged = new Runnable() {
-//        @Override
-//        public void run() {
-//            summonersArrayAdapter.notifyDataSetChanged();
-//        }
-//    };
+    }
 
     public void updateSummoners(List<Summoner> summoners) {
         if (summoners != null) {
@@ -98,36 +100,23 @@ public class SummonerListFragment extends TabContentFragment {
             for (Summoner summoner : this.summoners) {
                 startFetchSummonerForUpdate(summoner);
             }
+            refreshViewsOnUiThread();
         } else {
             CUUtil.log(this, "updateSummoner Failed");
+            refreshViews();
         }
-        getActivity().runOnUiThread(createListViewAdapterAndRefreshViews);
     }
 
     private void startFetchSummonerForUpdate(final Summoner summoner) {
         CUUtil.log(this, String.format("startFetchSummonerForUpdate [%s]", summoner.getName()));
         HttpRequestDelegate.fetchSummoner(summoner, new DataCallback<Summoner>() {
             @Override
-            public void onFinish() {
-                super.onFinish();
-            }
-
-            @Override
             public void onSuccess(Summoner newSummoner) {
                 CUUtil.log(this, String.format("startFetchSummonerForUpdate onSuccess [%s]", summoner.getName()));
                 super.onSuccess(newSummoner);
                 summoner.update(newSummoner);
-                summonersArrayAdapter.notifyDataSetChanged();
+                refreshViewsOnUiThread();
             }
         });
     }
-
-//    public void updateSummoner(Summoner newSummoner) {
-//        CUUtil.log(this, String.format("updateSummoner [%s]", newSummoner.getName()));
-////        summonersArrayAdapter.updateSummoner(newSummoner);
-//
-//        summonersArrayAdapter = new SummonersArrayAdapter(getActivity(), 0, summoners);
-//        summonerListView.setAdapter(summonersArrayAdapter);
-//        refreshViews();
-//    }
 }

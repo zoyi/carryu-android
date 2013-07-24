@@ -33,5 +33,7 @@
     <color name="dark_lilac">#704a61</color>
      <!-- Orange Colors -->
     <color name="orange">#de8650</color>
-    <color name="dark_orange">#c0774b</color>    
+    <color name="dark_orange">#c0774b</color>
+    <!-- Custom Colors -->
+    <color name="gray_35_a">#002e2e2e</color>
 </resources>

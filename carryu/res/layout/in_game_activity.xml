@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <include layout="@layout/home_header" />
+    <include layout="@layout/home_header_with_refresh" />
 
     <TabHost
             android:id="@android:id/tabhost"

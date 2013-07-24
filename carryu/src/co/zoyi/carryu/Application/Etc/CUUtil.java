@@ -2,6 +2,7 @@ package co.zoyi.carryu.Application.Etc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,10 +23,12 @@ public class CUUtil {
         Log.d(activity.getPackageName() + String.format(" [%s]", activity.getClass().getSimpleName()), message);
     }
     public static void log(Fragment fragment, String message) {
-        if (fragment != null && fragment.getActivity() != null) {
-            Log.d(fragment.getActivity().getPackageName() + String.format(" [%s][%s]", fragment.getActivity().getClass().getSimpleName(), fragment.getClass().getSimpleName()), message);
-        } else {
+        if (fragment == null) {
             log(message);
+        } else if (fragment.getActivity() == null) {
+            Log.d(fragment.getActivity().getPackageName() + String.format(" [%s]", fragment.getClass().getSimpleName()), message);
+        } else {
+            Log.d(fragment.getActivity().getPackageName() + String.format(" [%s][%s]", fragment.getActivity().getClass().getSimpleName(), fragment.getClass().getSimpleName()), message);
         }
     }
 

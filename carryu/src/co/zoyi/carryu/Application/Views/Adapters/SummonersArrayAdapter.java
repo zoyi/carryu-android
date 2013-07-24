@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Datas.Serializers.SummonerJSONSerializer;
@@ -34,16 +35,29 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
         TextView.class.cast(rowView.findViewById(R.id.summoner_name)).setText(summoner.getName());
 
         if (summoner.isUpdated() == true) {
-            SmartImageView.class.cast(rowView.findViewById(R.id.profile_image)).setImageUrl(summoner.getProfileIconUrl());
+            if (summoner.getChampion() == null) {
+                SmartImageView.class.cast(rowView.findViewById(R.id.profile_image)).setImageUrl(summoner.getProfileIconUrl());
+            } else {
+                SmartImageView.class.cast(rowView.findViewById(R.id.profile_image)).setImageUrl(summoner.getChampion().getChampionImageUrl());
+            }
+
+            SmartImageView.class.cast(rowView.findViewById(R.id.more_arrow)).setVisibility(View.VISIBLE);
             TextView.class.cast(rowView.findViewById(R.id.summoner_level)).setText(summoner.getDisplayLevel());
             TextView.class.cast(rowView.findViewById(R.id.summoner_stat)).setText(summoner.getDisplayStats());
-            SmartImageView.class.cast(rowView.findViewById(R.id.more_arrow)).setVisibility(View.VISIBLE);
 
             if (summoner.getRankIconUrl().length() == 0) {
                 SmartImageView.class.cast(rowView.findViewById(R.id.rank_icon)).setVisibility(View.GONE);
             } else {
                 SmartImageView.class.cast(rowView.findViewById(R.id.rank_icon)).setVisibility(View.VISIBLE);
                 SmartImageView.class.cast(rowView.findViewById(R.id.rank_icon)).setImageUrl(summoner.getRankIconUrl());
+            }
+
+            if (summoner.getFirstSpellImageUrl().length() > 0) {
+                LinearLayout.class.cast(rowView.findViewById(R.id.spell_container)).setVisibility(View.VISIBLE);
+                SmartImageView.class.cast(rowView.findViewById(R.id.first_spell)).setImageUrl(summoner.getFirstSpellImageUrl());
+                SmartImageView.class.cast(rowView.findViewById(R.id.second_spell)).setImageUrl(summoner.getSecondSpellImageUrl());
+            } else {
+                LinearLayout.class.cast(rowView.findViewById(R.id.spell_container)).setVisibility(View.GONE);
             }
         } else {
             SmartImageView.class.cast(rowView.findViewById(R.id.more_arrow)).setVisibility(View.GONE);
