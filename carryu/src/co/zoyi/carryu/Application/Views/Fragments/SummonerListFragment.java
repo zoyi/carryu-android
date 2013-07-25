@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
-import co.zoyi.carryu.Application.Etc.API.DataCallback;
-import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.API.DataCallback;
+import co.zoyi.carryu.Application.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
@@ -18,7 +18,7 @@ import de.greenrobot.event.EventBus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SummonerListFragment extends TabContentFragment {
+public class SummonerListFragment extends CUFragment implements Refreshable {
     private ListView summonerListView;
     private List<Summoner> summoners = new ArrayList<Summoner>();
     private SummonersArrayAdapter summonersArrayAdapter;
@@ -34,7 +34,9 @@ public class SummonerListFragment extends TabContentFragment {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
             Summoner summoner = SummonersArrayAdapter.class.cast(adapterView.getAdapter()).getItem(position);
-            ActivityDelegate.openSummonerDetailActivity(getActivity(), summoner.getName());
+            if (summoner.isUpdated()) {
+                ActivityDelegate.openSummonerDetailActivity(getActivity(), summoner.getName());
+            }
         }
     };
 
@@ -54,6 +56,12 @@ public class SummonerListFragment extends TabContentFragment {
         this.summonerListView.setAdapter(summonersArrayAdapter);
 
         ImageButton.class.cast(view.findViewById(R.id.reload)).setOnClickListener(reloadButtonClickListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refresh();
     }
 
     @Override

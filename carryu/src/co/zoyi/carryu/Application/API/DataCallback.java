@@ -1,4 +1,4 @@
-package co.zoyi.carryu.Application.Etc.API;
+package co.zoyi.carryu.Application.API;
 
 public class DataCallback<T> {
     public void onStart(){}

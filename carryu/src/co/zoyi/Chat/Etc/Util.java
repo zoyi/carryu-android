@@ -1,5 +1,7 @@
 package co.zoyi.Chat.Etc;
 
+import co.zoyi.carryu.Application.Etc.CUUtil;
+
 public class Util {
     public static String getUserIDFromJabberID(String jabberID) {
         jabberID = jabberID.replace("sum", "");
@@ -9,6 +11,14 @@ public class Util {
 
     public static boolean isEqualUser(String firstJabberID, String secondJabberId) {
         return getUserIDFromJabberID(firstJabberID).equals(getUserIDFromJabberID(secondJabberId));
+    }
+
+    public static String getGroupChatID(String groupChatId) {
+        CUUtil.log("getGroupChatID: " + groupChatId);
+        if (groupChatId.indexOf("/") == -1) {
+            return groupChatId;
+        }
+        return groupChatId.substring(0, groupChatId.indexOf("/"));
     }
 
     public static String toGameClientJabberId(String jabberID) {

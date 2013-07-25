@@ -15,7 +15,7 @@ public class CUApplication extends Application {
 
     @Override
     public void onTerminate() {
-        Registry.getChatService().disconnect();
+//        Registry.getChatService().disconnect();
         super.onTerminate();
     }
 

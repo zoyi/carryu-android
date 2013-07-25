@@ -198,13 +198,11 @@ public class ChatService {
         if (status != this.status) {
             CUUtil.log(String.format("ChatServer Status [%s]", status.toString()));
 
+            this.status = status;
             if (this.chatStatusChangeListener != null) {
                 this.chatStatusChangeListener.onStatusChanged(status);
             }
-
             processStatus(status);
-
-            this.status = status;
         }
     }
 
@@ -213,6 +211,7 @@ public class ChatService {
     }
 
     void setGroupChatId(String groupChatId) {
+        CUUtil.log("groupChatId: " + groupChatId);
         this.groupChatId = groupChatId;
     }
 
@@ -223,13 +222,17 @@ public class ChatService {
     public void onCompleteFetchOurTeamNames(List<String> names) {
         CUUtil.log(String.format("onFailFetchOurTeamNames onCompleted # %d", names.size()));
         ourTeamNames = names;
-        fetchOurTeamNamesListener.onCompleted(names);
+        if (fetchOurTeamNamesListener != null) {
+            fetchOurTeamNamesListener.onCompleted(names);
+        }
         lastOurTeamNamesIQ = null;
     }
 
     public void onFailFetchOurTeamNames() {
         CUUtil.log("onFailFetchOurTeamNames: onFailed");
-        fetchOurTeamNamesListener.onFailed();
+        if (fetchOurTeamNamesListener != null) {
+            fetchOurTeamNamesListener.onFailed();
+        }
         lastOurTeamNamesIQ = null;
     }
 

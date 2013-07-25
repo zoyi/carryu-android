@@ -60,19 +60,23 @@ public class ChampionSelectActivity extends CUActivity {
                             }
                         });
                     }
-                }, 2000
+                }, 3000
             );
         }
     }
 
     private void updateSummonerNames(List<String> summonerNames) {
-        CUUtil.log(this, "updateSummonerNames # " + String.valueOf(summonerNames.size()));
+        if (summonerNames != null) {
+            CUUtil.log(this, "updateSummonerNames # " + String.valueOf(summonerNames.size()));
 
-        List<Summoner> summoners = new ArrayList<Summoner>();
-        for (String name : summonerNames) {
-            summoners.add(new Summoner(name));
+            List<Summoner> summoners = new ArrayList<Summoner>();
+            for (String name : summonerNames) {
+                summoners.add(new Summoner(name));
+            }
+            getSummonerListFragment().updateSummoners(summoners);
+        } else {
+            getSummonerListFragment().updateSummoners(null);
         }
-        getSummonerListFragment().updateSummoners(summoners);
     }
 
     public SummonerListFragment getSummonerListFragment() {

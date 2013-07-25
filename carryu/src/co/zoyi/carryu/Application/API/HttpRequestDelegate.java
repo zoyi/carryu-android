@@ -1,9 +1,8 @@
-package co.zoyi.carryu.Application.Etc.API;
+package co.zoyi.carryu.Application.API;
 
 import android.content.Context;
 import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
-import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;

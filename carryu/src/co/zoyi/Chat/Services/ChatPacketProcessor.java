@@ -42,8 +42,12 @@ public class ChatPacketProcessor {
             if (gameStatus != null) {
                 if (gameStatus.equals("outOfGame")){
                     chatService.setStatus(ChatService.Status.OUT_OF_GAME);
-                } else if (gameStatus.equals("inQueue") && chatService.getStatus() != ChatService.Status.CHAMPION_SELECT){
-                    chatService.setStatus(ChatService.Status.IN_QUEUE);
+                } else if (gameStatus.equals("inQueue")){
+                    if (chatService.getStatus() == ChatService.Status.IN_QUEUE) {
+                        chatService.setStatus(ChatService.Status.CHAMPION_SELECT);
+                    } else if (chatService.getStatus() != ChatService.Status.CHAMPION_SELECT) {
+                        chatService.setStatus(ChatService.Status.IN_QUEUE);
+                    }
                 } else if (gameStatus.equals("inGame")){
                     chatService.setStatus(ChatService.Status.IN_GAME);
                 }
@@ -52,13 +56,13 @@ public class ChatPacketProcessor {
     }
 
     private void processMessage(Message message) {
-        if (message.getFrom().startsWith("pu~") == false && message.getType().equals(Message.Type.groupchat)) {
-            chatService.setStatus(ChatService.Status.CHAMPION_SELECT);
-            chatService.setGroupChatId(message.getFrom());
+        if (message.getFrom().startsWith("pu~") == false && message.getType().equals(Message.Type.groupchat) && chatService.getStatus() == ChatService.Status.IN_QUEUE) {
+            chatService.setGroupChatId(Util.getGroupChatID(message.getFrom()));
         }
     }
 
     private void processOurTeamNamesIQ(OurTeamNamesIQ iq) {
+        CUUtil.log("processOurTeamNamesIQ");
         if (iq.getNames().size() == 0) {
             this.chatService.onFailFetchOurTeamNames();
         } else {

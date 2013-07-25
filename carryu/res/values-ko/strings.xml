@@ -5,6 +5,7 @@
     <string name="lol_user_password">비밀번호</string>
     <string name="login">로그인</string>
     <string name="logging_in">로그인하고 있습니다.</string>
+    <string name="connecting">서버와 연결하고 있습니다.</string>
     <string name="our_summoner">아군</string>
     <string name="enemy_summoner">적군</string>
     <string name="champion_guide">챔피언 가이드</string>

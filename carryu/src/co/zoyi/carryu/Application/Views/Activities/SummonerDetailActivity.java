@@ -10,13 +10,17 @@ import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Fragments.Refreshable;
+import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SummonerDetailActivity extends CUActivity {
-    private WebView webView;
+public class SummonerDetailActivity extends CUActivity implements Refreshable {
+    public static String SUMMONER_NAME_INTENT_KEY = "summoner_name";
+
+    private WebViewFragment webViewFragment;
     private String summonerName;
 
     private View.OnClickListener onBackButtonClickListener = new View.OnClickListener() {
@@ -33,46 +37,37 @@ public class SummonerDetailActivity extends CUActivity {
         }
     };
 
+    private WebViewFragment.WebViewStatusChangeListener webViewStatusChangeListener = new WebViewFragment.WebViewStatusChangeListener() {
+        @Override
+        public void onPageStarted(WebView webView) {
+            setTitle(R.string.loading);
+        }
+
+        @Override
+        public void onPageFinished(WebView webView) {
+            setTitle(summonerName);
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summoner_detail_activity);
 
-        summonerName = getIntent().getStringExtra("SUMMONER_NAME");
-
-        ((TextView)findViewById(R.id.title)).setText(summonerName);
+        summonerName = getIntent().getStringExtra(SUMMONER_NAME_INTENT_KEY);
 
         findViewById(R.id.back).setOnClickListener(onBackButtonClickListener);
         findViewById(R.id.refresh).setOnClickListener(onRefreshButtonClickListener);
 
-        initializeWebView();
+        webViewFragment = (WebViewFragment) getSupportFragmentManager().findFragmentById(R.id.web_view_fragment);
+        webViewFragment.setWebViewStatusChangeListener(webViewStatusChangeListener);
 
         refresh();
     }
 
-    private void initializeWebView() {
-        webView = (WebView) findViewById(R.id.web_view);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                ((TextView)findViewById(R.id.title)).setText(getString(R.string.loading));
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                ((TextView)findViewById(R.id.title)).setText(summonerName);
-            }
-        });
-    }
-
+    @Override
     public void refresh() {
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("User-Agent", "CarryU");
-        ((TextView)findViewById(R.id.title)).setText(getString(R.string.loading));
-        webView.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName), headers);
+        webViewFragment.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
     }
 
     public void onEventMainThread(ChatStatusChangeEvent event) {
@@ -85,9 +80,7 @@ public class SummonerDetailActivity extends CUActivity {
 
     @Override
     public void onBackPressed() {
-        if (this.webView.canGoBack()) {
-            this.webView.goBack();
-        } else {
+        if (this.webViewFragment.goBack() == false) {
             finish();
         }
     }

@@ -1,28 +1,30 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
-import co.zoyi.carryu.Application.Etc.API.DataCallback;
-import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.API.DataCallback;
+import co.zoyi.carryu.Application.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Events.UpdatedMeEvent;
-import co.zoyi.carryu.Application.Events.WebViewFragmentStatusChangedEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
-import co.zoyi.carryu.Application.Views.Fragments.ChampionGuideFragment;
+import co.zoyi.carryu.Application.Views.Fragments.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.SummonerListFragment;
-import co.zoyi.carryu.Application.Views.Fragments.TabContentFragment;
+import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
 
 public class InGameActivity extends CUActivity implements TabHost.OnTabChangeListener {
@@ -31,8 +33,8 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
 
     private TabHost tabHost;
     private ActiveGame activeGame;
-    private TabContentFragment lastFragment;
-    private ChampionGuideFragment championGuideFragment;
+    private Fragment lastFragment;
+    private WebViewFragment championGuideFragment;
     private SummonerListFragment ourTeamListFragment;
     private SummonerListFragment enemyTeamListFragment;
 
@@ -40,7 +42,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         @Override
         public void onClick(View view) {
             if (lastFragment != null) {
-                lastFragment.refresh();
+                ((Refreshable) lastFragment).refresh();
             }
         }
     };
@@ -71,16 +73,6 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     public void onEventMainThread(UpdatedMeEvent event) {
         if (lastFragment == ourTeamListFragment || lastFragment == enemyTeamListFragment) {
             startFetchSummonersInGame((SummonerListFragment) lastFragment);
-        }
-    }
-
-    public void onEventMainThread(WebViewFragmentStatusChangedEvent event) {
-        if (lastFragment == championGuideFragment && event.getFragment().equals(championGuideFragment)) {
-            if (event.getStatus() == WebViewFragmentStatusChangedEvent.Status.STARTED) {
-                TextView.class.cast(findViewById(R.id.title)).setText(getString(R.string.loading));
-            } else {
-                TextView.class.cast(findViewById(R.id.title)).setText(getString(R.string.app_name));
-            }
         }
     }
 
@@ -123,19 +115,20 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             if (isSample == false) {
                 for (Summoner summoner : activeGame.getOurTeamSummoners()) {
                     if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
-                        championGuideFragment.setChampionId(summoner.getChampion().getId());
+                        championGuideFragment.loadUrl(String.format("http://%s.carryu.co/champions/%d/guides", Registry.getChatService().getChatServerInfo().getRegion(), summoner.getChampion().getId()));
                     }
                 }
             } else {
-                championGuideFragment.setChampionId(98);
+                championGuideFragment.loadUrl(String.format("http://%s.carryu.co/champions/98/guides", Registry.getChatService().getChatServerInfo().getRegion()));
             }
         } else {
-            AlertDialog alertDialog = new AlertDialog(this, getString(R.string.not_support_ai_mode));
-            alertDialog.show();
-
             finish();
 
-            ActivityDelegate.openLobbyActivity(this);
+            if (isSample == false) {
+                ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.not_support_ai_mode));
+            } else {
+                ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.no_response_error));
+            }
         }
     }
 
@@ -145,6 +138,18 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             super.processChatStatus(status);
         }
     }
+
+    private WebViewFragment.WebViewStatusChangeListener webViewStatusChangeListener = new WebViewFragment.WebViewStatusChangeListener() {
+        @Override
+        public void onPageStarted(WebView webView) {
+            setTitle(R.string.loading);
+        }
+
+        @Override
+        public void onPageFinished(WebView webView) {
+            setTitle(R.string.app_name);
+        }
+    };
 
     private void initializeTabs() {
         if (tabHost == null) {
@@ -158,23 +163,24 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
 
             ourTeamListFragment = new SummonerListFragment();
             enemyTeamListFragment = new SummonerListFragment();
-            championGuideFragment = new ChampionGuideFragment();
+            championGuideFragment = new WebViewFragment();
+            championGuideFragment.setWebViewStatusChangeListener(webViewStatusChangeListener);
         }
     }
 
-    private void showFragment(TabContentFragment fragment) {
+    private void showFragment(Fragment fragment) {
         if (fragment != lastFragment) {
             lastFragment = fragment;
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
-            TextView.class.cast(findViewById(R.id.title)).setText(getString(R.string.app_name));
+            setTitle(R.string.app_name);
         }
     }
 
     @Override
     public void onTabChanged(String tag) {
-        TabContentFragment fragment = null;
+        Fragment fragment = null;
 
         if (tag.equals(getString(R.string.our_summoner))) {
             fragment = ourTeamListFragment;
@@ -225,8 +231,8 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     @Override
     public void onBackPressed() {
         if (lastFragment != championGuideFragment ||
-            championGuideFragment.onBackPressed() == false) {
-            finish();
+            championGuideFragment.goBack() == false) {
+            super.onBackPressed();
         }
     }
 }

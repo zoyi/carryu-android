@@ -9,8 +9,8 @@ import co.zoyi.Chat.Datas.ChatServerInfo;
 import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.*;
-import co.zoyi.carryu.Application.Etc.API.DataCallback;
-import co.zoyi.carryu.Application.Etc.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.API.DataCallback;
+import co.zoyi.carryu.Application.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Events.Errors.AuthenticateFailErrorEvent;
 import co.zoyi.carryu.Application.Events.Errors.ConnectionClosedErrorEvent;
 import co.zoyi.Chat.Services.ChatService;
@@ -57,15 +57,17 @@ public class LoginActivity extends CUActivity {
     }
 
     private void storeViewPreferences() {
-        new ViewPreferenceManager.Builder(this)
-            .put(R.id.kr_server)
-            .put(R.id.na_server)
-            .put(R.id.user_id)
-            .save();
+        new ViewPreferenceManager.Storage(this)
+            .save(R.id.kr_server, "kr_server")
+            .save(R.id.na_server, "na_server")
+            .save(R.id.user_id, "user_id");
     }
 
     private void restoreViewPreferences() {
-        ViewPreferenceManager.load(this);
+        new ViewPreferenceManager.Loader(this)
+            .load(R.id.kr_server, "kr_server")
+            .load(R.id.na_server, "na_server")
+            .load(R.id.user_id, "user_id");
     }
 
     private void storeServerInfo() {
@@ -93,14 +95,22 @@ public class LoginActivity extends CUActivity {
         } else if (status == ChatService.Status.AUTHENTICATED) {
             storeViewPreferences();
         } else if (status == ChatService.Status.FAILED_AUTHENTICATE) {
-            hideWaitingDialog();
+            hideProgressDialog();
             EventBus.getDefault().post(new AuthenticateFailErrorEvent());
         } else if (status == ChatService.Status.OUT_OF_GAME) {
-            hideWaitingDialog();
+            hideProgressDialog();
         }
     }
 
+    @Override
+    protected void onStop() {
+        hideProgressDialog();
+        super.onStop();
+    }
+
     private void login() {
+        showProgressDialog(getString(R.string.logging_in));
+
         userLoginData = new UserLoginData(
             EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
             EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
@@ -110,6 +120,8 @@ public class LoginActivity extends CUActivity {
     }
 
     private void connect() {
+        showProgressDialog(getString(R.string.connecting));
+
         ServerList.ServerInfo serverInfo;
         serverInfo = getSelectedServerInfo();
 
@@ -124,8 +136,6 @@ public class LoginActivity extends CUActivity {
     }
 
     public void onLoginButtonClick(View loginButton) {
-        showWaitingDialog(getString(R.string.logging_in));
-
         if (Registry.getChatService().isConnected() &&
             Registry.getChatService().getChatServerInfo().getRegion().equals(getSelectedServerInfo())) {
             login();

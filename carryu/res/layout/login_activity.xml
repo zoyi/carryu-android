@@ -21,9 +21,10 @@
     <EditText
             style="@style/EditText_Blue"
             android:id="@+id/user_id"
-            android:text=""
+            android:text="imtester9"
             android:textColor="@color/white"
             android:singleLine="true"
+            android:imeOptions="actionNext"
             android:hint="@string/lol_user_id"
             android:layout_margin="@dimen/dim_10"
             android:layout_width="match_parent"
@@ -32,9 +33,10 @@
     <EditText
             style="@style/EditText_Blue"
             android:id="@+id/user_password"
-            android:text=""
+            android:text="qqqwww12"
             android:textColor="@color/white"
             android:singleLine="true"
+            android:imeOptions="actionDone"
             android:hint="@string/lol_user_password"
             android:inputType="textPassword"
             android:layout_margin="@dimen/dim_10"

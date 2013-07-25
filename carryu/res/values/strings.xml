@@ -4,7 +4,8 @@
     <string name="lol_user_id">ID</string>
     <string name="lol_user_password">Password</string>
     <string name="login">Log In</string>
-    <string name="logging_in">Logging in...</string>
+    <string name="logging_in">Logging on...</string>
+    <string name="connecting">서버와 연결하고 있습니다.</string>
     <string name="our_summoner">Our Team</string>
     <string name="enemy_summoner">Enemies</string>
     <string name="champion_guide">Champion Guide</string>

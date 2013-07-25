@@ -1,20 +1,21 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
-import android.app.Activity;
-import android.graphics.Bitmap;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.TextView;
+import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class SearchSummonerActivity extends Activity {
-    private WebView webView;
+public class SearchSummonerActivity extends CUActivity {
+    private String summonerName;
+    private WebViewFragment webViewFragment;
 
     private View.OnClickListener searchClickListener = new View.OnClickListener() {
         @Override
@@ -23,13 +24,23 @@ public class SearchSummonerActivity extends Activity {
         }
     };
 
-    private void search() {
-        String summonerName = EditText.class.cast(findViewById(R.id.summoner_name)).getText().toString();
+    private WebViewFragment.WebViewStatusChangeListener webViewStatusChangeListener = new WebViewFragment.WebViewStatusChangeListener() {
+        @Override
+        public void onPageStarted(final WebView webView) {
+            showProgressDialog(getString(R.string.loading)).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    webView.stopLoading();
+                    hideProgressDialog();
+                }
+            });
+        }
 
-        Map<String, String> headers = new HashMap<String, String>();
-        headers.put("User-Agent", "CarryU");
-        webView.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName), headers);
-    }
+        @Override
+        public void onPageFinished(WebView webView) {
+            hideProgressDialog();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,24 +49,31 @@ public class SearchSummonerActivity extends Activity {
 
         findViewById(R.id.search).setOnClickListener(searchClickListener);
 
-        initializeWebView();
-    }
+        webViewFragment = (WebViewFragment) getSupportFragmentManager().findFragmentById(R.id.web_view_fragment);
+        webViewFragment.setWebViewStatusChangeListener(webViewStatusChangeListener);
 
-    private void initializeWebView() {
-        webView = (WebView) findViewById(R.id.web_view);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient() {
+        EditText.class.cast(findViewById(R.id.summoner_name)).setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-//                showWaitingDialog();
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-//                hideWaitingDialog();
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search();
+                    return true;
+                }
+                return false;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webViewFragment.goBack() == false) {
+            finish();
+        }
+    }
+
+    private void search() {
+        summonerName = EditText.class.cast(findViewById(R.id.summoner_name)).getText().toString();
+        webViewFragment.clearHistory();
+        webViewFragment.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
     }
 }

@@ -17,6 +17,8 @@
                     android:id="@+id/summoner_name"
                     android:textSize="@dimen/tex_size_xlarge"
                     android:hint="@string/input_summoner_name"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"
                     android:layout_margin="@dimen/dim_5"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -31,9 +33,9 @@
 
         </LinearLayout>
 
-    <WebView
-            android:id="@+id/web_view"
-            android:background="@color/gray_79"
+    <fragment
+            android:id="@+id/web_view_fragment"
+            android:name="co.zoyi.carryu.Application.Views.Fragments.WebViewFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />

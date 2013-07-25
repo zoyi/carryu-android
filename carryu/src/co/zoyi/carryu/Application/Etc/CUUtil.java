@@ -26,7 +26,7 @@ public class CUUtil {
         if (fragment == null) {
             log(message);
         } else if (fragment.getActivity() == null) {
-            Log.d(fragment.getActivity().getPackageName() + String.format(" [%s]", fragment.getClass().getSimpleName()), message);
+            Log.d(CUApplication.getContext().getPackageName() + String.format(" [%s]", fragment.getClass().getSimpleName()), message);
         } else {
             Log.d(fragment.getActivity().getPackageName() + String.format(" [%s][%s]", fragment.getActivity().getClass().getSimpleName(), fragment.getClass().getSimpleName()), message);
         }

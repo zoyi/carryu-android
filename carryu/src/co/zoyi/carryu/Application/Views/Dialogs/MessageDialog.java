@@ -10,11 +10,6 @@ import co.zoyi.carryu.R;
 public class MessageDialog extends CUDialog {
     private String message;
 
-    public MessageDialog(Context context) {
-        super(context, android.R.style.Theme_Translucent_NoTitleBar);
-        this.message = context.getString(R.string.loading);
-    }
-
     public MessageDialog(Context context, String message) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.message = message;
@@ -31,6 +26,11 @@ public class MessageDialog extends CUDialog {
 
         setContentView(R.layout.async_progress_dialog);
 
+        TextView.class.cast(findViewById(R.id.message)).setText(this.message);
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
         TextView.class.cast(findViewById(R.id.message)).setText(this.message);
     }
 }
