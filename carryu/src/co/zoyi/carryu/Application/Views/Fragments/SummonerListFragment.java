@@ -12,6 +12,7 @@ import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Views.Adapters.SummonersArrayAdapter;
+import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
 
@@ -70,7 +71,7 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
         if (this.summoners.size() == 0) {
             EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
         } else {
-            refreshViews();
+            startFetchAllSummoners();
         }
     }
 
@@ -93,7 +94,7 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    refresh();
+                    refreshViews();
                     CUUtil.log(SummonerListFragment.this, "refreshViewsRunnable");
                 }
             });
@@ -105,9 +106,7 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
             CUUtil.log(this, "updateSummoners # " + String.valueOf(summoners.size()));
             this.summoners.clear();
             this.summoners.addAll(summoners);
-            for (Summoner summoner : this.summoners) {
-                startFetchSummonerForUpdate(summoner);
-            }
+            startFetchAllSummoners();
             refreshViewsOnUiThread();
         } else {
             CUUtil.log(this, "updateSummoner Failed");
@@ -115,12 +114,19 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
         }
     }
 
-    private void startFetchSummonerForUpdate(final Summoner summoner) {
-        CUUtil.log(this, String.format("startFetchSummonerForUpdate [%s]", summoner.getName()));
+    private void startFetchAllSummoners() {
+        CUUtil.log(this, "startFetchAllSummoners");
+        for (Summoner summoner : this.summoners) {
+            startFetchSummoner(summoner);
+        }
+    }
+
+    private void startFetchSummoner(final Summoner summoner) {
+        CUUtil.log(this, String.format("startFetchSummoner [%s]", summoner.getName()));
         HttpRequestDelegate.fetchSummoner(summoner, new DataCallback<Summoner>() {
             @Override
             public void onSuccess(Summoner newSummoner) {
-                CUUtil.log(this, String.format("startFetchSummonerForUpdate onSuccess [%s]", summoner.getName()));
+                CUUtil.log(this, String.format("startFetchSummoner onSuccess [%s]", summoner.getName()));
                 super.onSuccess(newSummoner);
                 summoner.update(newSummoner);
                 refreshViewsOnUiThread();

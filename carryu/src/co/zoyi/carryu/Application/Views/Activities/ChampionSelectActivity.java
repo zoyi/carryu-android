@@ -1,12 +1,16 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 import co.zoyi.Chat.Services.FetchOurTeamNamesListener;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
+import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.Errors.UnknownError;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.SummonerListFragment;
 import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
@@ -15,9 +19,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ChampionSelectActivity extends CUActivity {
+public class ChampionSelectActivity extends CUActivity implements Refreshable {
     private SummonerListFragment summonerListFragment;
-    private boolean isFetching = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,7 +30,6 @@ public class ChampionSelectActivity extends CUActivity {
 
     public void onEventMainThread(NeedRefreshFragmentEvent event) {
         if (event.getFragment() == getSummonerListFragment()) {
-            CUUtil.log(this, "onEventMainThread [NeedRefreshFragmentEvent]");
             if (Registry.getChatService().getOurTeamNames() != null) {
                 updateSummonerNames(Registry.getChatService().getOurTeamNames());
             } else {
@@ -37,38 +39,29 @@ public class ChampionSelectActivity extends CUActivity {
     }
 
     private void fetchOurTeamSummonerNames() {
-        if (isFetching == false) {
-            CUUtil.log(this, "fetchOurTeamSummonerNames");
-            isFetching = true;
+        new Timer().schedule(
+            new TimerTask() {
+                @Override
+                public void run() {
+                    Registry.getChatService().fetchOurTeamNames(new FetchOurTeamNamesListener() {
+                        @Override
+                        public void onCompleted(List<String> teamNames) {
+                            updateSummonerNames(teamNames);
+                        }
 
-            new Timer().schedule(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        Registry.getChatService().fetchOurTeamNames(new FetchOurTeamNamesListener() {
-                            @Override
-                            public void onCompleted(List<String> teamNames) {
-                                updateSummonerNames(teamNames);
-                                isFetching = false;
-                            }
-
-                            @Override
-                            public void onFailed() {
-                                updateSummonerNames(null);
-                                EventBus.getDefault().post(new UnknownError());
-                                isFetching = false;
-                            }
-                        });
-                    }
-                }, 3000
-            );
-        }
+                        @Override
+                        public void onFailed() {
+                            updateSummonerNames(null);
+                            EventBus.getDefault().post(new UnknownError());
+                        }
+                    });
+                }
+            }, 3000
+        );
     }
 
     private void updateSummonerNames(List<String> summonerNames) {
         if (summonerNames != null) {
-            CUUtil.log(this, "updateSummonerNames # " + String.valueOf(summonerNames.size()));
-
             List<Summoner> summoners = new ArrayList<Summoner>();
             for (String name : summonerNames) {
                 summoners.add(new Summoner(name));
@@ -84,5 +77,10 @@ public class ChampionSelectActivity extends CUActivity {
             this.summonerListFragment = (SummonerListFragment) getSupportFragmentManager().findFragmentById(R.id.summoner_list_fragment);
         }
         return this.summonerListFragment;
+    }
+
+    @Override
+    public void refresh() {
+        getSummonerListFragment().refresh();
     }
 }

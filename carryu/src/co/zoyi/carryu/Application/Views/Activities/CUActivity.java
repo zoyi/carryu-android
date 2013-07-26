@@ -13,11 +13,13 @@ import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.ErrorCroutonDelegate;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
-import co.zoyi.carryu.Application.Events.UpdatedMeEvent;
+import co.zoyi.carryu.Application.Events.NotifyMeChangedEvent;
 import co.zoyi.carryu.Application.Events.Errors.ErrorEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
+import co.zoyi.carryu.Application.Views.Dialogs.ConfirmDialog;
 import co.zoyi.carryu.Application.Views.Dialogs.MessageDialog;
+import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
 
@@ -27,14 +29,40 @@ public abstract class CUActivity extends FragmentActivity {
     private static Summoner me;
     private MessageDialog messageDialog;
 
-    protected boolean preventBackButton() {
+    protected boolean shouldConfirmBeforeFinish() {
         return true;
     }
+
+    private View.OnClickListener searchClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            ActivityDelegate.openSearchSummonerActivity(CUActivity.this);
+        }
+    };
+
+    private View.OnClickListener refreshClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (CUActivity.this instanceof Refreshable) {
+                ((Refreshable)CUActivity.this).refresh();
+            }
+        }
+    };
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         CUUtil.setFontAllView((ViewGroup) getWindow().getDecorView());
+
+        View searchButton = findViewById(R.id.search);
+        if (searchButton != null) {
+            searchButton.setOnClickListener(searchClickListener);
+        }
+
+        View refreshButton = findViewById(R.id.refresh);
+        if (refreshButton != null) {
+            refreshButton.setOnClickListener(refreshClickListener);
+        }
     }
 
     @Override
@@ -112,12 +140,25 @@ public abstract class CUActivity extends FragmentActivity {
 
     public static void setMe(Summoner me) {
         CUActivity.me = me;
-        EventBus.getDefault().post(new UpdatedMeEvent(me));
+        EventBus.getDefault().post(new NotifyMeChangedEvent(me));
     }
 
     @Override
     public void onBackPressed() {
-        if (preventBackButton() == false) {
+        if (shouldConfirmBeforeFinish()) {
+            ConfirmDialog confirmDialog = new ConfirmDialog(this, getString(R.string.exit_app));
+            confirmDialog.setConfirmListener(new ConfirmDialog.ConfirmListener() {
+                @Override
+                public void onConfirm() {
+                    finish();
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
+            confirmDialog.show();
+        } else {
             finish();
         }
     }
@@ -154,9 +195,12 @@ public abstract class CUActivity extends FragmentActivity {
     }
 
     public void setTitle(String title) {
+        CUUtil.log(this, "setTitle: " + title.toString());
         View titleView = findViewById(R.id.title);
         if (titleView != null && titleView instanceof TextView) {
             TextView.class.cast(titleView).setText(title);
+        } else {
+            CUUtil.log(this, "Title is not TextView");
         }
     }
 

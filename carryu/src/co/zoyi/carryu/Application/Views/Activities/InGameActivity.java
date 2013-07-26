@@ -1,7 +1,6 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,19 +18,20 @@ import co.zoyi.carryu.Application.API.DataCallback;
 import co.zoyi.carryu.Application.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
-import co.zoyi.carryu.Application.Events.UpdatedMeEvent;
+import co.zoyi.carryu.Application.Events.NotifyMeChangedEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
-import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
-import co.zoyi.carryu.Application.Views.Fragments.Refreshable;
+import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.SummonerListFragment;
 import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
 
-public class InGameActivity extends CUActivity implements TabHost.OnTabChangeListener {
-    private boolean isSample;
+import java.util.List;
+
+public class InGameActivity extends CUActivity implements TabHost.OnTabChangeListener, Refreshable {
     public static String SAMPLE_IN_GAME_INTENT_KEY = "is_sample";
 
     private TabHost tabHost;
+    private boolean isSampleMode;
     private ActiveGame activeGame;
     private Fragment lastFragment;
     private WebViewFragment championGuideFragment;
@@ -47,95 +47,115 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         }
     };
 
+    private boolean isLastFragmentSummonerListFragment() {
+        return lastFragment == ourTeamListFragment || lastFragment == ourTeamListFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.in_game_activity);
 
-        if (ActivityDelegate.hasIntentExtra(this, SAMPLE_IN_GAME_INTENT_KEY)) {
-            isSample = getIntent().getBooleanExtra(SAMPLE_IN_GAME_INTENT_KEY, false);
-        }
-
+        isSampleMode = getIntent() != null && getIntent().getBooleanExtra(SAMPLE_IN_GAME_INTENT_KEY, false);
         findViewById(R.id.refresh).setOnClickListener(refreshClickListener);
-
         initializeTabs();
-
-        showFragment(ourTeamListFragment);
-    }
-
-    public void onEventMainThread(NeedRefreshFragmentEvent event) {
-        if (event.getFragment().getClass() == SummonerListFragment.class) {
-            startFetchSummonersInGame((SummonerListFragment) event.getFragment());
-        }
-    }
-
-    public void onEventMainThread(UpdatedMeEvent event) {
-        if (lastFragment == ourTeamListFragment || lastFragment == enemyTeamListFragment) {
-            startFetchSummonersInGame((SummonerListFragment) lastFragment);
-        }
-    }
-
-    private void startFetchSummonersInGame(final SummonerListFragment fragment) {
-        if (this.activeGame == null) {
-            if (isSample == false) {
-                if (getMe() != null) {
-                    HttpRequestDelegate.fetchActiveGame(getMe(), new DataCallback<ActiveGame>() {
-                        @Override
-                        public void onSuccess(ActiveGame activeGame) {
-                            super.onSuccess(activeGame);
-                            updateActiveGameAndSummoners(activeGame, fragment);
-                        }
-                    });
-                }
-            } else {
-                HttpRequestDelegate.fetchActiveGameSample(new DataCallback<ActiveGame>() {
-                    @Override
-                    public void onSuccess(ActiveGame activeGame) {
-                        super.onSuccess(activeGame);
-                        updateActiveGameAndSummoners(activeGame, fragment);
-                    }
-                });
-            }
-        } else {
-            updateActiveGameAndSummoners(this.activeGame, fragment);
-        }
-    }
-
-    private void updateActiveGameAndSummoners(ActiveGame activeGame, SummonerListFragment fragment) {
-        if (activeGame != null) {
-            this.activeGame = activeGame;
-
-            if (fragment == ourTeamListFragment) {
-                fragment.updateSummoners(activeGame.getOurTeamSummoners());
-            } else {
-                fragment.updateSummoners(activeGame.getEnemyTeamSummoners());
-            }
-
-            if (isSample == false) {
-                for (Summoner summoner : activeGame.getOurTeamSummoners()) {
-                    if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
-                        championGuideFragment.loadUrl(String.format("http://%s.carryu.co/champions/%d/guides", Registry.getChatService().getChatServerInfo().getRegion(), summoner.getChampion().getId()));
-                    }
-                }
-            } else {
-                championGuideFragment.loadUrl(String.format("http://%s.carryu.co/champions/98/guides", Registry.getChatService().getChatServerInfo().getRegion()));
-            }
-        } else {
-            finish();
-
-            if (isSample == false) {
-                ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.not_support_ai_mode));
-            } else {
-                ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.no_response_error));
-            }
-        }
     }
 
     @Override
     protected void processChatStatus(ChatService.Status status) {
-        if (isSample == false) {
+        if (isSampleMode == false) {
             super.processChatStatus(status);
+        }
+    }
+
+    @Override
+    protected boolean shouldConfirmBeforeFinish() {
+        return !isSampleMode;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isLastFragmentSummonerListFragment() || championGuideFragment.goBack() == false) {
+            super.onBackPressed();
+        }
+    }
+
+    private String getChampionGuideUrl() {
+        String championGuideUrl;
+
+        if (isSampleMode) {
+            championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), 98);
+        } else {
+            int championId = 0;
+            for (Summoner summoner : activeGame.getOurTeamSummoners()) {
+                if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
+                    championId = summoner.getChampion().getId();
+                }
+            }
+            championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), championId);
+        }
+
+        return championGuideUrl;
+    }
+
+    public void onEventMainThread(NeedRefreshFragmentEvent event) {
+        if (event.getFragment().getClass() == SummonerListFragment.class) {
+            if (this.activeGame == null) {
+                fetchActiveGame();
+            } else {
+                List<Summoner> summoners;
+                if (event.getFragment() == ourTeamListFragment) {
+                    summoners = this.activeGame.getOurTeamSummoners();
+                } else {
+                    summoners = this.activeGame.getEnemyTeamSummoners();
+                }
+                SummonerListFragment.class.cast(event.getFragment()).updateSummoners(summoners);
+            }
+        } else if (event.getFragment().getClass() == WebViewFragment.class) {
+            championGuideFragment.loadUrl(getChampionGuideUrl());
+        }
+    }
+
+    public void onEventMainThread(NotifyMeChangedEvent event) {
+        if (isSampleMode == false && this.activeGame == null) {
+            fetchActiveGame();
+        }
+    }
+
+    private void fetchActiveGame() {
+        if (this.activeGame == null) {
+            DataCallback<ActiveGame> dataCallback = new DataCallback<ActiveGame>() {
+                @Override
+                public void onSuccess(ActiveGame activeGame) {
+                    super.onSuccess(activeGame);
+                    updateActiveGame(activeGame);
+                }
+            };
+
+            if (isSampleMode) {
+                HttpRequestDelegate.fetchActiveGameSample(dataCallback);
+            } else if (getMe() != null) {
+                HttpRequestDelegate.fetchActiveGame(getMe(), dataCallback);
+            }
+        } else {
+            updateActiveGame(this.activeGame);
+        }
+    }
+
+    private void updateActiveGame(ActiveGame activeGame) {
+        if (activeGame != null) {
+            this.activeGame = activeGame;
+            if (lastFragment == ourTeamListFragment) {
+                ourTeamListFragment.updateSummoners(this.activeGame.getOurTeamSummoners());
+            } else {
+                enemyTeamListFragment.updateSummoners(this.activeGame.getEnemyTeamSummoners());
+            }
+        } else {
+            if (isSampleMode == false) {
+                ActivityDelegate.openActivityWithConfirmMessage(this, ChampionSelectActivity.class, getString(R.string.not_support_ai_mode));
+            } else {
+                ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.no_response_error));
+            }
         }
     }
 
@@ -166,6 +186,8 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             championGuideFragment = new WebViewFragment();
             championGuideFragment.setWebViewStatusChangeListener(webViewStatusChangeListener);
         }
+
+        showFragment(ourTeamListFragment);
     }
 
     private void showFragment(Fragment fragment) {
@@ -213,6 +235,13 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         tabHost.addTab(spec);
     }
 
+    @Override
+    public void refresh() {
+        if (lastFragment instanceof Refreshable) {
+            ((Refreshable)lastFragment).refresh();
+        }
+    }
+
     class TabFactory implements TabHost.TabContentFactory {
         private final Context mContext;
 
@@ -225,14 +254,6 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             v.setMinimumWidth(0);
             v.setMinimumHeight(0);
             return v;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (lastFragment != championGuideFragment ||
-            championGuideFragment.goBack() == false) {
-            super.onBackPressed();
         }
     }
 }

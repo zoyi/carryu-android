@@ -2,14 +2,14 @@ package co.zoyi.carryu.Application.Events;
 
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 
-public class UpdatedMeEvent extends Event {
+public class NotifyMeChangedEvent extends Event {
     private Summoner me;
 
     public Summoner getMe() {
         return me;
     }
 
-    public UpdatedMeEvent(Summoner me) {
+    public NotifyMeChangedEvent(Summoner me) {
         this.me = me;
     }
 }

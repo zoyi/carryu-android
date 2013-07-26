@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <include layout="@layout/home_header_with_search" />
+    <include layout="@layout/home_header_with_refresh" />
 
     <fragment
             android:id="@+id/summoner_list_fragment"

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sample_champion_guide_url">http://%s.carryu.co/champions/98/guides</string>
+</resources>

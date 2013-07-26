@@ -35,22 +35,6 @@ public class LobbyActivity extends CUActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        ConfirmDialog confirmDialog = new ConfirmDialog(this, getString(R.string.exit_app));
-        confirmDialog.setConfirmListener(new ConfirmDialog.ConfirmListener() {
-            @Override
-            public void onConfirm() {
-                finish();
-            }
-
-            @Override
-            public void onCancel() {
-            }
-        });
-        confirmDialog.show();
-    }
-
-    @Override
     protected void processChatStatus(ChatService.Status status) {
         if (status == ChatService.Status.IN_QUEUE) {
             TextView.class.cast(findViewById(R.id.current_state_message)).setText(getString(R.string.searching_for_match));

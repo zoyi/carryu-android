@@ -26,7 +26,7 @@ public class LoginActivity extends CUActivity {
     private UserLoginData userLoginData;
 
     @Override
-    protected boolean preventBackButton() {
+    protected boolean shouldConfirmBeforeFinish() {
         return false;
     }
 

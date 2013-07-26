@@ -7,7 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import co.zoyi.carryu.Application.Etc.CUUtil;
+import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
+import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.R;
+import de.greenrobot.event.EventBus;
 
 public class WebViewFragment extends CUFragment implements Refreshable {
     private WebView webView;
@@ -21,6 +25,41 @@ public class WebViewFragment extends CUFragment implements Refreshable {
 
     public void setWebViewStatusChangeListener(WebViewStatusChangeListener webViewStatusChangeListener) {
         this.webViewStatusChangeListener = webViewStatusChangeListener;
+    }
+
+    private void fireOnPageFinishedListener() {
+        if (webViewStatusChangeListener != null) {
+            webViewStatusChangeListener.onPageFinished(webView);
+        }
+    }
+
+    private void fireOnPageStartedListener() {
+        if (webViewStatusChangeListener != null) {
+            webViewStatusChangeListener.onPageStarted(webView);
+        }
+    }
+
+    private void initializeWebView() {
+        this.webView = (WebView) getView().findViewById(R.id.web_view);
+        this.webView.getSettings().setJavaScriptEnabled(true);
+        this.webView.getSettings().setUserAgentString("CarryU");
+        this.webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                fireOnPageStartedListener();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                fireOnPageFinishedListener();
+            }
+        });
+
+        if (this.url != null) {
+            this.webView.loadUrl(this.url);
+        }
     }
 
     @Override
@@ -40,60 +79,26 @@ public class WebViewFragment extends CUFragment implements Refreshable {
         refresh();
     }
 
-    private void initializeWebView() {
-        this.webView = (WebView) getView().findViewById(R.id.web_view);
-        this.webView.getSettings().setJavaScriptEnabled(true);
-        this.webView.getSettings().setUserAgentString("CarryU");
-        this.webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                if (webViewStatusChangeListener != null) {
-                    webViewStatusChangeListener.onPageFinished(view);
-                }
-            }
-        });
-
-        if (this.url != null) {
-            this.webView.loadUrl(this.url);
-        }
-    }
-
     public void clearHistory() {
         webView.clearHistory();
     }
 
     public void loadUrl(String url) {
+        CUUtil.log(this, "Load URL: " + url);
         this.url = url;
-        if (webView != null) {
-            if (webViewStatusChangeListener != null) {
-                webViewStatusChangeListener.onPageStarted(webView);
-            }
-            webView.loadUrl(url);
-        }
+        webView.loadUrl(url);
+        fireOnPageStartedListener();
     }
 
     @Override
     public void refresh() {
-        if (webView != null) {
-            if (this.url != null && webView.getUrl() == null) {
-                loadUrl(this.url);
-            } else {
-                if (webViewStatusChangeListener != null) {
-                    webViewStatusChangeListener.onPageStarted(webView);
-                }
-                webView.reload();
-            }
+        if (this.url == null) {
+            EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
         }
     }
 
     public boolean goBack() {
-        if (webView.canGoBack()) {
+        if (webView != null && webView.canGoBack()) {
             webView.goBack();
             return true;
         }
