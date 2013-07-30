@@ -128,7 +128,6 @@ public class ChatService {
     private PacketListener packetListener = new PacketListener() {
         @Override
         public void processPacket(Packet packet) {
-            CUUtil.log(String.format("processPacketInListener [%s]", packet.getClass().getSimpleName()));
             chatPacketProcessor.processPacket(packet);
         }
     };
@@ -186,7 +185,7 @@ public class ChatService {
         this.connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
         this.connectionConfiguration.setSocketFactory(new DummySSLSocketFactory());
         this.connectionConfiguration.setReconnectionAllowed(true);
-        this.connectionConfiguration.setDebuggerEnabled(true); // TODO: debug code
+//        this.connectionConfiguration.setDebuggerEnabled(true); // TODO: debug code
     }
 
     private void processStatus(Status status) {
@@ -197,7 +196,6 @@ public class ChatService {
 
     void setStatus(Status status) {
         if (status != this.status) {
-            CUUtil.log(String.format("ChatServer Status [%s]", status.toString()));
 
             this.status = status;
             if (this.chatStatusChangeListener != null) {
@@ -212,7 +210,6 @@ public class ChatService {
     }
 
     void setGroupChatId(String groupChatId) {
-        CUUtil.log("groupChatId: " + groupChatId);
         this.groupChatId = groupChatId;
     }
 
@@ -221,7 +218,6 @@ public class ChatService {
     }
 
     public void onCompleteFetchOurTeamNames(List<String> names) {
-        CUUtil.log(String.format("onFailFetchOurTeamNames onCompleted # %d", names.size()));
         ourTeamNames = names;
         if (fetchOurTeamNamesListener != null) {
             fetchOurTeamNamesListener.onCompleted(names);
@@ -230,7 +226,6 @@ public class ChatService {
     }
 
     public void onFailFetchOurTeamNames() {
-        CUUtil.log("onFailFetchOurTeamNames: onFailed");
         if (fetchOurTeamNamesListener != null) {
             fetchOurTeamNamesListener.onFailed();
         }
@@ -238,7 +233,6 @@ public class ChatService {
     }
 
     public void fetchOurTeamNames(FetchOurTeamNamesListener callback) {
-        CUUtil.log("fetchOurTeamNames");
         if (status == Status.CHAMPION_SELECT && lastOurTeamNamesIQ == null) {
             lastOurTeamNamesIQ = new OurTeamNamesIQ(connection.getUser(), this.groupChatId);
             this.connection.sendPacket(lastOurTeamNamesIQ);

@@ -79,7 +79,6 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
         }
 
         Summoner summoner = getItem(position);
-        CUUtil.log(String.format("getView [%d][%s]", position, summoner.getName()));
         updateView(rowView, summoner);
 
         return rowView;

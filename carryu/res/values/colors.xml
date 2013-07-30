@@ -36,4 +36,8 @@
     <color name="dark_orange">#c0774b</color>
     <!-- Custom Colors -->
     <color name="gray_35_a">#002e2e2e</color>
+    <color name="background">#080a0b</color>
+    <color name="text_color">#72889e</color>
+    <color name="navigation_color">#2c3e50</color>
+    <color name="navigation_item_hover_color">#233240</color>
 </resources>

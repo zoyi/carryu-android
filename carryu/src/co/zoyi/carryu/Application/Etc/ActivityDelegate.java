@@ -35,9 +35,15 @@ public class ActivityDelegate {
         context.startActivity(intent);
     }
 
+    static public void openLoginActivity(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
     static public void openLoginActivityWithConnectionClosedCrouton(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(LoginActivity.CONNECTION_CLOSED_INTENT_KEY, true);
         context.startActivity(intent);
     }
@@ -73,5 +79,19 @@ public class ActivityDelegate {
         Intent intent = new Intent(context, SearchSummonerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
+    }
+
+    static public void openFeedbackActivity(Context context) {
+        Intent intent = new Intent(context, FeedbackActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
+    static public void exitApplication(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(LoginActivity.EXIT_APPLICATION_INTENT_KEY, true);
+        context.startActivity(intent);
+//        System.exit(0);
     }
 }

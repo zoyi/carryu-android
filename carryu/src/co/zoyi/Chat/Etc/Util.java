@@ -14,7 +14,6 @@ public class Util {
     }
 
     public static String getGroupChatID(String groupChatId) {
-        CUUtil.log("getGroupChatID: " + groupChatId);
         if (groupChatId.indexOf("/") == -1) {
             return groupChatId;
         }

@@ -1,57 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/height"
-                android:layout_alignParentTop="true"
-                android:background="@color/gray_35" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/height"
+              android:layout_alignParentTop="true"
+              android:background="@color/navigation_color" >
 
-    <LinearLayout
-            android:id="@+id/line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_size"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray_35" />
-
-    <LinearLayout
-            android:layout_width="match_parent"
+    <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="@dimen/width"
             android:layout_height="match_parent"
-            android:layout_above="@id/line" >
+            android:background="@drawable/ui_button_navigation_item"
+            android:src="@drawable/ico_list" />
 
-        <ImageButton
-                android:id="@+id/menu"
-                android:layout_width="@dimen/width"
-                android:layout_height="match_parent"
-                android:background="@drawable/ui_button_gray"
-                android:src="@drawable/ico_list" />
+    <TextView
+            android:id="@+id/title"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:tag="bold"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/tex_size_xxlarge" />
 
-        <LinearLayout
-                android:layout_width="@dimen/divider_size"
-                android:layout_height="match_parent"
-                android:background="@color/gray_79" />
+    <ImageButton
+            android:id="@+id/search"
+            android:layout_width="@dimen/width"
+            android:layout_height="match_parent"
+            android:background="@drawable/ui_button_navigation_item"
+            android:src="@drawable/ico_search" />
 
-        <TextView
-                android:id="@+id/title"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:tag="bold"
-                android:text="@string/app_name"
-                android:textColor="@color/white"
-                android:textSize="@dimen/tex_size_xxlarge" />
-
-        <LinearLayout
-                android:layout_width="@dimen/divider_size"
-                android:layout_height="match_parent"
-                android:background="@color/gray_79" />
-
-        <ImageButton
-                android:id="@+id/search"
-                android:layout_width="@dimen/width"
-                android:layout_height="match_parent"
-                android:background="@drawable/ui_button_gray"
-                android:src="@drawable/ico_search" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

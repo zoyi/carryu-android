@@ -67,7 +67,6 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
 
     @Override
     public void refresh() {
-        CUUtil.log(this, "refresh");
         if (this.summoners.size() == 0) {
             EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
         } else {
@@ -76,7 +75,6 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
     }
 
     private void refreshViews() {
-        CUUtil.log(SummonerListFragment.this, "refreshViews # " + String.valueOf(this.summoners.size()));
         if (this.summoners.size() == 0) {
             this.summonerListView.setVisibility(View.GONE);
             LinearLayout.class.cast(getView().findViewById(R.id.loading_layout)).setVisibility(View.VISIBLE);
@@ -95,7 +93,6 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
                 @Override
                 public void run() {
                     refreshViews();
-                    CUUtil.log(SummonerListFragment.this, "refreshViewsRunnable");
                 }
             });
         }
@@ -103,30 +100,25 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
 
     public void updateSummoners(List<Summoner> summoners) {
         if (summoners != null) {
-            CUUtil.log(this, "updateSummoners # " + String.valueOf(summoners.size()));
             this.summoners.clear();
             this.summoners.addAll(summoners);
             startFetchAllSummoners();
             refreshViewsOnUiThread();
         } else {
-            CUUtil.log(this, "updateSummoner Failed");
             refreshViews();
         }
     }
 
     private void startFetchAllSummoners() {
-        CUUtil.log(this, "startFetchAllSummoners");
         for (Summoner summoner : this.summoners) {
             startFetchSummoner(summoner);
         }
     }
 
     private void startFetchSummoner(final Summoner summoner) {
-        CUUtil.log(this, String.format("startFetchSummoner [%s]", summoner.getName()));
         HttpRequestDelegate.fetchSummoner(summoner, new DataCallback<Summoner>() {
             @Override
             public void onSuccess(Summoner newSummoner) {
-                CUUtil.log(this, String.format("startFetchSummoner onSuccess [%s]", summoner.getName()));
                 super.onSuccess(newSummoner);
                 summoner.update(newSummoner);
                 refreshViewsOnUiThread();

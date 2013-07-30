@@ -3,7 +3,7 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="android:Theme">
         <item name="android:windowTitleSize">0dp</item>
-        <item name="android:windowBackground">@color/gray_79</item>
+        <item name="android:windowBackground">@drawable/bg</item>
     </style>
 
     <!-- +++++++++++++++++++++ Base Styles +++++++++++++++++++++ -->

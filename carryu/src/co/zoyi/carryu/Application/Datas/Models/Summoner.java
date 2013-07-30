@@ -133,7 +133,6 @@ public class Summoner extends Model {
     }
 
     public void update(Summoner summoner) {
-        CUUtil.log(this, "update");
         this.accountId = summoner.accountId;
         this.internalName = summoner.internalName;
         this.level = summoner.level;
@@ -142,7 +141,5 @@ public class Summoner extends Model {
         this.leagueSoloFiveToFiveStat = summoner.leagueSoloFiveToFiveStat;
         this.normalStat = summoner.normalStat;
         this.isUpdated = true;
-
-        CUUtil.log(this, "Updated: " + SummonerJSONSerializer.getGsonInstance().toJson(this));
     }
 }

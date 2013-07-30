@@ -63,7 +63,9 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
 
     @Override
     protected void processChatStatus(ChatService.Status status) {
-        if (isSampleMode == false) {
+        if (status == ChatService.Status.CONNECTION_CLOSED) {
+            super.processChatStatus(status);
+        } else if (isSampleMode == false) {
             super.processChatStatus(status);
         }
     }
@@ -177,9 +179,9 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             tabHost.setup();
             tabHost.setOnTabChangedListener(this);
 
-            addTab(R.string.our_summoner, R.drawable.ico_star);
-            addTab(R.string.enemy_summoner, R.drawable.ico_heart);
-            addTab(R.string.champion_guide, R.drawable.ico_list);
+            addTab(R.string.our_summoner, R.drawable.myteam);
+            addTab(R.string.enemy_summoner, R.drawable.enemies_icon);
+            addTab(R.string.champion_guide, R.drawable.tips);
 
             ourTeamListFragment = new SummonerListFragment();
             enemyTeamListFragment = new SummonerListFragment();

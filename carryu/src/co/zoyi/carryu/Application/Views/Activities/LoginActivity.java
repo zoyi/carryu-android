@@ -2,6 +2,7 @@ package co.zoyi.carryu.Application.Views.Activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -21,9 +22,15 @@ import de.greenrobot.event.EventBus;
 
 public class LoginActivity extends CUActivity {
     public static String CONNECTION_CLOSED_INTENT_KEY = "connection_closed";
+    public static String EXIT_APPLICATION_INTENT_KEY = "exit_application";
 
     private ServerList serverList;
     private UserLoginData userLoginData;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return false;
+    }
 
     @Override
     protected boolean shouldConfirmBeforeFinish() {
@@ -33,16 +40,19 @@ public class LoginActivity extends CUActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (ActivityDelegate.hasIntentExtra(this, EXIT_APPLICATION_INTENT_KEY)) {
+            finish();
+        } else {
+            setContentView(R.layout.login_activity);
 
-        setContentView(R.layout.login_activity);
+            if (ActivityDelegate.hasIntentExtra(this, CONNECTION_CLOSED_INTENT_KEY)) {
+                EventBus.getDefault().post(new ConnectionClosedErrorEvent());
+            }
 
-        if (ActivityDelegate.hasIntentExtra(this, CONNECTION_CLOSED_INTENT_KEY)) {
-            EventBus.getDefault().post(new ConnectionClosedErrorEvent());
+            restoreViewPreferences();
+            restoreServerInfo();
+            fetchServerInfo();
         }
-
-        restoreViewPreferences();
-        restoreServerInfo();
-        fetchServerInfo();
     }
 
     private void fetchServerInfo() {
@@ -136,8 +146,7 @@ public class LoginActivity extends CUActivity {
     }
 
     public void onLoginButtonClick(View loginButton) {
-        if (Registry.getChatService().isConnected() &&
-            Registry.getChatService().getChatServerInfo().getRegion().equals(getSelectedServerInfo())) {
+        if (Registry.getChatService().isConnected() && Registry.getChatService().getChatServerInfo().getRegion().equals(getSelectedServerInfo())) {
             login();
         } else {
             if (Registry.getChatService().isConnected()) {

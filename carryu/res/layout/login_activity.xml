@@ -21,7 +21,7 @@
     <EditText
             style="@style/EditText_Blue"
             android:id="@+id/user_id"
-            android:text="imcarryer1"
+            android:text=""
             android:textColor="@color/white"
             android:singleLine="true"
             android:imeOptions="actionNext"
@@ -33,7 +33,7 @@
     <EditText
             style="@style/EditText_Blue"
             android:id="@+id/user_password"
-            android:text="qqqwww12"
+            android:text=""
             android:textColor="@color/white"
             android:singleLine="true"
             android:imeOptions="actionDone"

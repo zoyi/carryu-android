@@ -44,14 +44,14 @@ public class HttpRequestDelegate {
         @Override
         public void onSuccess(String s) {
             super.onSuccess(s);
-            CUUtil.log("[RECV] " + s);
+//            CUUtil.log("[RECV] " + s);
         }
 
         @Override
         public void onFailure(Throwable throwable, String s) {
             super.onFailure(throwable, s);
             cb.onError(throwable, s);
-            CUUtil.log("[ERR] " + s);
+//            CUUtil.log("[ERR] " + s);
         }
     }
 
@@ -61,12 +61,10 @@ public class HttpRequestDelegate {
     }
 
     public static void get(String url, RequestParams params, HttpResponseHandler responseHandler) {
-        CUUtil.log("REQ[GET] " + baseUrl + url);
         client.get(baseUrl + url, params, responseHandler);
     }
 
     public static void getRtmp(String url, RequestParams params, HttpResponseHandler responseHandler) {
-        CUUtil.log("REQ[RTMP_GET] " + baseRtmpUrl + url);
         client.get(baseRtmpUrl + url, params, responseHandler);
     }
 

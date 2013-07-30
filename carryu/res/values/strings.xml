@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Carry U</string>
+    <string name="app_name">CarryU</string>
     <string name="lol_user_id">ID</string>
     <string name="lol_user_password">Password</string>
-    <string name="login">Log In</string>
-    <string name="logging_in">Logging on...</string>
-    <string name="connecting">서버와 연결하고 있습니다.</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="logging_in">Logging in...</string>
+    <string name="connecting">Connecting to server</string>
     <string name="our_summoner">Our Team</string>
-    <string name="enemy_summoner">Enemies</string>
+    <string name="enemy_summoner">Enemy Team</string>
     <string name="champion_guide">Champion Guide</string>
     <string name="ko_server">Korea</string>
     <string name="na_server">North America</string>
@@ -17,12 +18,15 @@
     <string name="loading">Loading...</string>
     <string name="load_failed">Failed</string>
     <string name="input_summoner_name">Summoner name</string>
-    <string name="login_lol_account">Log in with your LOL account</string>
-    <string name="searching_for_match">Searching for Match</string>
-    <string name="welcome_message">Welcome to Carry U</string>
-    <string name="sample">Sample</string>
-    <string name="not_support_ai_mode">not support AI battle.</string>
+    <string name="login_lol_account">Login with your LOL account</string>
+    <string name="searching_for_match">Searching for the Match</string>
+    <string name="welcome_message">Start the game.\nThe stats of both team will show automatically.</string>
+    <string name="sample">Preview Sample</string>
+    <string name="not_support_ai_mode">AI battle not supported.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="exit_app">Would you like to exit CarryU?</string>
+    <string name="feedback">Feedback</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="keep_screen_off">Keep screen off</string>
 </resources>

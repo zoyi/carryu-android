@@ -10,7 +10,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height"
-                android:background="@color/gray_35">
+                android:background="@color/navigation_color">
 
             <EditText
                     style="@style/CustomEditText"
@@ -28,7 +28,7 @@
                     android:id="@+id/search"
                     android:layout_width="@dimen/width"
                     android:layout_height="match_parent"
-                    android:background="@drawable/ui_button_gray"
+                    android:background="@drawable/ui_button_navigation_item"
                     android:src="@drawable/ico_search" />
 
         </LinearLayout>

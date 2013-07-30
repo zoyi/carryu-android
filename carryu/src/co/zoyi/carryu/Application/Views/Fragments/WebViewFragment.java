@@ -41,8 +41,9 @@ public class WebViewFragment extends CUFragment implements Refreshable {
 
     private void initializeWebView() {
         this.webView = (WebView) getView().findViewById(R.id.web_view);
+        this.webView.setBackgroundColor(getActivity().getResources().getColor(R.color.background));
         this.webView.getSettings().setJavaScriptEnabled(true);
-        this.webView.getSettings().setUserAgentString("CarryU");
+        this.webView.getSettings().setUserAgentString(this.webView.getSettings().getUserAgentString() + " CarryU");
         this.webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -84,7 +85,6 @@ public class WebViewFragment extends CUFragment implements Refreshable {
     }
 
     public void loadUrl(String url) {
-        CUUtil.log(this, "Load URL: " + url);
         this.url = url;
         webView.loadUrl(url);
         fireOnPageStartedListener();

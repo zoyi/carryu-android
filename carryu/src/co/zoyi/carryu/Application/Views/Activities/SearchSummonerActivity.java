@@ -74,6 +74,6 @@ public class SearchSummonerActivity extends CUActivity {
     private void search() {
         summonerName = EditText.class.cast(findViewById(R.id.summoner_name)).getText().toString();
         webViewFragment.clearHistory();
-        webViewFragment.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
+        webViewFragment.loadUrl(String.format(getString(R.string.summoner_detail_url), Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
     }
 }

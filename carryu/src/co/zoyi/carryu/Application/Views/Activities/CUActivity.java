@@ -1,9 +1,10 @@
-package co.zoyi.carryu.Application.Views.Activities;
+    package co.zoyi.carryu.Application.Views.Activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
@@ -27,42 +28,138 @@ public abstract class CUActivity extends FragmentActivity {
     public static String CONFIRM_MESSAGE_INTENT_KEY = "confirm_message";
 
     private static Summoner me;
+//    private static String keepScreenOnKey = "keep_screen_on";
+
     private MessageDialog messageDialog;
 
-    protected boolean shouldConfirmBeforeFinish() {
+    private OnClickListener menuClickListener;
+    private OnClickListener backClickListener;
+    private OnClickListener searchClickListener;
+    private OnClickListener refreshClickListener;
+
+//    private SharedPreferences getKeepScreenPreference() {
+//        return getSharedPreferences("keep_screen_preference", MODE_PRIVATE);
+//    }
+
+    public OnClickListener getRefreshClickListener() {
+        if (this.refreshClickListener == null) {
+            this.refreshClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (CUActivity.this instanceof Refreshable) {
+                        ((Refreshable)CUActivity.this).refresh();
+                    }
+                }
+            };
+        }
+        return this.refreshClickListener;
+    }
+
+    private OnClickListener getSearchClickListener() {
+        if (this.searchClickListener == null) {
+            this.searchClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ActivityDelegate.openSearchSummonerActivity(CUActivity.this);
+                }
+            };
+        }
+        return this.searchClickListener;
+    }
+
+    public OnClickListener getMenuClickListener() {
+        if (this.menuClickListener == null) {
+            this.menuClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    openOptionsMenu();
+                }
+            };
+        }
+        return this.menuClickListener;
+    }
+
+    public OnClickListener getBackClickListener() {
+        if (this.backClickListener == null) {
+            this.backClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            };
+        }
+        return backClickListener;
+    }
+
+    private void addClickListenerIfViewExist(int viewId, OnClickListener listener) {
+        View view = findViewById(viewId);
+        if (view != null) {
+            view.setOnClickListener(listener);
+        }
+    }
+
+//    private void setKeepScreeOn(boolean isKeepScreenOn) {
+//        CUUtil.log(this, String.format("setKeepScreeOn: " + String.valueOf(isKeepScreenOn)));
+//
+//        if (isKeepScreenOn) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        } else {
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        }
+//        getKeepScreenPreference().edit().putBoolean(keepScreenOnKey, isKeepScreenOn).commit();
+//    }
+//
+//    private void resetKeepScreenMenuItemTitle(MenuItem item) {
+//        if (getKeepScreenPreference().getBoolean(keepScreenOnKey, true)) {
+//            item.setTitle(R.string.keep_screen_on);
+//        } else {
+//            item.setTitle(R.string.keep_screen_off);
+//        }
+//    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                Registry.getChatService().disconnect();
+                break;
+            case R.id.feedback:
+                ActivityDelegate.openFeedbackActivity(this);
+                break;
+//            case R.id.keep_screen_toggle:
+//                setKeepScreeOn(!getKeepScreenPreference().getBoolean(keepScreenOnKey, true));
+//                resetKeepScreenMenuItemTitle(item);
+//                break;
+            default:
+                return false;
+        }
+
         return true;
     }
 
-    private View.OnClickListener searchClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            ActivityDelegate.openSearchSummonerActivity(CUActivity.this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (findViewById(R.id.menu) != null) {
+            getMenuInflater().inflate(R.menu.menu, menu);
+    //        resetKeepScreenMenuItemTitle(menu.findItem(R.id.keep_screen_toggle));
+            return true;
         }
-    };
-
-    private View.OnClickListener refreshClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (CUActivity.this instanceof Refreshable) {
-                ((Refreshable)CUActivity.this).refresh();
-            }
-        }
-    };
+        return false;
+    }
 
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
+
         CUUtil.setFontAllView((ViewGroup) getWindow().getDecorView());
 
-        View searchButton = findViewById(R.id.search);
-        if (searchButton != null) {
-            searchButton.setOnClickListener(searchClickListener);
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        setKeepScreeOn(getKeepScreenPreference().getBoolean(keepScreenOnKey, true));
 
-        View refreshButton = findViewById(R.id.refresh);
-        if (refreshButton != null) {
-            refreshButton.setOnClickListener(refreshClickListener);
-        }
+        addClickListenerIfViewExist(R.id.menu, getMenuClickListener());
+        addClickListenerIfViewExist(R.id.back, getBackClickListener());
+        addClickListenerIfViewExist(R.id.search, getSearchClickListener());
+        addClickListenerIfViewExist(R.id.refresh, getRefreshClickListener());
     }
 
     @Override
@@ -77,10 +174,14 @@ public abstract class CUActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        EventBus.getDefault().register(this);
 
         if (me == null) {
             fetchMe();
@@ -88,15 +189,21 @@ public abstract class CUActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        EventBus.getDefault().register(this);
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    public void setTitle(String title) {
+        View titleView = findViewById(R.id.title);
+        if (titleView != null && titleView instanceof TextView) {
+            TextView.class.cast(titleView).setText(title);
+        }
     }
 
     @Override
-    protected void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
+    public void setTitle(int titleId) {
+        setTitle(getString(titleId));
     }
 
     protected void hideProgressDialog() {
@@ -124,6 +231,18 @@ public abstract class CUActivity extends FragmentActivity {
         return messageDialog;
     }
 
+    public static Summoner getMe() {
+        if (me == null) {
+            fetchMe();
+        }
+        return me;
+    }
+
+    public static void setMe(Summoner me) {
+        CUActivity.me = me;
+        EventBus.getDefault().post(new NotifyMeChangedEvent(me));
+    }
+
     private static void fetchMe() {
         if (Registry.getChatService().getUserId() != null) {
             HttpRequestDelegate.fetchSummoner(Registry.getChatService().getUserId(), new DataCallback<Summoner>() {
@@ -138,9 +257,8 @@ public abstract class CUActivity extends FragmentActivity {
         }
     }
 
-    public static void setMe(Summoner me) {
-        CUActivity.me = me;
-        EventBus.getDefault().post(new NotifyMeChangedEvent(me));
+    protected boolean shouldConfirmBeforeFinish() {
+        return true;
     }
 
     @Override
@@ -150,7 +268,7 @@ public abstract class CUActivity extends FragmentActivity {
             confirmDialog.setConfirmListener(new ConfirmDialog.ConfirmListener() {
                 @Override
                 public void onConfirm() {
-                    finish();
+                    ActivityDelegate.exitApplication(CUActivity.this);
                 }
 
                 @Override
@@ -161,17 +279,6 @@ public abstract class CUActivity extends FragmentActivity {
         } else {
             finish();
         }
-    }
-
-    public static Summoner getMe() {
-        if (me == null) {
-            fetchMe();
-        }
-        return me;
-    }
-
-    public void onEventMainThread(ErrorEvent errorEvent) {
-        ErrorCroutonDelegate.showErrorMessage(this, errorEvent);
     }
 
     protected void processChatStatus(ChatService.Status status) {
@@ -194,23 +301,12 @@ public abstract class CUActivity extends FragmentActivity {
         }
     }
 
-    public void setTitle(String title) {
-        CUUtil.log(this, "setTitle: " + title.toString());
-        View titleView = findViewById(R.id.title);
-        if (titleView != null && titleView instanceof TextView) {
-            TextView.class.cast(titleView).setText(title);
-        } else {
-            CUUtil.log(this, "Title is not TextView");
-        }
-    }
-
-    @Override
-    public void setTitle(int titleId) {
-        setTitle(getString(titleId));
-    }
-
     public void onEventMainThread(ChatStatusChangeEvent event) {
-//        Crouton.makeText(this, event.getStatus().toString(), CUCroutonStyle.INFO).show();
+        CUUtil.log(this, "ChatServiceStatus: " + event.getStatus().toString());
         processChatStatus(event.getStatus());
+    }
+
+    public void onEventMainThread(ErrorEvent errorEvent) {
+        ErrorCroutonDelegate.showErrorMessage(this, errorEvent);
     }
 }

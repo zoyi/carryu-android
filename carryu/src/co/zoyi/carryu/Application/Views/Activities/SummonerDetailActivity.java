@@ -1,6 +1,7 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.webkit.WebView;
 import co.zoyi.Chat.Services.ChatService;
@@ -24,13 +25,6 @@ public class SummonerDetailActivity extends CUActivity implements Refreshable {
         }
     };
 
-    private View.OnClickListener onRefreshButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            refresh();
-        }
-    };
-
     private WebViewFragment.WebViewStatusChangeListener webViewStatusChangeListener = new WebViewFragment.WebViewStatusChangeListener() {
         @Override
         public void onPageStarted(WebView webView) {
@@ -51,7 +45,6 @@ public class SummonerDetailActivity extends CUActivity implements Refreshable {
         summonerName = getIntent().getStringExtra(SUMMONER_NAME_INTENT_KEY);
 
         findViewById(R.id.back).setOnClickListener(onBackButtonClickListener);
-        findViewById(R.id.refresh).setOnClickListener(onRefreshButtonClickListener);
 
         webViewFragment = (WebViewFragment) getSupportFragmentManager().findFragmentById(R.id.web_view_fragment);
         webViewFragment.setWebViewStatusChangeListener(webViewStatusChangeListener);
@@ -61,7 +54,7 @@ public class SummonerDetailActivity extends CUActivity implements Refreshable {
 
     @Override
     public void refresh() {
-        webViewFragment.loadUrl(String.format("http://%s.carryu.co/summoners/%s", Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
+        webViewFragment.loadUrl(String.format(getString(R.string.summoner_detail_url), Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
     }
 
     public void onEventMainThread(ChatStatusChangeEvent event) {

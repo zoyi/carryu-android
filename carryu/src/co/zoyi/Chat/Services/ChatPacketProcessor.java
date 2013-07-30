@@ -62,7 +62,6 @@ public class ChatPacketProcessor {
     }
 
     private void processOurTeamNamesIQ(OurTeamNamesIQ iq) {
-        CUUtil.log("processOurTeamNamesIQ");
         if (iq.getNames().size() == 0) {
             this.chatService.onFailFetchOurTeamNames();
         } else {
@@ -71,8 +70,6 @@ public class ChatPacketProcessor {
     }
 
     public void processPacket(Packet packet) {
-//        CUUtil.log("processPacket: " + packet.toXML());
-        CUUtil.log(String.format("PacketClass[%s] PacketID[%s]", packet.getClass().getSimpleName(), packet.getPacketID()));
         if (packet instanceof Presence) {
             processPresence((Presence) packet);
         } else if (packet instanceof Message) {

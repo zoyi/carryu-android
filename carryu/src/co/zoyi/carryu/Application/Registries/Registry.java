@@ -31,6 +31,5 @@ public class Registry {
         activeGameSerializer = new ActiveGameJSONSerializer();
 
         initializeChatService();
-
     }
 }
