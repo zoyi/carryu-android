@@ -22,6 +22,7 @@ import co.zoyi.carryu.Application.Views.Dialogs.ConfirmDialog;
 import co.zoyi.carryu.Application.Views.Dialogs.MessageDialog;
 import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.R;
+import com.google.analytics.tracking.android.EasyTracker;
 import de.greenrobot.event.EventBus;
 
 public abstract class CUActivity extends FragmentActivity {
@@ -171,6 +172,8 @@ public abstract class CUActivity extends FragmentActivity {
             alertDialog.show();
             ActivityDelegate.removeIntentExtra(this, CONFIRM_MESSAGE_INTENT_KEY);
         }
+
+        EasyTracker.getInstance().activityStart(this);
     }
 
     @Override
@@ -192,6 +195,12 @@ public abstract class CUActivity extends FragmentActivity {
     protected void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance().activityStop(this);
     }
 
     public void setTitle(String title) {
