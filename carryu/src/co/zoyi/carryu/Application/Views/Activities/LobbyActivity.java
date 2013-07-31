@@ -7,10 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.Chat.Services.ChatService;
+import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Dialogs.ConfirmDialog;
 import co.zoyi.carryu.R;
 
-public class LobbyActivity extends CUActivity {
+public class LobbyActivity extends CUActivity implements Refreshable {
     private View.OnClickListener searchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -37,8 +39,14 @@ public class LobbyActivity extends CUActivity {
 
     @Override
     protected void processChatStatus(ChatService.Status status) {
+        refresh();
+        super.processChatStatus(status);
+    }
+
+    @Override
+    public void refresh() {
+        ChatService.Status status = Registry.getChatService().getStatus();
         if (status == ChatService.Status.IN_QUEUE) {
-//            TextView.class.cast(findViewById(R.id.current_state_message)).setText(getString(R.string.searching_for_match));
             Button.class.cast(findViewById(R.id.sample)).setVisibility(View.GONE);
             TextView.class.cast(findViewById(R.id.current_state_message)).setText("");
             ImageView.class.cast(findViewById(R.id.current_state_image)).setImageResource(R.drawable.searching_match);
@@ -46,8 +54,6 @@ public class LobbyActivity extends CUActivity {
             TextView.class.cast(findViewById(R.id.current_state_message)).setText(getString(R.string.welcome_message));
             ImageView.class.cast(findViewById(R.id.current_state_image)).setImageResource(R.drawable.summon_game);
             Button.class.cast(findViewById(R.id.sample)).setVisibility(View.VISIBLE);
-        } else {
-            super.processChatStatus(status);
         }
     }
 }
