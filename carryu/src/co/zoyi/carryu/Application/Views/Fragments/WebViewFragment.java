@@ -85,16 +85,16 @@ public class WebViewFragment extends CUFragment implements Refreshable {
     }
 
     public void loadUrl(String url) {
-        this.url = url;
-        webView.loadUrl(url);
-        fireOnPageStartedListener();
+        if (url != webView.getUrl()) {
+            this.url = url;
+            webView.loadUrl(url);
+            fireOnPageStartedListener();
+        }
     }
 
     @Override
     public void refresh() {
-        if (this.url == null) {
-            EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
-        }
+        EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
     }
 
     public boolean goBack() {

@@ -17,6 +17,7 @@ import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.API.DataCallback;
 import co.zoyi.carryu.Application.API.HttpRequestDelegate;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
+import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Events.NotifyMeChangedEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
@@ -89,12 +90,14 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), 98);
         } else {
             int championId = 0;
+            CUUtil.log(this, "MyId: " + Registry.getChatService().getUserId());
             for (Summoner summoner : activeGame.getOurTeamSummoners()) {
                 if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
                     championId = summoner.getChampion().getId();
                 }
             }
             championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), championId);
+            CUUtil.log(this, "championGuideUrl: " + championGuideUrl);
         }
 
         return championGuideUrl;
