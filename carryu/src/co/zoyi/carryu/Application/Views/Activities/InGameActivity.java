@@ -90,14 +90,12 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), 98);
         } else {
             int championId = 0;
-            CUUtil.log(this, "MyId: " + Registry.getChatService().getUserId());
             for (Summoner summoner : activeGame.getOurTeamSummoners()) {
                 if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
                     championId = summoner.getChampion().getId();
                 }
             }
             championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), championId);
-            CUUtil.log(this, "championGuideUrl: " + championGuideUrl);
         }
 
         return championGuideUrl;
