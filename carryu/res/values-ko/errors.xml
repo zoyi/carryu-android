@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="unknown_error">알 수 없는 오류가 발생했습니다.</string>
-    <string name="connect_chat_server_fail_error">Can not connect to League of Legend server</string>
-    <string name="authenticate_fail_error">Login failed. Check your account.</string>
-    <string name="connection_closed_error">Connection was closed. Please login again.</string>
-    <string name="no_response_error">No response from server</string>
+    <string name="connect_chat_server_fail_error">리그 오브 레전드에 접속 할 수 없습니다.</string>
+    <string name="authenticate_fail_error">로그인에 실패했습니다. 계정을 확인해주세요.</string>
+    <string name="connection_closed_error">네트워크 연결이 종료되었습니다. 다시 연결해주세요.</string>
+    <string name="no_response_error">서버의 응답이 없습니다.</string>
 </resources>

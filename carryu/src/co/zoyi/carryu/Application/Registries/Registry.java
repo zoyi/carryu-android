@@ -17,6 +17,7 @@ public class Registry {
     public static ActiveGameJSONSerializer getActiveGameSerializer() { return activeGameSerializer; }
 
     private static void initializeChatService() {
+        chatService = new ChatService();
         chatService.setChatStatusChangeListener(new ChatStatusChangeListener() {
             @Override
             public void onStatusChanged(ChatService.Status status) {
@@ -26,10 +27,8 @@ public class Registry {
     }
 
     public static void initialize() {
-        chatService = new ChatService();
+        initializeChatService();
         summonerSerializer = new SummonerJSONSerializer();
         activeGameSerializer = new ActiveGameJSONSerializer();
-
-        initializeChatService();
     }
 }

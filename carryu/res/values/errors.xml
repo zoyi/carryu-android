@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="unknown_error">Unknown error has occurred.</string>
-    <string name="connect_chat_server_fail_error">Can not connect to League of Legend server</string>
+    <string name="connect_chat_server_fail_error">Can not connect to League of Legend server.</string>
     <string name="authenticate_fail_error">Login failed. Check your account.</string>
     <string name="connection_closed_error">Connection was closed. Please login again.</string>
-    <string name="no_response_error">No response from server</string>
+    <string name="no_response_error">No response from server.</string>
 </resources>

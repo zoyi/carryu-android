@@ -131,6 +131,9 @@ public abstract class CUActivity extends FragmentActivity {
 //                setKeepScreeOn(!getKeepScreenPreference().getBoolean(keepScreenOnKey, true));
 //                resetKeepScreenMenuItemTitle(item);
 //                break;
+            case R.id.search:
+                ActivityDelegate.openSearchSummonerActivity(this);
+                break;
             default:
                 return false;
         }

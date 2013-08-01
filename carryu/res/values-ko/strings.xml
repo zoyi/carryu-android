@@ -29,4 +29,5 @@
     <string name="feedback">피드백</string>
     <string name="keep_screen_on">화면 켜두기 활성</string>
     <string name="keep_screen_off">화면 켜두기 비활성</string>
+    <string name="search">소환사 검색</string>
 </resources>

@@ -24,8 +24,11 @@ public class LoginActivity extends CUActivity {
     public static String CONNECTION_CLOSED_INTENT_KEY = "connection_closed";
     public static String EXIT_APPLICATION_INTENT_KEY = "exit_application";
 
+    private String SERVER_INFO_PREFERENCE_KEY = "server_info_pref";
+    private String SERVER_INFO_JSON_KEY = "server_info";
+    private String DEFAULT_SERVER_INFO_JSON_FILE = "default_server_info.json";
+
     private ServerList serverList;
-    private UserLoginData userLoginData;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -82,17 +85,17 @@ public class LoginActivity extends CUActivity {
 
     private void storeServerInfo() {
         String serverListJsonString = JSONSerializer.getGsonInstance().toJson(this.serverList);
-        SharedPreferences.Editor editor = getSharedPreferences("ServerInfo", MODE_PRIVATE).edit();
-        editor.putString("server_info", serverListJsonString);
+        SharedPreferences.Editor editor = getSharedPreferences(SERVER_INFO_PREFERENCE_KEY, MODE_PRIVATE).edit();
+        editor.putString(SERVER_INFO_JSON_KEY, serverListJsonString);
         editor.commit();
     }
 
     private void restoreServerInfo() {
-        SharedPreferences sharePreference = getSharedPreferences("ServerInfo", MODE_PRIVATE);
-        if (sharePreference.contains("server_info") == false) {
-            this.serverList = JSONSerializer.getGsonInstance().fromJson(AssetReader.readString(this, "default_server_info.json"), ServerList.class);
+        SharedPreferences sharePreference = getSharedPreferences(SERVER_INFO_PREFERENCE_KEY, MODE_PRIVATE);
+        if (sharePreference.contains(SERVER_INFO_JSON_KEY) == false) {
+            this.serverList = JSONSerializer.getGsonInstance().fromJson(AssetReader.readString(this, DEFAULT_SERVER_INFO_JSON_FILE), ServerList.class);
         } else {
-            this.serverList = JSONSerializer.getGsonInstance().fromJson(sharePreference.getString("server_info", ""), ServerList.class);
+            this.serverList = JSONSerializer.getGsonInstance().fromJson(sharePreference.getString(SERVER_INFO_JSON_KEY, ""), ServerList.class);
         }
     }
 
@@ -119,14 +122,12 @@ public class LoginActivity extends CUActivity {
     }
 
     private void login() {
-        showProgressDialog(getString(R.string.logging_in));
+        showProgressDialog(getString(R.string.logging_in)).setCancelable(false);
 
-        userLoginData = new UserLoginData(
+        Registry.getChatService().login(
             EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
             EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
         );
-
-        Registry.getChatService().login(userLoginData.getUserID(), userLoginData.getUserPassword());
     }
 
     private void connect() {
