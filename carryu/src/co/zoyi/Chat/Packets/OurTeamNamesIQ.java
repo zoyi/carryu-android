@@ -1,4 +1,4 @@
-package co.zoyi.Chat.Services;
+package co.zoyi.Chat.Packets;
 
 import org.jivesoftware.smack.packet.IQ;
 

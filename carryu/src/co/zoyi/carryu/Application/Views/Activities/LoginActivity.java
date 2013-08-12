@@ -44,6 +44,7 @@ public class LoginActivity extends CUActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (ActivityDelegate.hasIntentExtra(this, EXIT_APPLICATION_INTENT_KEY)) {
+//            Registry.getChatService().disconnect();
             finish();
         } else {
             setContentView(R.layout.login_activity);
