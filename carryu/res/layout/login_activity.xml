@@ -33,7 +33,7 @@
     <EditText
             style="@style/EditText_Blue"
             android:id="@+id/user_password"
-            android:text=""
+            android:text="wldudtjq1"
             android:textColor="@color/white"
             android:singleLine="true"
             android:imeOptions="actionDone"

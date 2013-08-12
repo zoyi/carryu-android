@@ -3,6 +3,10 @@ package co.zoyi.Chat.Services;
 import android.os.AsyncTask;
 import co.zoyi.Chat.Datas.ChatServerInfo;
 import co.zoyi.Chat.Etc.Util;
+import co.zoyi.Chat.Listeners.ChatStatusChangeListener;
+import co.zoyi.Chat.Listeners.FetchOurTeamNamesListener;
+import co.zoyi.Chat.Packets.OurTeamNamesIQ;
+import co.zoyi.Chat.Packets.UpdateStatusPresence;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
@@ -11,7 +15,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.sasl.SASLMechanism;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class ChatService {
     private OurTeamNamesIQ lastOurTeamNamesIQ;
     private List<String> ourTeamNames;
     private ChatServerInfo chatServerInfo;
+    private Presence lastPresence;
 //    private HashMap<String, FetchOurTeamNamesListener> fetchOurTeamNameListListenerMap = new HashMap<String, FetchOurTeamNamesListener>();
 
     public enum Status {
@@ -103,9 +107,15 @@ public class ChatService {
 
     public void disconnect() {
         if (isConnected()) {
-            this.connection.disconnect();
+            this.connection.disconnect(new UpdateStatusPresence(lastPresence));
+//            setStatus(Status.CONNECTION_CLOSED);
             this.connection = null;
         }
+    }
+
+    public void setLastPresence(Presence lastPresence) {
+        this.lastPresence = lastPresence;
+        this.connection.sendPacket(new UpdateStatusPresence(lastPresence));
     }
 
     public void login(String userId, String userPassword) {
@@ -160,8 +170,6 @@ public class ChatService {
         return null;
     }
 
-//    public String
-
     public void setChatStatusChangeListener(ChatStatusChangeListener chatStatusChangeListener) {
         this.chatStatusChangeListener = chatStatusChangeListener;
     }
@@ -185,7 +193,8 @@ public class ChatService {
         this.connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
         this.connectionConfiguration.setSocketFactory(new DummySSLSocketFactory());
         this.connectionConfiguration.setReconnectionAllowed(true);
-//        this.connectionConfiguration.setDebuggerEnabled(true); // TODO: debug code
+        this.connectionConfiguration.setRosterLoadedAtLogin(false);
+        this.connectionConfiguration.setDebuggerEnabled(true); // TODO: debug code
     }
 
     private void processStatus(Status status) {
@@ -196,7 +205,6 @@ public class ChatService {
 
     void setStatus(Status status) {
         if (status != this.status) {
-
             this.status = status;
             if (this.chatStatusChangeListener != null) {
                 this.chatStatusChangeListener.onStatusChanged(status);
@@ -241,4 +249,8 @@ public class ChatService {
             onFailFetchOurTeamNames();
         }
     }
+
+//    public void set() {
+//
+//    }
 }

@@ -1,7 +1,7 @@
 package co.zoyi.carryu.Application.Registries;
 
 import co.zoyi.Chat.Services.ChatService;
-import co.zoyi.Chat.Services.ChatStatusChangeListener;
+import co.zoyi.Chat.Listeners.ChatStatusChangeListener;
 import co.zoyi.carryu.Application.Datas.Serializers.ActiveGameJSONSerializer;
 import co.zoyi.carryu.Application.Datas.Serializers.SummonerJSONSerializer;
 import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;

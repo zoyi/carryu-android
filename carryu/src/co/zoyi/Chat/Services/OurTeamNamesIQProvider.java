@@ -1,6 +1,6 @@
 package co.zoyi.Chat.Services;
 
-import co.zoyi.carryu.Application.Etc.CUUtil;
+import co.zoyi.Chat.Packets.OurTeamNamesIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;

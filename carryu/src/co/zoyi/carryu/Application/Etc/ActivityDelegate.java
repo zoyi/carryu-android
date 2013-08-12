@@ -92,6 +92,5 @@ public class ActivityDelegate {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(LoginActivity.EXIT_APPLICATION_INTENT_KEY, true);
         context.startActivity(intent);
-//        System.exit(0);
     }
 }

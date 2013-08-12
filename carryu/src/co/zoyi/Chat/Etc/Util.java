@@ -21,6 +21,6 @@ public class Util {
     }
 
     public static String toGameClientJabberId(String jabberID) {
-        return jabberID.replace("Smack", "xiff");
+            return jabberID.replace("Smack", "xiff");
     }
 }

@@ -1,12 +1,8 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
-import co.zoyi.Chat.Services.FetchOurTeamNamesListener;
+import co.zoyi.Chat.Listeners.FetchOurTeamNamesListener;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
-import co.zoyi.carryu.Application.Etc.ActivityDelegate;
-import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.Errors.UnknownError;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Registries.Registry;

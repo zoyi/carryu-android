@@ -1,7 +1,7 @@
 package co.zoyi.Chat.Services;
 
 import co.zoyi.Chat.Etc.Util;
-import co.zoyi.carryu.Application.Etc.CUUtil;
+import co.zoyi.Chat.Packets.OurTeamNamesIQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -40,6 +40,8 @@ public class ChatPacketProcessor {
         } else if (presence.getFrom().equals(Util.toGameClientJabberId(chatService.getUser()))){
             String gameStatus = getGameStatusFromPresence(presence);
             if (gameStatus != null) {
+                boolean needToUpdatePresence = true;
+
                 if (gameStatus.equals("outOfGame")){
                     chatService.setStatus(ChatService.Status.OUT_OF_GAME);
                 } else if (gameStatus.equals("inQueue")){
@@ -50,6 +52,12 @@ public class ChatPacketProcessor {
                     }
                 } else if (gameStatus.equals("inGame")){
                     chatService.setStatus(ChatService.Status.IN_GAME);
+                } else {
+                    needToUpdatePresence = false;
+                }
+
+                if (needToUpdatePresence) {
+                    chatService.setLastPresence(presence);
                 }
             }
         }
