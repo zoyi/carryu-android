@@ -30,8 +30,8 @@ public class ChatService {
     private List<String> ourTeamNames;
     private ChatServerInfo chatServerInfo;
     private Presence lastPresence;
+    private String defaultOnlineStatusMessage = "Using CarryU";
 //    private HashMap<String, FetchOurTeamNamesListener> fetchOurTeamNameListListenerMap = new HashMap<String, FetchOurTeamNamesListener>();
-
     public enum Status {
         PENDING,
         CONNECTED,
@@ -44,6 +44,7 @@ public class ChatService {
         IN_GAME,
         CONNECTION_CLOSED,
         RECONNECTING;
+
     };
 
     private ConnectionListener connectionListener = new ConnectionListener() {
@@ -77,6 +78,7 @@ public class ChatService {
         if (this.connectionConfiguration != null) {
             this.connection = new XMPPConnection(this.connectionConfiguration);
 
+            // TODO: Change platform independent method. It's depend on Android.
             new AsyncTask<XMPPConnection, Void, XMPPConnection>() {
                 @Override
                 protected XMPPConnection doInBackground(XMPPConnection... objects) {
@@ -107,15 +109,16 @@ public class ChatService {
 
     public void disconnect() {
         if (isConnected()) {
-            this.connection.disconnect(new UpdateStatusPresence(lastPresence));
+//            this.connection.disconnect(new UpdateStatusPresence(lastPresence, this.defaultOnlineStatusMessage));
 //            setStatus(Status.CONNECTION_CLOSED);
+            this.connection.disconnect();
             this.connection = null;
         }
     }
 
     public void setLastPresence(Presence lastPresence) {
         this.lastPresence = lastPresence;
-        this.connection.sendPacket(new UpdateStatusPresence(lastPresence));
+        this.connection.sendPacket(new UpdateStatusPresence(lastPresence, this.defaultOnlineStatusMessage));
     }
 
     public void login(String userId, String userPassword) {
@@ -168,6 +171,10 @@ public class ChatService {
             return Util.getUserIDFromJabberID(connection.getUser());
         }
         return null;
+    }
+
+    public void setDefaultOnlineStatusMessage(String defaultOnlineStatusMessage) {
+        this.defaultOnlineStatusMessage = defaultOnlineStatusMessage;
     }
 
     public void setChatStatusChangeListener(ChatStatusChangeListener chatStatusChangeListener) {
@@ -249,8 +256,4 @@ public class ChatService {
             onFailFetchOurTeamNames();
         }
     }
-
-//    public void set() {
-//
-//    }
 }

@@ -16,18 +16,8 @@ public class Registry {
     public static SummonerJSONSerializer getSummonerSerializer() { return summonerSerializer; }
     public static ActiveGameJSONSerializer getActiveGameSerializer() { return activeGameSerializer; }
 
-    private static void initializeChatService() {
-        chatService = new ChatService();
-        chatService.setChatStatusChangeListener(new ChatStatusChangeListener() {
-            @Override
-            public void onStatusChanged(ChatService.Status status) {
-                EventBus.getDefault().post(new ChatStatusChangeEvent(status));
-            }
-        });
-    }
-
     public static void initialize() {
-        initializeChatService();
+        chatService = new ChatService();
         summonerSerializer = new SummonerJSONSerializer();
         activeGameSerializer = new ActiveGameJSONSerializer();
     }
