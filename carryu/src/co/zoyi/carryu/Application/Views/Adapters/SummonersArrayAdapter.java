@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
-import co.zoyi.carryu.Application.Datas.Serializers.SummonerJSONSerializer;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.R;
 import com.loopj.android.image.SmartImageView;
@@ -40,7 +39,7 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
             }
 
             SmartImageView.class.cast(rowView.findViewById(R.id.more_arrow)).setVisibility(View.VISIBLE);
-            TextView.class.cast(rowView.findViewById(R.id.summoner_level)).setText(summoner.getDisplayLevel());
+            TextView.class.cast(rowView.findViewById(R.id.ranked_stat)).setText(summoner.getDisplayRankedStat());
             TextView.class.cast(rowView.findViewById(R.id.summoner_stat)).setText(summoner.getDisplayStats());
 
             if (summoner.getRankIconUrl().length() == 0) {
@@ -59,7 +58,7 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
             }
         } else {
             SmartImageView.class.cast(rowView.findViewById(R.id.more_arrow)).setVisibility(View.GONE);
-            TextView.class.cast(rowView.findViewById(R.id.summoner_level)).setText(context.getString(R.string.loading));
+            TextView.class.cast(rowView.findViewById(R.id.ranked_stat)).setText(context.getString(R.string.loading));
         }
 
         rowViewMap.put(summoner, rowView);

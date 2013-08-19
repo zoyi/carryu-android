@@ -7,6 +7,12 @@ public class Stat extends Model {
         return wins;
     }
 
+    public float getRating() {
+        return rating;
+    }
+
     @SerializedName("wins")
     private int wins;
+    @SerializedName("rating")
+    private float rating;
 }

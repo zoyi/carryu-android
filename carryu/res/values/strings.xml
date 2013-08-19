@@ -14,8 +14,9 @@
     <string name="na_server">North America</string>
     <string name="euw_server">Europe West</string>
     <string name="level_format">Lv %1$d</string>
-    <string name="display_stats_format">Normal %1$d wins / Rank %2$d wins</string>
-    <string name="normal_display_stats_format">Normal %1$d wins</string>
+    <string name="display_ranked_stat_format">Rank %1$d wins / MMR %2$.0f</string>
+    <string name="display_unranked_stat_format">Normal %1$d wins / MMR %2$.0f</string>
+    <string name="summoner_stat_mmr_format">MMR %1$d</string>
     <string name="loading">Loading...</string>
     <string name="load_failed">Failed</string>
     <string name="input_summoner_name">Summoner name</string>

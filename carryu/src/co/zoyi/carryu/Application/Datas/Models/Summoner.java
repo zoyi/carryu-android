@@ -1,8 +1,6 @@
 package co.zoyi.carryu.Application.Datas.Models;
 
 import co.zoyi.carryu.Application.CUApplication;
-import co.zoyi.carryu.Application.Datas.Serializers.SummonerJSONSerializer;
-import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.R;
 import com.google.gson.annotations.SerializedName;
 
@@ -27,10 +25,10 @@ public class Summoner extends Model {
     private String name;
     @SerializedName("profile_icon_id")
     private int profileIconId;
-    @SerializedName("league_solo_5x5")
-    private RankStat leagueSoloFiveToFiveStat;
-    @SerializedName("player_stat_unranked")
-    private Stat normalStat;
+    @SerializedName("ranked_solo_stat")
+    private RankStat ranked_solo_stat;
+    @SerializedName("unranked_stat")
+    private Stat unranked_stat;
     @SerializedName("champion")
     private Champion champion;
     @SerializedName("spell1")
@@ -91,10 +89,10 @@ public class Summoner extends Model {
     }
 
     public String getRankIconUrl() {
-        if (leagueSoloFiveToFiveStat == null) {
+        if (ranked_solo_stat == null) {
             return "";
         }
-        return String.format("http://carryu.co/assets/league/%s_%d.png", leagueSoloFiveToFiveStat.getTier().toLowerCase(), leagueSoloFiveToFiveStat.getRank());
+        return String.format("http://carryu.co/assets/league/%s_%d.png", ranked_solo_stat.getTier().toLowerCase(), ranked_solo_stat.getRank());
     }
 
     public String getFirstSpellImageUrl() {
@@ -111,25 +109,24 @@ public class Summoner extends Model {
         return String.format("http://kr.carryu.co/spells/%d/image", secondSpell);
     }
 
-    public String getDisplayLevel() {
-        if (leagueSoloFiveToFiveStat == null) {
+    public String getDisplayRankedStat() {
+        if (ranked_solo_stat == null) {
             if (level == 0) {
                 return "";
             }
             return String.format(CUApplication.getContext().getString(R.string.level_format), level);
         }
-        return String.format("%s %s / ", leagueSoloFiveToFiveStat.getTier(), leagueSoloFiveToFiveStat.getRomaNotationRank(), level)
-            + String.format(CUApplication.getContext().getString(R.string.level_format), level);
+        return String.format("%s %s", ranked_solo_stat.getTier(), ranked_solo_stat.getRomaNotationRank(), level);
     }
 
     public String getDisplayStats() {
-        if (leagueSoloFiveToFiveStat == null) {
-            if (normalStat == null) {
+        if (ranked_solo_stat == null) {
+            if (unranked_stat == null) {
                 return "";
             }
-            return String.format(CUApplication.getContext().getString(R.string.normal_display_stats_format), normalStat.getWins());
+            return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_format), unranked_stat.getWins(), unranked_stat.getRating());
         }
-        return String.format(CUApplication.getContext().getString(R.string.display_stats_format), normalStat.getWins(), leagueSoloFiveToFiveStat.getWins());
+        return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_format), ranked_solo_stat.getWins(), ranked_solo_stat.getRating());
     }
 
     public void update(Summoner summoner) {
@@ -138,8 +135,8 @@ public class Summoner extends Model {
         this.level = summoner.level;
         this.name = summoner.name;
         this.profileIconId = summoner.profileIconId;
-        this.leagueSoloFiveToFiveStat = summoner.leagueSoloFiveToFiveStat;
-        this.normalStat = summoner.normalStat;
+        this.ranked_solo_stat = summoner.ranked_solo_stat;
+        this.unranked_stat = summoner.unranked_stat;
         this.isUpdated = true;
     }
 }
