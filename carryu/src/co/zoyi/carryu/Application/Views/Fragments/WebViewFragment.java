@@ -75,8 +75,8 @@ public class WebViewFragment extends CUFragment implements Refreshable {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         refresh();
     }
 
@@ -85,8 +85,8 @@ public class WebViewFragment extends CUFragment implements Refreshable {
     }
 
     public void loadUrl(String url) {
-        if (url != webView.getUrl()) {
-            this.url = url;
+        this.url = url;
+        if (webView != null && webView.getUrl() != this.url && this.url != null) {
             webView.loadUrl(url);
             fireOnPageStartedListener();
         }
@@ -94,7 +94,11 @@ public class WebViewFragment extends CUFragment implements Refreshable {
 
     @Override
     public void refresh() {
-        EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
+        if (this.url == null) {
+            EventBus.getDefault().post(new NeedRefreshFragmentEvent(this));
+        } else {
+            webView.reload();
+        }
     }
 
     public boolean goBack() {
@@ -103,5 +107,9 @@ public class WebViewFragment extends CUFragment implements Refreshable {
             return true;
         }
         return false;
+    }
+
+    public String getUrl() {
+        return webView.getUrl();
     }
 }
