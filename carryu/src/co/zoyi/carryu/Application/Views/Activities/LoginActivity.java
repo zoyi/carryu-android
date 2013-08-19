@@ -1,6 +1,7 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -142,7 +143,13 @@ public class LoginActivity extends CUActivity {
         HttpRequestDelegate.setRegion(serverInfo.getRegion());
 
         Registry.getChatService().setServerInfo(new ChatServerInfo(serverInfo.getRegion(), serverInfo.getXmppHost(), serverInfo.getXmppPort()));
-        Registry.getChatService().connect();
+        new AsyncTask<ChatService, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(ChatService... chatServices) {
+                ChatService chatService = chatServices[0];
+                return new Boolean(chatService.connect());
+            }
+        }.execute(Registry.getChatService());
     }
 
     private ServerList.ServerInfo getSelectedServerInfo() {

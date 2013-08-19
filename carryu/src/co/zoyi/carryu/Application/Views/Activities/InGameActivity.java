@@ -35,6 +35,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     private boolean isSampleMode;
     private ActiveGame activeGame;
     private Fragment lastFragment;
+    private String championGuideUrl;
     private WebViewFragment championGuideFragment;
     private SummonerListFragment ourTeamListFragment;
     private SummonerListFragment enemyTeamListFragment;
@@ -58,7 +59,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         setContentView(R.layout.in_game_activity);
 
         isSampleMode = getIntent() != null && getIntent().getBooleanExtra(SAMPLE_IN_GAME_INTENT_KEY, false);
-        findViewById(R.id.refresh).setOnClickListener(refreshClickListener);
+
         initializeTabs();
     }
 
@@ -84,21 +85,21 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     }
 
     private String getChampionGuideUrl() {
-        String championGuideUrl;
-
-        if (isSampleMode) {
-            championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), 98);
-        } else {
-            int championId = 0;
-            for (Summoner summoner : activeGame.getOurTeamSummoners()) {
-                if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
-                    championId = summoner.getChampion().getId();
+        if (this.championGuideUrl == null) {
+            if (isSampleMode) {
+                this.championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), 98);
+            } else {
+                int championId = 0;
+                for (Summoner summoner : activeGame.getOurTeamSummoners()) {
+                    if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
+                        championId = summoner.getChampion().getId();
+                    }
                 }
+                this.championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), championId);
             }
-            championGuideUrl = String.format(getString(R.string.sample_champion_guide_url), Registry.getChatService().getChatServerInfo().getRegion(), championId);
         }
 
-        return championGuideUrl;
+        return this.championGuideUrl;
     }
 
     public void onEventMainThread(NeedRefreshFragmentEvent event) {
@@ -148,11 +149,9 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     private void updateActiveGame(ActiveGame activeGame) {
         if (activeGame != null) {
             this.activeGame = activeGame;
-            if (lastFragment == ourTeamListFragment) {
-                ourTeamListFragment.updateSummoners(this.activeGame.getOurTeamSummoners());
-            } else {
-                enemyTeamListFragment.updateSummoners(this.activeGame.getEnemyTeamSummoners());
-            }
+            ourTeamListFragment.updateSummoners(this.activeGame.getOurTeamSummoners());
+            enemyTeamListFragment.updateSummoners(this.activeGame.getEnemyTeamSummoners());
+            championGuideFragment.loadUrl(getChampionGuideUrl());
         } else {
             if (isSampleMode == false) {
                 ActivityDelegate.openActivityWithConfirmMessage(this, ChampionSelectActivity.class, getString(R.string.not_support_ai_mode));
@@ -162,7 +161,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         }
     }
 
-    private WebViewFragment.WebViewStatusChangeListener webViewStatusChangeListener = new WebViewFragment.WebViewStatusChangeListener() {
+    private WebViewFragment.WebViewStatusChangeListener championGuideWebViewStatusChangeListener = new WebViewFragment.WebViewStatusChangeListener() {
         @Override
         public void onPageStarted(WebView webView) {
             setTitle(R.string.loading);
@@ -173,6 +172,13 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             setTitle(R.string.app_name);
         }
     };
+
+    private void addTabContentFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, fragment);
+        fragmentTransaction.hide(fragment);
+        fragmentTransaction.commit();
+    }
 
     private void initializeTabs() {
         if (tabHost == null) {
@@ -187,7 +193,11 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             ourTeamListFragment = new SummonerListFragment();
             enemyTeamListFragment = new SummonerListFragment();
             championGuideFragment = new WebViewFragment();
-            championGuideFragment.setWebViewStatusChangeListener(webViewStatusChangeListener);
+            championGuideFragment.setWebViewStatusChangeListener(championGuideWebViewStatusChangeListener);
+
+            addTabContentFragment(ourTeamListFragment);
+            addTabContentFragment(enemyTeamListFragment);
+            addTabContentFragment(championGuideFragment);
         }
 
         showFragment(ourTeamListFragment);
@@ -195,10 +205,15 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
 
     private void showFragment(Fragment fragment) {
         if (fragment != lastFragment) {
-            lastFragment = fragment;
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            if (lastFragment != null) {
+                fragmentTransaction.hide(lastFragment);
+            }
+            fragmentTransaction.show(fragment);
             fragmentTransaction.commit();
+
+            lastFragment = fragment;
+
             setTitle(R.string.app_name);
         }
     }

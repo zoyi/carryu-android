@@ -74,37 +74,25 @@ public class ChatService {
         }
     };
 
-    public void connect() {
+    public boolean connect() {
         if (this.connectionConfiguration != null) {
             this.connection = new XMPPConnection(this.connectionConfiguration);
 
-            // TODO: Change platform independent method. It's depend on Android.
-            new AsyncTask<XMPPConnection, Void, XMPPConnection>() {
-                @Override
-                protected XMPPConnection doInBackground(XMPPConnection... objects) {
-                    XMPPConnection xmppConnection = objects[0];
-
-                    try {
-                        xmppConnection.connect();
-                    } catch (XMPPException e) {
-                        e.printStackTrace();
-                        xmppConnection = null;
-                    }
-
-                    return xmppConnection;
+            try {
+                this.connection.connect();
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } finally {
+                if (this.connection.isConnected()) {
+                    this.connection.addConnectionListener(connectionListener);
+                    setStatus(Status.CONNECTED);
+                } else {
+                    setStatus(Status.FAILED_CONNECT);
                 }
-
-                @Override
-                protected void onPostExecute(XMPPConnection xmppConnection) {
-                    if (xmppConnection != null && xmppConnection.isConnected()) {
-                        setStatus(ChatService.Status.CONNECTED);
-                        connection.addConnectionListener(connectionListener);
-                    } else {
-                        setStatus(ChatService.Status.FAILED_CONNECT);
-                    }
-                }
-            }.execute(this.connection);
+            }
         }
+
+        return this.connection != null && this.connection.isConnected();
     }
 
     public void disconnect() {
