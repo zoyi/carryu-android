@@ -32,4 +32,5 @@
     <string name="keep_screen_off">화면 켜두기 비활성</string>
     <string name="search">소환사 검색</string>
     <string name="online_status_message">캐리유 사용 중</string>
+    <string name="password_notice">아이디와 비밀번호는 LOL 서버에 접속해 소환사 정보를 실시간으로 조회하는데 사용 됩니다. 절대 캐리유 서버에 전송되거나 저장되지 않습니다.</string>
 </resources>

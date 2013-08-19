@@ -12,7 +12,7 @@
         "xmpp_host" : "chat.na1.lol.riotgames.com",
         "xmpp_port" : 5223,
         "api_version" : "v1"
-    }
+    },
     "euw" : {
         rails_host: "http://euw.carryu.co",
         rtmp_host: "http://euw.rtmp.carryu.co",

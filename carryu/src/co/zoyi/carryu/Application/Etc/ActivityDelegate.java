@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
+import android.widget.TextView;
 import co.zoyi.carryu.Application.Views.Activities.*;
+import co.zoyi.carryu.R;
 
 public class ActivityDelegate {
     public static boolean hasIntentExtra(Activity activity, String key) {
@@ -92,5 +96,11 @@ public class ActivityDelegate {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(LoginActivity.EXIT_APPLICATION_INTENT_KEY, true);
         context.startActivity(intent);
+    }
+
+    static public void addUnderline(TextView textView) {
+        SpannableString message = new SpannableString(textView.getText());
+        message.setSpan(new UnderlineSpan(), 0, message.length(), 0);
+        textView.setText(message);
     }
 }

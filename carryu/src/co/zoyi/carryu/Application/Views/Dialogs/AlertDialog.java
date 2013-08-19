@@ -3,6 +3,7 @@ package co.zoyi.carryu.Application.Views.Dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -44,6 +45,14 @@ public class AlertDialog extends CUDialog {
 
     private void initializeViews() {
         TextView.class.cast(findViewById(R.id.confirm_message)).setText(this.message);
+        TextView.class.cast(findViewById(R.id.confirm_message)).post(new Runnable() {
+            @Override
+            public void run() {
+                if (TextView.class.cast(findViewById(R.id.confirm_message)).getLineCount() >= 2) {
+                    TextView.class.cast(findViewById(R.id.confirm_message)).setGravity(Gravity.CENTER_VERTICAL);
+                }
+            }
+        });
         Button.class.cast(findViewById(R.id.confirm)).setOnClickListener(confirmClickListener);
     }
 }

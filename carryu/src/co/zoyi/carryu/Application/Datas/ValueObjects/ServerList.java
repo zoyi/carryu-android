@@ -34,25 +34,24 @@ public class ServerList extends ValueObject {
         public String getApiVersion() {
             return apiVersion;
         }
-
-        transient String region;
-        public String getRegion() {
-            return region;
-        }
     }
 
     @SerializedName("kr")
     private ServerInfo koreaServer;
     @SerializedName("na")
     private ServerInfo northAmericaServer;
+    @SerializedName("euw")
+    private ServerInfo europeWestServer;
 
     public ServerInfo getNorthAmericaServer() {
-        northAmericaServer.region = "na";
         return northAmericaServer;
     }
 
+    public ServerInfo getEuropeWestServer() {
+        return europeWestServer;
+    }
+
     public ServerInfo getKoreaServer() {
-        koreaServer.region = "kr";
         return koreaServer;
     }
 }

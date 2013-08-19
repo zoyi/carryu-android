@@ -1,4 +1,6 @@
 package co.zoyi.carryu.Application.Datas.ValueObjects;
 
-public class ValueObject {
+import co.zoyi.carryu.Application.Datas.Serializers.Serializable;
+
+public class ValueObject implements Serializable {
 }

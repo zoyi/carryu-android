@@ -4,6 +4,7 @@ import android.content.Context;
 import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
+import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;
 import com.google.gson.Gson;
@@ -15,13 +16,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 public class HttpRequestDelegate {
-    private static final String BASE_URL_FORMAT = "http://%s.carryu.co/api/v1";
-    private static final String BASE_RTMP_URL_FORMAT = "http://%s.rtmp.carryu.co";
     private static String BASE_END_POINTS = "http://carryu.co/api/v1/endpoints";
     private static final AsyncHttpClient client = new AsyncHttpClient();
-    private static String baseUrl = String.format(BASE_URL_FORMAT, "na");
-    private static String baseRtmpUrl = String.format(BASE_RTMP_URL_FORMAT, "na");
-
 
     private static class HttpResponseHandler extends AsyncHttpResponseHandler {
         private DataCallback cb;
@@ -57,17 +53,12 @@ public class HttpRequestDelegate {
         }
     }
 
-    public static void setRegion(String region) {
-        baseUrl = String.format(BASE_URL_FORMAT, region);
-        baseRtmpUrl = String.format(BASE_RTMP_URL_FORMAT, region);
-    }
-
     public static void get(String url, RequestParams params, HttpResponseHandler responseHandler) {
-        client.get(baseUrl + url, params, responseHandler);
+        client.get(CURouter.getApiHost() + url, params, responseHandler);
     }
 
     public static void getRtmp(String url, RequestParams params, HttpResponseHandler responseHandler) {
-        client.get(baseRtmpUrl + url, params, responseHandler);
+        client.get(CURouter.getRtmpHost() + url, params, responseHandler);
     }
 
     public static void fetchServerInfo(final Context context, final DataCallback<ServerList> cb) {

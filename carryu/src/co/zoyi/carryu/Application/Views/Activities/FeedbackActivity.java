@@ -1,6 +1,7 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.os.Bundle;
+import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
@@ -23,6 +24,6 @@ public class FeedbackActivity extends CUActivity implements Refreshable {
 
     @Override
     public void refresh() {
-        this.webViewFragment.loadUrl(getString(R.string.feedback_url));
+        this.webViewFragment.loadUrl(CURouter.getFeedbackURL());
     }
 }

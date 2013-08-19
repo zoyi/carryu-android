@@ -30,8 +30,6 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
     }
 
     private void updateView(View rowView, Summoner summoner) {
-//        CUUtil.log(String.format("updateView %s Updated: %s", SummonerJSONSerializer.getGsonInstance().toJson(summoner), String.valueOf(summoner.isUpdated())));
-
         TextView.class.cast(rowView.findViewById(R.id.summoner_name)).setText(summoner.getName());
 
         if (summoner.isUpdated() == true) {
@@ -66,10 +64,6 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
 
         rowViewMap.put(summoner, rowView);
     }
-
-//    public void updateView(Summoner summoner) {
-//        updateView(rowViewMap.get(summoner), summoner);
-//    }
 
     @Override
     public View getView(int position, View rowView, ViewGroup parent) {

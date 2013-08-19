@@ -1,6 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="summoner_detail_url">http://%1$s.carryu.co/summoners/%2$s</string>
-    <string name="sample_champion_guide_url">http://%1$s.carryu.co/champions/%2$d/guides</string>
-    <string name="feedback_url">https://www.facebook.com/lol.carryyou</string>
 </resources>

@@ -2,15 +2,13 @@ package co.zoyi.Chat.Datas;
 
 public class ChatServerInfo {
     public String host;
-    public String region;
     public int port;
 
-    public String getRegion() {
-        return region;
+    public String getHost() {
+        return host;
     }
 
-    public ChatServerInfo(String region, String host, int port) {
-        this.region = region;
+    public ChatServerInfo(String host, int port) {
         this.host = host;
         this.port = port;
     }

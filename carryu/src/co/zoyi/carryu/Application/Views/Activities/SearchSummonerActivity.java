@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
+import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
@@ -74,6 +75,6 @@ public class SearchSummonerActivity extends CUActivity {
     private void search() {
         summonerName = EditText.class.cast(findViewById(R.id.summoner_name)).getText().toString();
         webViewFragment.clearHistory();
-        webViewFragment.loadUrl(String.format(getString(R.string.summoner_detail_url), Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
+        webViewFragment.loadUrl(CURouter.getSummonerDetailURL(summonerName));
     }
 }

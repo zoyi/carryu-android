@@ -6,6 +6,7 @@ import android.view.View;
 import android.webkit.WebView;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
+import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Commons.Refreshable;
@@ -54,7 +55,7 @@ public class SummonerDetailActivity extends CUActivity implements Refreshable {
 
     @Override
     public void refresh() {
-        webViewFragment.loadUrl(String.format(getString(R.string.summoner_detail_url), Registry.getChatService().getChatServerInfo().getRegion(), summonerName));
+        webViewFragment.loadUrl(CURouter.getSummonerDetailURL(summonerName));
     }
 
     public void onEventMainThread(ChatStatusChangeEvent event) {

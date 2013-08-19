@@ -4,93 +4,110 @@
         android:id="@+id/login_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent">
 
     <include layout="@layout/login_header" />
 
-    <TextView
-            android:text="@string/login_lol_account"
-            android:textSize="@dimen/tex_size_xlarge"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:layout_margin="@dimen/dim_10"
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_weight="1"
+            android:layout_height="0dp">
 
-    <EditText
-            style="@style/EditText_Blue"
-            android:id="@+id/user_id"
-            android:text=""
-            android:textColor="@color/white"
-            android:singleLine="true"
-            android:imeOptions="actionNext"
-            android:hint="@string/lol_user_id"
-            android:layout_margin="@dimen/dim_10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <EditText
-            style="@style/EditText_Blue"
-            android:id="@+id/user_password"
-            android:text=""
-            android:textColor="@color/white"
-            android:singleLine="true"
-            android:imeOptions="actionDone"
-            android:hint="@string/lol_user_password"
-            android:inputType="textPassword"
-            android:layout_margin="@dimen/dim_10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <TextView
+                    android:id="@+id/login_message"
+                    android:text="@string/login_lol_account"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:textColor="@drawable/ui_text_selector"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/dim_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-    <Button
-            style="@style/Button_Blue"
-            android:id="@+id/login"
-            android:text="@string/login"
-            android:textColor="@color/white"
-            android:textSize="@dimen/tex_size_xlarge"
-            android:layout_height="@dimen/dim_50"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="@dimen/dim_20"
-            android:layout_marginRight="@dimen/dim_20"
-            android:layout_margin="@dimen/dim_10"
-            android:onClick="onLoginButtonClick" />
+            <EditText
+                    style="@style/EditText_Blue"
+                    android:id="@+id/user_id"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:hint="@string/lol_user_id"
+                    android:layout_margin="@dimen/dim_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-    <RadioGroup
-            android:id="@+id/server_select_group"
-            android:layout_margin="@dimen/dim_10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dim_20"
-            android:orientation="vertical" >
+            <EditText
+                    style="@style/EditText_Blue"
+                    android:id="@+id/user_password"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:hint="@string/lol_user_password"
+                    android:inputType="textPassword"
+                    android:layout_margin="@dimen/dim_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        <RadioButton
-                android:id="@+id/kr_server"
-                style="@style/RadioButton_Blue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dim_10"
-                android:checked="true"
-                android:text="@string/ko_server"
-                android:textColor="@color/white"/>
+            <Button
+                    style="@style/Button_Blue"
+                    android:id="@+id/login"
+                    android:text="@string/login"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:layout_height="@dimen/dim_50"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/dim_20"
+                    android:layout_marginRight="@dimen/dim_20"
+                    android:layout_margin="@dimen/dim_10"
+                    android:onClick="onLoginButtonClick" />
 
-        <RadioButton
-                android:id="@+id/na_server"
-                style="@style/RadioButton_Blue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dim_10"
-                android:text="@string/na_server"
-                android:textColor="@color/white" />
+            <RadioGroup
+                    android:id="@+id/server_select_group"
+                    android:layout_margin="@dimen/dim_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dim_20"
+                    android:orientation="vertical" >
 
-        <RadioButton
-                android:id="@+id/euw_server"
-                style="@style/RadioButton_Blue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dim_10"
-                android:text="@string/euw_server"
-                android:textColor="@color/white" />
-    </RadioGroup>
+                <RadioButton
+                        android:id="@+id/kr_server"
+                        style="@style/RadioButton_Blue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dim_10"
+                        android:checked="true"
+                        android:text="@string/ko_server"
+                        android:textColor="@color/white"/>
+
+                <RadioButton
+                        android:id="@+id/na_server"
+                        style="@style/RadioButton_Blue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dim_10"
+                        android:text="@string/na_server"
+                        android:textColor="@color/white" />
+
+                <RadioButton
+                        android:id="@+id/euw_server"
+                        style="@style/RadioButton_Blue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dim_10"
+                        android:text="@string/euw_server"
+                        android:textColor="@color/white" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

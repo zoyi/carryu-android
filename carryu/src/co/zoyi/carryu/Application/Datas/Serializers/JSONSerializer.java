@@ -3,7 +3,7 @@ package co.zoyi.carryu.Application.Datas.Serializers;
 import co.zoyi.carryu.Application.Datas.Models.Model;
 import com.google.gson.Gson;
 
-public class JSONSerializer<T extends Model, RT extends Model.Rooted> {
+public class JSONSerializer<T extends Serializable, RT extends Model.Rooted> {
     private static final Gson gsonInstance = new Gson();
 
     public static Gson getGsonInstance() {

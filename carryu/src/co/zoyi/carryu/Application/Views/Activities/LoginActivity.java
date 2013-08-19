@@ -3,10 +3,13 @@ package co.zoyi.carryu.Application.Views.Activities;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import co.zoyi.Chat.Datas.ChatServerInfo;
 import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
@@ -18,6 +21,7 @@ import co.zoyi.carryu.Application.Events.Errors.ConnectionClosedErrorEvent;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.ValueObjects.UserLoginData;
 import co.zoyi.carryu.Application.Registries.Registry;
+import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
 import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
 
@@ -28,6 +32,9 @@ public class LoginActivity extends CUActivity {
     private String SERVER_INFO_PREFERENCE_KEY = "server_info_pref";
     private String SERVER_INFO_JSON_KEY = "server_info";
     private String DEFAULT_SERVER_INFO_JSON_FILE = "default_server_info.json";
+
+    private String NOTICE_PREFERENCE_KEY = "notice_pref";
+    private String NOTICE_PASSWORD_KEY = "notice_password_key";
 
     private ServerList serverList;
 
@@ -54,10 +61,34 @@ public class LoginActivity extends CUActivity {
                 EventBus.getDefault().post(new ConnectionClosedErrorEvent());
             }
 
+            initializeViews();
             restoreViewPreferences();
             restoreServerInfo();
             fetchServerInfo();
         }
+    }
+
+    private void showPasswordNoticeDialog() {
+        AlertDialog alertDialog = new AlertDialog(this, getString(R.string.password_notice));
+        alertDialog.show();
+    }
+
+    private void initializeViews() {
+        ActivityDelegate.addUnderline(TextView.class.cast(findViewById(R.id.login_message)));
+
+        TextView.class.cast(findViewById(R.id.login_message)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPasswordNoticeDialog();
+            }
+        });
+
+        SharedPreferences sharedPreferences = getSharedPreferences(NOTICE_PREFERENCE_KEY, MODE_PRIVATE);
+        if (!sharedPreferences.getBoolean(NOTICE_PASSWORD_KEY, false)) {
+            showPasswordNoticeDialog();
+            sharedPreferences.edit().putBoolean(NOTICE_PASSWORD_KEY, true).commit();
+        }
+
     }
 
     private void fetchServerInfo() {
@@ -97,9 +128,9 @@ public class LoginActivity extends CUActivity {
     private void restoreServerInfo() {
         SharedPreferences sharePreference = getSharedPreferences(SERVER_INFO_PREFERENCE_KEY, MODE_PRIVATE);
         if (sharePreference.contains(SERVER_INFO_JSON_KEY) == false) {
-            this.serverList = JSONSerializer.getGsonInstance().fromJson(AssetReader.readString(this, DEFAULT_SERVER_INFO_JSON_FILE), ServerList.class);
+            this.serverList = Registry.getServerListJSONSerializer().toObject(AssetReader.readString(this, DEFAULT_SERVER_INFO_JSON_FILE), ServerList.class);
         } else {
-            this.serverList = JSONSerializer.getGsonInstance().fromJson(sharePreference.getString(SERVER_INFO_JSON_KEY, ""), ServerList.class);
+            this.serverList = Registry.getServerListJSONSerializer().toObject(sharePreference.getString(SERVER_INFO_JSON_KEY, ""), ServerList.class);
         }
     }
 
@@ -137,12 +168,10 @@ public class LoginActivity extends CUActivity {
     private void connect() {
         showProgressDialog(getString(R.string.connecting));
 
-        ServerList.ServerInfo serverInfo;
-        serverInfo = getSelectedServerInfo();
+        ServerList.ServerInfo serverInfo = getSelectedServerInfo();
+        CURouter.setServerInfo(serverInfo);
 
-        HttpRequestDelegate.setRegion(serverInfo.getRegion());
-
-        Registry.getChatService().setServerInfo(new ChatServerInfo(serverInfo.getRegion(), serverInfo.getXmppHost(), serverInfo.getXmppPort()));
+        Registry.getChatService().setServerInfo(new ChatServerInfo(serverInfo.getXmppHost(), serverInfo.getXmppPort()));
         new AsyncTask<ChatService, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(ChatService... chatServices) {
@@ -153,11 +182,16 @@ public class LoginActivity extends CUActivity {
     }
 
     private ServerList.ServerInfo getSelectedServerInfo() {
-        return RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked() ? serverList.getKoreaServer() : serverList.getNorthAmericaServer();
+        if (RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked()) {
+            return serverList.getKoreaServer();
+        } else if (RadioButton.class.cast(findViewById(R.id.na_server)).isChecked()) {
+            return serverList.getNorthAmericaServer();
+        }
+        return serverList.getEuropeWestServer();
     }
 
     public void onLoginButtonClick(View loginButton) {
-        if (Registry.getChatService().isConnected() && Registry.getChatService().getChatServerInfo().getRegion().equals(getSelectedServerInfo())) {
+        if (Registry.getChatService().isConnected() && Registry.getChatService().getChatServerInfo().getHost().equals(getSelectedServerInfo().getXmppHost())) {
             login();
         } else {
             if (Registry.getChatService().isConnected()) {

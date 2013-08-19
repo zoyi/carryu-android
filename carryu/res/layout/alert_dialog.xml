@@ -9,7 +9,7 @@
         android:layout_height="match_parent">
 
     <LinearLayout
-            android:background="@color/dark_green"
+            android:background="@color/dark_blue"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/dim_20"
             android:layout_marginRight="@dimen/dim_20"
@@ -20,7 +20,7 @@
         <TextView
                 android:id="@+id/confirm_message"
                 android:gravity="center"
-                android:textColor="@color/text_color"
+                android:textColor="@color/white"
                 android:textSize="@dimen/tex_size_xlarge"
                 android:layout_marginLeft="@dimen/dim_10"
                 android:layout_marginRight="@dimen/dim_10"
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content" />
 
         <Button
-                style="@style/Button_Green"
+                style="@style/Button_Blue"
                 android:id="@+id/confirm"
                 android:text="@string/ok"
                 android:paddingTop="@dimen/dim_10"
