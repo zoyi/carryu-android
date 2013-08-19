@@ -17,9 +17,11 @@ import java.net.URLEncoder;
 public class HttpRequestDelegate {
     private static final String BASE_URL_FORMAT = "http://%s.carryu.co/api/v1";
     private static final String BASE_RTMP_URL_FORMAT = "http://%s.rtmp.carryu.co";
+    private static String BASE_END_POINTS = "http://carryu.co/api/v1/endpoints";
     private static final AsyncHttpClient client = new AsyncHttpClient();
     private static String baseUrl = String.format(BASE_URL_FORMAT, "na");
     private static String baseRtmpUrl = String.format(BASE_RTMP_URL_FORMAT, "na");
+
 
     private static class HttpResponseHandler extends AsyncHttpResponseHandler {
         private DataCallback cb;
@@ -69,7 +71,7 @@ public class HttpRequestDelegate {
     }
 
     public static void fetchServerInfo(final Context context, final DataCallback<ServerList> cb) {
-        client.get("http://lol-gist.wudi.me", null, new HttpResponseHandler(cb) {
+        client.get(BASE_END_POINTS, null, new HttpResponseHandler(cb) {
             @Override
             public void onSuccess(String s) {
                 super.onSuccess(s);

@@ -12,6 +12,7 @@
     <string name="champion_guide">챔피언 가이드</string>
     <string name="ko_server">한국</string>
     <string name="na_server">북미</string>
+    <string name="euw_server">서유럽</string>
     <string name="level_format">Lv %1$d</string>
     <string name="display_stats_format">일반 %1$d 승 / 랭크 %2$d 승</string>
     <string name="normal_display_stats_format">일반 %1$d 승</string>

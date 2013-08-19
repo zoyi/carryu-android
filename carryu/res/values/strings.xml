@@ -12,6 +12,7 @@
     <string name="champion_guide">Champion Guide</string>
     <string name="ko_server">Korea</string>
     <string name="na_server">North America</string>
+    <string name="euw_server">Europe West</string>
     <string name="level_format">Lv %1$d</string>
     <string name="display_stats_format">Normal %1$d wins / Rank %2$d wins</string>
     <string name="normal_display_stats_format">Normal %1$d wins</string>

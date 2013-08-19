@@ -74,6 +74,7 @@ public class LoginActivity extends CUActivity {
         new ViewPreferenceManager.Storage(this)
             .save(R.id.kr_server, "kr_server")
             .save(R.id.na_server, "na_server")
+            .save(R.id.euw_server, "euw_server")
             .save(R.id.user_id, "user_id");
     }
 
@@ -81,6 +82,7 @@ public class LoginActivity extends CUActivity {
         new ViewPreferenceManager.Loader(this)
             .load(R.id.kr_server, "kr_server")
             .load(R.id.na_server, "na_server")
+            .load(R.id.euw_server, "euw_server")
             .load(R.id.user_id, "user_id");
     }
 
