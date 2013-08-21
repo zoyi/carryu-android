@@ -124,9 +124,17 @@ public class Summoner extends Model {
             if (unranked_stat == null) {
                 return "";
             }
-            return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_format), unranked_stat.getWins(), unranked_stat.getRating());
+
+            if (unranked_stat.getRating() <= 0.0) {
+                return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_format), unranked_stat.getWins());
+            }
+
+            return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_with_mmr_format), unranked_stat.getWins(), unranked_stat.getRating());
         }
-        return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_format), ranked_solo_stat.getWins(), ranked_solo_stat.getRating());
+        if (ranked_solo_stat.getRating() <= 0.0) {
+            return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_format), ranked_solo_stat.getWins());
+        }
+        return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_with_mmr_format), ranked_solo_stat.getWins(), ranked_solo_stat.getRating());
     }
 
     public void update(Summoner summoner) {

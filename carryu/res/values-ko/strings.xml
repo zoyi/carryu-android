@@ -14,8 +14,10 @@
     <string name="na_server">북미</string>
     <string name="euw_server">서유럽</string>
     <string name="level_format">Lv %1$d</string>
-    <string name="display_ranked_stat_format">랭크 %1$d 승 / MMR %2$.0f</string>
-    <string name="display_unranked_stat_format">일반 %1$d 승 / MMR %2$.0f</string>
+    <string name="display_ranked_stat_format">랭크 %1$d 승 / MMR -</string>
+    <string name="display_ranked_stat_with_mmr_format">랭크 %1$d 승 / MMR %2$.0f</string>
+    <string name="display_unranked_stat_format">일반 %1$d 승 / MMR -</string>
+    <string name="display_unranked_stat_with_mmr_format">일반 %1$d 승 / MMR %2$.0f</string>
     <string name="loading">Loading...</string>
     <string name="load_failed">로딩 실패</string>
     <string name="input_summoner_name">소환사명</string>
