@@ -1,29 +1,28 @@
     package co.zoyi.carryu.Application.Views.Activities;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.view.*;
-import android.view.View.OnClickListener;
-import android.widget.TextView;
-import co.zoyi.Chat.Services.ChatService;
-import co.zoyi.carryu.Application.Datas.Models.Summoner;
-import co.zoyi.carryu.Application.API.DataCallback;
-import co.zoyi.carryu.Application.API.HttpRequestDelegate;
-import co.zoyi.carryu.Application.Etc.ActivityDelegate;
-import co.zoyi.carryu.Application.Etc.ErrorCroutonDelegate;
-import co.zoyi.carryu.Application.Etc.CUUtil;
-import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
-import co.zoyi.carryu.Application.Events.NotifyMeChangedEvent;
-import co.zoyi.carryu.Application.Events.Errors.ErrorEvent;
-import co.zoyi.carryu.Application.Registries.Registry;
-import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
-import co.zoyi.carryu.Application.Views.Dialogs.ConfirmDialog;
-import co.zoyi.carryu.Application.Views.Dialogs.MessageDialog;
-import co.zoyi.carryu.Application.Views.Commons.Refreshable;
-import co.zoyi.carryu.R;
-import com.google.analytics.tracking.android.EasyTracker;
-import de.greenrobot.event.EventBus;
+    import android.os.Bundle;
+    import android.support.v4.app.FragmentActivity;
+    import android.view.*;
+    import android.view.View.OnClickListener;
+    import android.widget.TextView;
+    import co.zoyi.Chat.Services.ChatService;
+    import co.zoyi.carryu.Application.API.DataCallback;
+    import co.zoyi.carryu.Application.API.HttpRequestDelegate;
+    import co.zoyi.carryu.Application.Datas.Models.Summoner;
+    import co.zoyi.carryu.Application.Etc.ActivityDelegate;
+    import co.zoyi.carryu.Application.Etc.CUUtil;
+    import co.zoyi.carryu.Application.Etc.ErrorCroutonDelegate;
+    import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
+    import co.zoyi.carryu.Application.Events.Errors.ErrorEvent;
+    import co.zoyi.carryu.Application.Events.NotifyMeChangedEvent;
+    import co.zoyi.carryu.Application.Registries.Registry;
+    import co.zoyi.carryu.Application.Views.Commons.Refreshable;
+    import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
+    import co.zoyi.carryu.Application.Views.Dialogs.ConfirmDialog;
+    import co.zoyi.carryu.Application.Views.Dialogs.MessageDialog;
+    import co.zoyi.carryu.R;
+    import com.google.analytics.tracking.android.EasyTracker;
+    import de.greenrobot.event.EventBus;
 
 public abstract class CUActivity extends FragmentActivity {
     public static String CONFIRM_MESSAGE_INTENT_KEY = "confirm_message";
@@ -314,7 +313,7 @@ public abstract class CUActivity extends FragmentActivity {
     }
 
     public void onEventMainThread(ChatStatusChangeEvent event) {
-        CUUtil.log(this, "ChatServiceStatus: " + event.getStatus().toString());
+        // 아마 사용 안함.
         processChatStatus(event.getStatus());
     }
 

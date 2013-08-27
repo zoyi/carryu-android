@@ -3,7 +3,6 @@ package co.zoyi.carryu.Application.Etc;
 import android.app.Activity;
 import android.content.Context;
 import co.zoyi.carryu.Application.Events.Errors.*;
-import co.zoyi.carryu.Application.Events.Errors.UnknownError;
 import co.zoyi.carryu.R;
 
 public class ErrorCroutonDelegate {

@@ -1,14 +1,12 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.webkit.WebView;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Events.ChatStatusChangeEvent;
-import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;

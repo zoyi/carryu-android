@@ -3,14 +3,10 @@ package co.zoyi.carryu.Application.Etc;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.widget.TextView;
 import co.zoyi.carryu.Application.Views.Activities.*;
-import co.zoyi.carryu.R;
 
 public class ActivityDelegate {
     public static boolean hasIntentExtra(Activity activity, String key) {
@@ -41,6 +37,12 @@ public class ActivityDelegate {
 
     static public void openLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
+    static public void openServerSelectActivity(Context context) {
+        Intent intent = new Intent(context, ServerSelectActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }

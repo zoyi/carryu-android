@@ -8,6 +8,10 @@ public class CURouter {
         CURouter.serverInfo = serverInfo;
     }
 
+    public static ServerList.ServerInfo getServerInfo() {
+        return serverInfo;
+    }
+
     public static String getApiHost() {
         return String.format("%1$s/api/%2$s", serverInfo.getRailsHost(), serverInfo.getApiVersion());
     }

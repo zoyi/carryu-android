@@ -1,6 +1,5 @@
 package co.zoyi.carryu.Application.Views.Dialogs;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;

@@ -68,44 +68,6 @@
                     android:layout_margin="@dimen/dim_10"
                     android:onClick="onLoginButtonClick" />
 
-            <RadioGroup
-                    android:id="@+id/server_select_group"
-                    android:layout_margin="@dimen/dim_10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dim_20"
-                    android:orientation="vertical" >
-
-                <RadioButton
-                        android:id="@+id/kr_server"
-                        style="@style/RadioButton_Blue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dim_10"
-                        android:checked="true"
-                        android:text="@string/ko_server"
-                        android:textColor="@color/white"/>
-
-                <RadioButton
-                        android:id="@+id/na_server"
-                        style="@style/RadioButton_Blue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dim_10"
-                        android:text="@string/na_server"
-                        android:textColor="@color/white" />
-
-                <RadioButton
-                        android:id="@+id/euw_server"
-                        style="@style/RadioButton_Blue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dim_10"
-                        android:text="@string/euw_server"
-                        android:textColor="@color/white" />
-
-            </RadioGroup>
-
         </LinearLayout>
 
     </ScrollView>

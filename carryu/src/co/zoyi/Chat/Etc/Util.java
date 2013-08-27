@@ -1,7 +1,5 @@
 package co.zoyi.Chat.Etc;
 
-import co.zoyi.carryu.Application.Etc.CUUtil;
-
 public class Util {
     public static String getUserIDFromJabberID(String jabberID) {
         jabberID = jabberID.replace("sum", "");

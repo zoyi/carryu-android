@@ -4,6 +4,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class ServerList extends ValueObject {
     public static class ServerInfo {
+        public static enum ServerName {
+            KR,
+            NA,
+            EUW
+        }
         @SerializedName("rails_host")
         private String railsHost;
         @SerializedName("rtmp_host")

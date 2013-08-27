@@ -1,6 +1,5 @@
 package co.zoyi.carryu.Application.Etc;
 
-import android.view.Gravity;
 import co.zoyi.carryu.R;
 import de.keyboardsurfer.android.widget.crouton.Style;
 

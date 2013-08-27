@@ -2,10 +2,12 @@ package co.zoyi.Chat.Services;
 
 import co.zoyi.Chat.Etc.Util;
 import co.zoyi.Chat.Packets.OurTeamNamesIQ;
+import co.zoyi.carryu.Application.Etc.CUUtil;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.xml.sax.InputSource;
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -36,7 +38,6 @@ public class ChatPacketProcessor {
 
     private void processPresence(Presence presence) {
         if (presence.getType().equals(Presence.Type.unavailable)) {
-            chatService.setStatus(ChatService.Status.OUT_OF_GAME);
         } else if (presence.getFrom().equals(Util.toGameClientJabberId(chatService.getUser()))){
             String gameStatus = getGameStatusFromPresence(presence);
             if (gameStatus != null) {
@@ -57,6 +58,8 @@ public class ChatPacketProcessor {
                 }
 
                 if (needToUpdatePresence) {
+                    CUUtil.log(this, "[processPresence] " + gameStatus + " " + "needToUpdatePresence");
+                    CUUtil.log(this, "[processPresence] " + presence.getStatus());
                     chatService.setLastPresence(presence);
                 }
             }

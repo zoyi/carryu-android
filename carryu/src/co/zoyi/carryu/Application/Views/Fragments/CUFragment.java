@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import co.zoyi.carryu.Application.Etc.CUUtil;
-import de.greenrobot.event.EventBus;
 
 public class CUFragment extends Fragment {
     @Override

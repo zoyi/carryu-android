@@ -3,23 +3,22 @@ package co.zoyi.carryu.Application.Views.Activities;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 import co.zoyi.Chat.Datas.ChatServerInfo;
-import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
-import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
-import co.zoyi.carryu.Application.Etc.*;
+import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.API.DataCallback;
 import co.zoyi.carryu.Application.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
+import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
+import co.zoyi.carryu.Application.Etc.ActivityDelegate;
+import co.zoyi.carryu.Application.Etc.AssetReader;
+import co.zoyi.carryu.Application.Etc.CURouter;
+import co.zoyi.carryu.Application.Etc.ViewPreferenceManager;
 import co.zoyi.carryu.Application.Events.Errors.AuthenticateFailErrorEvent;
 import co.zoyi.carryu.Application.Events.Errors.ConnectionClosedErrorEvent;
-import co.zoyi.Chat.Services.ChatService;
-import co.zoyi.carryu.Application.Datas.ValueObjects.UserLoginData;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
 import co.zoyi.carryu.R;
@@ -52,7 +51,7 @@ public class LoginActivity extends CUActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (ActivityDelegate.hasIntentExtra(this, EXIT_APPLICATION_INTENT_KEY)) {
-//            Registry.getChatService().disconnect();
+            Registry.getChatService().disconnect();
             finish();
         } else {
             setContentView(R.layout.login_activity);
@@ -62,7 +61,7 @@ public class LoginActivity extends CUActivity {
             }
 
             initializeViews();
-            restoreViewPreferences();
+//            restoreViewPreferences();
             restoreServerInfo();
             fetchServerInfo();
         }
@@ -104,17 +103,11 @@ public class LoginActivity extends CUActivity {
 
     private void storeViewPreferences() {
         new ViewPreferenceManager.Storage(this)
-            .save(R.id.kr_server, "kr_server")
-            .save(R.id.na_server, "na_server")
-            .save(R.id.euw_server, "euw_server")
             .save(R.id.user_id, "user_id");
     }
 
     private void restoreViewPreferences() {
         new ViewPreferenceManager.Loader(this)
-            .load(R.id.kr_server, "kr_server")
-            .load(R.id.na_server, "na_server")
-            .load(R.id.euw_server, "euw_server")
             .load(R.id.user_id, "user_id");
     }
 
@@ -139,7 +132,7 @@ public class LoginActivity extends CUActivity {
         super.processChatStatus(status);
 
         if (status == ChatService.Status.CONNECTED) {
-            login();
+//            login();
         } else if (status == ChatService.Status.AUTHENTICATED) {
             storeViewPreferences();
         } else if (status == ChatService.Status.FAILED_AUTHENTICATE) {
@@ -168,8 +161,7 @@ public class LoginActivity extends CUActivity {
     private void connect() {
         showProgressDialog(getString(R.string.connecting));
 
-        ServerList.ServerInfo serverInfo = getSelectedServerInfo();
-        CURouter.setServerInfo(serverInfo);
+        ServerList.ServerInfo serverInfo = CURouter.getServerInfo();
 
         Registry.getChatService().setServerInfo(new ChatServerInfo(serverInfo.getXmppHost(), serverInfo.getXmppPort()));
         new AsyncTask<ChatService, Void, Boolean>() {
@@ -181,17 +173,17 @@ public class LoginActivity extends CUActivity {
         }.execute(Registry.getChatService());
     }
 
-    private ServerList.ServerInfo getSelectedServerInfo() {
-        if (RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked()) {
-            return serverList.getKoreaServer();
-        } else if (RadioButton.class.cast(findViewById(R.id.na_server)).isChecked()) {
-            return serverList.getNorthAmericaServer();
-        }
-        return serverList.getEuropeWestServer();
-    }
+//    private ServerList.ServerInfo getSelectedServerInfo() {
+//        if (RadioButton.class.cast(findViewById(R.id.kr_server)).isChecked()) {
+//            return serverList.getKoreaServer();
+//        } else if (RadioButton.class.cast(findViewById(R.id.na_server)).isChecked()) {
+//            return serverList.getNorthAmericaServer();
+//        }
+//        return serverList.getEuropeWestServer();
+//    }
 
     public void onLoginButtonClick(View loginButton) {
-        if (Registry.getChatService().isConnected() && Registry.getChatService().getChatServerInfo().getHost().equals(getSelectedServerInfo().getXmppHost())) {
+        if (Registry.getChatService().isConnected() && Registry.getChatService().getChatServerInfo().getHost().equals( CURouter.getServerInfo().getXmppHost())) {
             login();
         } else {
             if (Registry.getChatService().isConnected()) {

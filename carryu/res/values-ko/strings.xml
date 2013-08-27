@@ -4,13 +4,14 @@
     <string name="lol_user_id">아이디</string>
     <string name="lol_user_password">비밀번호</string>
     <string name="login">로그인</string>
+    <string name="next">다음</string>
     <string name="logout">로그아웃</string>
     <string name="logging_in">로그인하고 있습니다.</string>
     <string name="connecting">서버와 연결하고 있습니다.</string>
     <string name="our_summoner">우리팀</string>
     <string name="enemy_summoner">적팀</string>
     <string name="champion_guide">챔피언 가이드</string>
-    <string name="ko_server">한국</string>
+    <string name="kr_server">한국</string>
     <string name="na_server">북미</string>
     <string name="euw_server">서유럽</string>
     <string name="level_format">Lv %1$d</string>
@@ -28,7 +29,7 @@
     <string name="not_support_ai_mode">AI 봇 게임은 지원하지 않습니다.</string>
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
-    <string name="exit_app">캐리유를 종료하시겠습니까?</string>
+    <string name="exit_app">캐리유를 종료하시겠습니까? (종료시 롤의 채팅 상태가 로그아웃으로 보일 수 있습니다. 이럴경우 LOL 클라이언트에서 채팅 상태를 온라인으로 변경해주시길 바랍니다.)</string>
     <string name="feedback">피드백</string>
     <string name="keep_screen_on">화면 켜두기 활성</string>
     <string name="keep_screen_off">화면 켜두기 비활성</string>

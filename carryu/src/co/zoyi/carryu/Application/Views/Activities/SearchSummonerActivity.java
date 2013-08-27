@@ -9,8 +9,6 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 import co.zoyi.carryu.Application.Etc.CURouter;
-import co.zoyi.carryu.Application.Etc.CUUtil;
-import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
 

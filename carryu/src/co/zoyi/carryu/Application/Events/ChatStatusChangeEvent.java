@@ -1,7 +1,6 @@
 package co.zoyi.carryu.Application.Events;
 
 import co.zoyi.Chat.Services.ChatService;
-import co.zoyi.carryu.Application.Events.Event;
 
 public class ChatStatusChangeEvent extends Event {
     ChatService.Status status;

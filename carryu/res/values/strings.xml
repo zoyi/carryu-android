@@ -4,13 +4,14 @@
     <string name="lol_user_id">ID</string>
     <string name="lol_user_password">Password</string>
     <string name="login">Login</string>
+    <string name="next">Next</string>
     <string name="logout">Logout</string>
     <string name="logging_in">Logging in...</string>
     <string name="connecting">Connecting to server</string>
     <string name="our_summoner">Our Team</string>
     <string name="enemy_summoner">Enemy Team</string>
     <string name="champion_guide">Champion Guide</string>
-    <string name="ko_server">Korea</string>
+    <string name="kr_server">Korea</string>
     <string name="na_server">North America</string>
     <string name="euw_server">Europe West</string>
     <string name="level_format">Lv %1$d</string>
@@ -29,7 +30,7 @@
     <string name="not_support_ai_mode">AI battle not supported.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="exit_app">Would you like to exit CarryU?</string>
+    <string name="exit_app">Would you like to exit CarryU? (Your LOL chatting status may go offline when terminating the app. In this case, please turn your status back to online on your LOL client.)</string>
     <string name="feedback">Feedback</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="keep_screen_off">Keep screen off</string>

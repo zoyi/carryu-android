@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        android:id="@+id/server_select_activity"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <ImageView
+                    android:src="@drawable/logo"
+                    android:scaleType="fitStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"/>
+
+            <Button
+                    style="@style/Button_Blue"
+                    android:id="@+id/server_select_btn"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:layout_height="@dimen/dim_50"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/dim_20"
+                    android:layout_marginRight="@dimen/dim_20"
+                    android:layout_margin="@dimen/dim_10"
+                    android:onClick="onSelectButtonClick"
+                    />
+
+
+            <Button
+                    style="@style/Button_Blue"
+                    android:id="@+id/server_select"
+                    android:text="@string/next"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:layout_height="@dimen/dim_50"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/dim_20"
+                    android:layout_marginRight="@dimen/dim_20"
+                    android:layout_margin="@dimen/dim_10"
+                    android:onClick="onNextButtonClick"
+                     />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

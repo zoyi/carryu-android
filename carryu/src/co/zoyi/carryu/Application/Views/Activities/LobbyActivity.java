@@ -5,11 +5,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.Chat.Services.ChatService;
+import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Commons.Refreshable;
-import co.zoyi.carryu.Application.Views.Dialogs.ConfirmDialog;
 import co.zoyi.carryu.R;
 
 public class LobbyActivity extends CUActivity implements Refreshable {
@@ -48,6 +47,7 @@ public class LobbyActivity extends CUActivity implements Refreshable {
     @Override
     public void refresh() {
         ChatService.Status status = Registry.getChatService().getStatus();
+
         if (status == ChatService.Status.IN_QUEUE) {
             Button.class.cast(findViewById(R.id.sample)).setVisibility(View.GONE);
             TextView.class.cast(findViewById(R.id.current_state_message)).setText("");

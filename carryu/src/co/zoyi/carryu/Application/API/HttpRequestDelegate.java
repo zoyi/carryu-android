@@ -5,7 +5,6 @@ import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.CURouter;
-import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;

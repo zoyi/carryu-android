@@ -4,7 +4,6 @@ import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.Serializers.ActiveGameJSONSerializer;
 import co.zoyi.carryu.Application.Datas.Serializers.ServerListJSONSerializer;
 import co.zoyi.carryu.Application.Datas.Serializers.SummonerJSONSerializer;
-import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 
 public class Registry {
     private static ChatService chatService;

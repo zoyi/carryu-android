@@ -1,13 +1,11 @@
 package co.zoyi.Chat.Services;
 
-import android.os.AsyncTask;
 import co.zoyi.Chat.Datas.ChatServerInfo;
 import co.zoyi.Chat.Etc.Util;
 import co.zoyi.Chat.Listeners.ChatStatusChangeListener;
 import co.zoyi.Chat.Listeners.FetchOurTeamNamesListener;
 import co.zoyi.Chat.Packets.OurTeamNamesIQ;
 import co.zoyi.Chat.Packets.UpdateStatusPresence;
-import co.zoyi.carryu.Application.Etc.CUUtil;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;

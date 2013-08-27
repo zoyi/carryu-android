@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import co.zoyi.Chat.Services.ChatService;
-import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
-import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.API.DataCallback;
 import co.zoyi.carryu.Application.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
+import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Etc.CUUtil;
@@ -104,6 +104,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     }
 
     public void onEventMainThread(NeedRefreshFragmentEvent event) {
+        CUUtil.log("[onEventMainThread] : NeedRefreshFragmentEvent");
         if (event.getFragment().getClass() == SummonerListFragment.class) {
             if (this.activeGame == null) {
                 fetchActiveGame();
@@ -122,6 +123,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     }
 
     public void onEventMainThread(NotifyMeChangedEvent event) {
+        CUUtil.log("[onEventMainThread] : NotifyMeChangedEvent");
         if (isSampleMode == false && this.activeGame == null) {
             fetchActiveGame();
         }

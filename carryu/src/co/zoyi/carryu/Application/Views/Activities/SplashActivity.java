@@ -28,7 +28,7 @@ public class SplashActivity extends CUActivity {
             @Override
             public void run() {
                 finish();
-                ActivityDelegate.openLoginActivity(SplashActivity.this);
+                ActivityDelegate.openServerSelectActivity(SplashActivity.this);
             }
         }, SPLASH_DURATION);
     }

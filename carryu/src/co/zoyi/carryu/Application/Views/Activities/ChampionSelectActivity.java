@@ -10,6 +10,7 @@ import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.SummonerListFragment;
 import co.zoyi.carryu.R;
 import de.greenrobot.event.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
