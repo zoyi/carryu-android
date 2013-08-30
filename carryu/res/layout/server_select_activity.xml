@@ -16,16 +16,44 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+            <RelativeLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    >
+                <ImageView
+                        android:id="@+id/logo"
+                        android:src="@drawable/logo"
+                        android:scaleType="fitStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        />
 
-            <ImageView
-                    android:src="@drawable/logo"
-                    android:scaleType="fitStart"
+                <ImageView
+                        android:src="@drawable/lol_label"
+                        android:scaleType="fitStart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/logo"
+                        android:layout_alignTop="@+id/logo"
+                        />
+            </RelativeLayout>
+
+
+            <TextView
+                    android:id="@+id/login_message"
+                    android:text="@string/choose_region_desc"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/dim_10"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"/>
-
+                    android:layout_height="wrap_content"
+                    />
             <Button
-                    style="@style/Button_Blue"
+                    android:background="@color/navigation_color"
                     android:id="@+id/server_select_btn"
                     android:textColor="@color/white"
                     android:textSize="@dimen/tex_size_xlarge"

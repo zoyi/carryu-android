@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServerSelectActivity extends CUActivity {
-    public static String CONNECTION_CLOSED_INTENT_KEY = "connection_closed";
     public static String EXIT_APPLICATION_INTENT_KEY = "exit_application";
 
     private final String SERVER_INFO_PREFERENCE_KEY = "server_info_pref";
@@ -49,20 +48,24 @@ public class ServerSelectActivity extends CUActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (ActivityDelegate.hasIntentExtra(this, EXIT_APPLICATION_INTENT_KEY)) {
             if (Registry.getChatService().isConnected()) {
                 Registry.getChatService().disconnect();
             }
-            finish();
-        } else {
-            setContentView(R.layout.server_select_activity);
-
-            restoreServerInfo();
-            restoreSelectedServer();
-            fetchServerInfo();
         }
+
+        setContentView(R.layout.server_select_activity);
+
+        restoreServerInfo();
+        restoreSelectedServer();
+        fetchServerInfo();
     }
 
     private void fetchServerInfo() {
@@ -110,7 +113,7 @@ public class ServerSelectActivity extends CUActivity {
 
         if (status == ChatService.Status.CONNECTED) {
             hideProgressDialog();
-            ActivityDelegate.openLoginActivity(ServerSelectActivity.this);
+            ActivityDelegate.openLoginSelectActivity(ServerSelectActivity.this);
         }
 
     }
@@ -132,7 +135,6 @@ public class ServerSelectActivity extends CUActivity {
             @Override
             protected Boolean doInBackground(ChatService... chatServices) {
                 ChatService chatService = chatServices[0];
-                CUUtil.log(this, "[processChatStatus] connect" );
                 return new Boolean(chatService.connect());
             }
         }.execute(Registry.getChatService());
@@ -171,11 +173,11 @@ public class ServerSelectActivity extends CUActivity {
     private void showServerSelectBoxDialog() {
         if (selectBoxDialog == null) {
             Map<Object, String> map = new HashMap<Object, String>();
-            map.put(ServerList.ServerInfo.ServerName.KR, getString(R.string.kr_server));
-            map.put(ServerList.ServerInfo.ServerName.NA, getString(R.string.na_server));
             map.put(ServerList.ServerInfo.ServerName.EUW, getString(R.string.euw_server));
+            map.put(ServerList.ServerInfo.ServerName.NA, getString(R.string.na_server));
+            map.put(ServerList.ServerInfo.ServerName.KR, getString(R.string.kr_server));
 
-            selectBoxDialog = new SelectBoxDialog(this, "", map, ServerList.ServerInfo.ServerName.class.cast(Button.class.cast(findViewById(R.id.server_select_btn)).getTag(SELECTED_SERVER_KEY)).ordinal()
+            selectBoxDialog = new SelectBoxDialog(this, getString(R.string.select_region), map, ServerList.ServerInfo.ServerName.class.cast(Button.class.cast(findViewById(R.id.server_select_btn)).getTag(SELECTED_SERVER_KEY)).ordinal()
                 , new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup radioGroup, int i) {

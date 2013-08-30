@@ -18,7 +18,6 @@ import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.CURouter;
-import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Events.NeedRefreshFragmentEvent;
 import co.zoyi.carryu.Application.Events.NotifyMeChangedEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
@@ -31,9 +30,12 @@ import java.util.List;
 
 public class InGameActivity extends CUActivity implements TabHost.OnTabChangeListener, Refreshable {
     public static String SAMPLE_IN_GAME_INTENT_KEY = "is_sample";
+    public static String IN_GAME_WITH_SUMMONER_ID_INTENT_KEY = "in_game_with_summoner_id";
 
     private TabHost tabHost;
     private boolean isSampleMode;
+    private String summonerIdWithoutLogin;
+
     private ActiveGame activeGame;
     private Fragment lastFragment;
     private String championGuideUrl;
@@ -51,7 +53,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     };
 
     private boolean isLastFragmentSummonerListFragment() {
-        return lastFragment == ourTeamListFragment || lastFragment == ourTeamListFragment;
+        return lastFragment == ourTeamListFragment;
     }
 
     @Override
@@ -59,8 +61,10 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.in_game_activity);
 
-        isSampleMode = getIntent() != null && getIntent().getBooleanExtra(SAMPLE_IN_GAME_INTENT_KEY, false);
-
+        if (getIntent() != null) {
+            summonerIdWithoutLogin = getIntent().getStringExtra(IN_GAME_WITH_SUMMONER_ID_INTENT_KEY);
+            isSampleMode = getIntent().getBooleanExtra(SAMPLE_IN_GAME_INTENT_KEY, false);
+        }
         initializeTabs();
     }
 
@@ -75,13 +79,40 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
 
     @Override
     protected boolean shouldConfirmBeforeFinish() {
-        return !isSampleMode;
+        return isAvailableSession();
     }
 
     @Override
     public void onBackPressed() {
         if (isLastFragmentSummonerListFragment() || championGuideFragment.goBack() == false) {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void fetchMe() {
+        if (isAvailableSession()) {
+            HttpRequestDelegate.fetchSummoner(Registry.getChatService().getUserId(), new DataCallback<Summoner>() {
+                @Override
+                public void onSuccess(Summoner object) {
+                    super.onSuccess(object);
+                    if (object != null) {
+                        setMe(object);
+                    }
+                }
+            });
+        } else if(summonerIdWithoutLogin != null) {
+            HttpRequestDelegate.fetchSummonerWithName(summonerIdWithoutLogin, new DataCallback<Summoner>() {
+                @Override
+                public void onSuccess(Summoner object) {
+                    super.onSuccess(object);
+                    if (object != null) {
+                        setMe(object);
+                    }
+                }
+            });
+        } else {
+            //TODO ERROR CAN NOT FETCH ME
         }
     }
 
@@ -92,7 +123,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             } else {
                 int championId = 0;
                 for (Summoner summoner : activeGame.getOurTeamSummoners()) {
-                    if (summoner.getId() == Integer.parseInt(Registry.getChatService().getUserId())) {
+                    if (summoner.getId() == getMe().getId()) {
                         championId = summoner.getChampion().getId();
                     }
                 }
@@ -103,8 +134,11 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
         return this.championGuideUrl;
     }
 
+    private boolean isAvailableSession() {
+        return Registry.getChatService().getUserId() != null;
+    }
+
     public void onEventMainThread(NeedRefreshFragmentEvent event) {
-        CUUtil.log("[onEventMainThread] : NeedRefreshFragmentEvent");
         if (event.getFragment().getClass() == SummonerListFragment.class) {
             if (this.activeGame == null) {
                 fetchActiveGame();
@@ -123,15 +157,15 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     }
 
     public void onEventMainThread(NotifyMeChangedEvent event) {
-        CUUtil.log("[onEventMainThread] : NotifyMeChangedEvent");
         if (isSampleMode == false && this.activeGame == null) {
             fetchActiveGame();
         }
     }
 
+
     private void fetchActiveGame() {
         if (this.activeGame == null) {
-            DataCallback<ActiveGame> dataCallback = new DataCallback<ActiveGame>() {
+            final DataCallback<ActiveGame> dataCallback = new DataCallback<ActiveGame>() {
                 @Override
                 public void onSuccess(ActiveGame activeGame) {
                     super.onSuccess(activeGame);
@@ -150,6 +184,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
     }
 
     private void updateActiveGame(ActiveGame activeGame) {
+
         if (activeGame != null) {
             this.activeGame = activeGame;
             ourTeamListFragment.updateSummoners(this.activeGame.getOurTeamSummoners());
@@ -157,7 +192,11 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
             championGuideFragment.loadUrl(getChampionGuideUrl());
         } else {
             if (isSampleMode == false) {
-                ActivityDelegate.openActivityWithConfirmMessage(this, ChampionSelectActivity.class, getString(R.string.not_support_ai_mode));
+                if (isAvailableSession()) {
+                    ActivityDelegate.openActivityWithConfirmMessage(this, LoginActivity.class, getString(R.string.can_not_find_active_game));
+                } else {
+                    ActivityDelegate.openActivityWithConfirmMessage(this, SummonerIdLoginActivity.class, getString(R.string.can_not_find_active_game));
+                }
             } else {
                 ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.no_response_error));
             }

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <include layout="@layout/home_header_with_search" />
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                    android:id="@+id/login_layout"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dim_20"
+                    >
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dim_30"
+                        >
+                    <TextView
+                            android:id="@+id/login_with_riot_account_desc"
+                            android:text="@string/login_with_riot_account_desc"
+                            android:textSize="@dimen/tex_size_large"
+                            android:textColor="@color/text_color"
+                            android:gravity="center"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginRight="@dimen/dim_20"
+                            android:layout_marginLeft="@dimen/dim_20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dim_10"/>
+                    <Button
+                            android:id="@+id/login_with_riot_account_btn"
+                            android:text="@string/login_with_riot_account_btn_title"
+                            android:textSize="@dimen/tex_size_large"
+                            android:textColor="@color/white"
+                            android:background="#1398B1"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/dim_50"
+                            android:layout_width="match_parent"
+                            android:layout_marginRight="@dimen/dim_20"
+                            android:layout_marginLeft="@dimen/dim_20"
+                            android:onClick="onLoginWithRiotAccountButtonClick"
+                            />
+                </LinearLayout>
+
+                <ImageView
+                     android:src="@drawable/hr"
+                     android:scaleType="fitCenter"
+                     android:gravity="center"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="@dimen/dim_10"
+                     android:layout_marginRight="@dimen/dim_10"/>
+
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dim_30"
+                        android:layout_marginTop="@dimen/dim_30">
+                    <TextView
+                            android:id="@+id/login_with_summoner_id_desc"
+                            android:text="@string/login_with_summoner_name_desc"
+                            android:textSize="@dimen/tex_size_large"
+                            android:textColor="@color/text_color"
+                            android:gravity="center"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginRight="@dimen/dim_20"
+                            android:layout_marginLeft="@dimen/dim_20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/dim_10"/>
+                    <Button
+                            android:background="#1398B1"
+                            android:id="@+id/login_with_summoner_id_btn"
+                            android:text="@string/login_with_summoner_name_btn_title"
+                            android:textSize="@dimen/tex_size_large"
+                            android:textColor="@color/white"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_height="@dimen/dim_50"
+                            android:layout_width="match_parent"
+                            android:layout_marginRight="@dimen/dim_20"
+                            android:layout_marginLeft="@dimen/dim_20"
+                            android:onClick="onLoginWithSummonerIdButtonClick"
+                            />
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dim_10">
+                <TextView
+                        android:id="@+id/current_state_message"
+                        android:text="@string/preview_sample_game_desc"
+                        android:textSize="@dimen/tex_size_large"
+                        android:textColor="@color/text_color"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/dim_20"
+                        android:layout_marginLeft="@dimen/dim_20"
+                        android:layout_marginBottom="@dimen/dim_5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                <Button
+                        android:background="@color/navigation_color"
+                        android:id="@+id/sample"
+                        android:text="@string/sample"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/tex_size_large"
+                        android:layout_height="@dimen/dim_50"
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="@dimen/dim_20"
+                        android:layout_marginLeft="@dimen/dim_20"
+                        android:onClick="onSampleGameButtonClick" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

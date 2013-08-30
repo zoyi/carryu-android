@@ -23,10 +23,20 @@
     <string name="load_failed">로딩 실패</string>
     <string name="input_summoner_name">소환사명</string>
     <string name="login_lol_account">롤 계정으로 로그인해주세요.</string>
+    <string name="choose_region_desc">리그오브레전드 서버 지역을 선택해주세요.</string>
+    <string name="select_region">서버 지역 변경</string>
     <string name="searching_for_match">게임을 찾고 있습니다.</string>
     <string name="welcome_message">게임을 시작하세요.\n자동으로 우리팀과 적팀의 정보를 불러옵니다.</string>
+
+    <string name="login_with_riot_account_desc">롤 계정으로 로그인 하여 자동으로 게임 정보를 불러 옵니다.</string>
+    <string name="login_with_riot_account_btn_title">롤 계정으로 로그인</string>
+    <string name="login_with_summoner_name_desc">소환사 명으로 간단하게 로그인 하여 수동으로 검색합니다.</string>
+    <string name="login_with_summoner_name_btn_title">소환사 명으로 로그인</string>
+    <string name="preview_sample_game_desc">실시간 게임 검색 결과가 궁금하다면?</string>
+    <string name="signin_with_summoner_name_header">검색하시려는 소환사 명을 입력해주세요.</string>
+
     <string name="sample">샘플 미리보기</string>
-    <string name="not_support_ai_mode">AI 봇 게임은 지원하지 않습니다.</string>
+    <string name="can_not_find_active_game">현재 게임정보를 얻어올 수 없는 AI 게임 이거나, 해당 유저가 게임 중이 아닐 수 있습니다. 게임로딩이 시작되면 다시 로그인 해보세요.</string>
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
     <string name="exit_app">캐리유를 종료하시겠습니까? (종료시 롤의 채팅 상태가 로그아웃으로 보일 수 있습니다. 이럴경우 LOL 클라이언트에서 채팅 상태를 온라인으로 변경해주시길 바랍니다.)</string>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        android:id="@+id/login_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+
+    <include layout="@layout/login_header" />
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:id="@+id/summoner_id_login_message"
+                    android:text="@string/signin_with_summoner_name_header"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:textColor="@drawable/ui_text_selector"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/dim_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            <EditText
+                    style="@style/EditText_Blue"
+                    android:id="@+id/user_id"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:hint="@string/lol_user_id"
+                    android:layout_margin="@dimen/dim_10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+
+            <Button
+                    style="@style/Button_Blue"
+                    android:id="@+id/login"
+                    android:text="@string/login_with_summoner_name_btn_title"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/tex_size_xlarge"
+                    android:layout_height="@dimen/dim_50"
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="@dimen/dim_20"
+                    android:layout_marginRight="@dimen/dim_20"
+                    android:layout_margin="@dimen/dim_10"
+                    android:onClick="onSummonerIdLoginButtonClick" />
+
+            <TextView
+                    android:id="@+id/login_with_summoner_name_desc"
+                    android:text="@string/login_with_summoner_name_desc"
+                    android:textSize="@dimen/tex_size_large"
+                    android:textColor="@color/gray_167"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/dim_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -76,6 +76,11 @@ public class HttpRequestDelegate {
         return URLEncoder.encode(summoner.getName(), "UTF-8").replace("+", "%20");
     }
 
+    private static String getEncodedSummonerName(String summoner_name) throws UnsupportedEncodingException {
+        return URLEncoder.encode(summoner_name, "UTF-8").replace("+", "%20");
+    }
+
+
     public static void fetchSummoner(final Summoner summoner, final DataCallback<Summoner> cb) {
         try {
             get("/summoners/" + getEncodedSummonerName(summoner), null, new HttpResponseHandler(cb){
@@ -98,6 +103,20 @@ public class HttpRequestDelegate {
                 cb.onSuccess(Registry.getSummonerSerializer().toObjectFromRooted(s, Summoner.Rooted.class));
             }
         });
+    }
+
+    public static void fetchSummonerWithName(final String name, final DataCallback<Summoner> cb) {
+        try {
+            get("/summoners/" + getEncodedSummonerName(name), null, new HttpResponseHandler(cb){
+                @Override
+                public void onSuccess(String s) {
+                    super.onSuccess(s);
+                    cb.onSuccess(Registry.getSummonerSerializer().toObjectFromRooted(s, Summoner.Rooted.class));
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void fetchActiveGame(final Summoner me, final DataCallback<ActiveGame> cb) {

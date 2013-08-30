@@ -41,6 +41,17 @@ public class ActivityDelegate {
         context.startActivity(intent);
     }
 
+    static public void openLoginSelectActivity(Context context) {
+        Intent intent = new Intent(context, LoginSelectActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+    static public void openSummonerIdLoginActivity(Context context) {
+        Intent intent = new Intent(context, SummonerIdLoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+    }
+
     static public void openServerSelectActivity(Context context) {
         Intent intent = new Intent(context, ServerSelectActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -64,6 +75,13 @@ public class ActivityDelegate {
         Intent intent = new Intent(context, InGameActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(InGameActivity.SAMPLE_IN_GAME_INTENT_KEY, false);
+        context.startActivity(intent);
+    }
+    static public void openInGameActivityWithSummonerId(Context context, String SummonerId) {
+        Intent intent = new Intent(context, InGameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(InGameActivity.SAMPLE_IN_GAME_INTENT_KEY, false);
+        intent.putExtra(InGameActivity.IN_GAME_WITH_SUMMONER_ID_INTENT_KEY, SummonerId);
         context.startActivity(intent);
     }
 
@@ -94,9 +112,9 @@ public class ActivityDelegate {
     }
 
     static public void exitApplication(Context context) {
-        Intent intent = new Intent(context, LoginActivity.class);
+        Intent intent = new Intent(context, ServerSelectActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(LoginActivity.EXIT_APPLICATION_INTENT_KEY, true);
+        intent.putExtra(ServerSelectActivity.EXIT_APPLICATION_INTENT_KEY, true);
         context.startActivity(intent);
     }
 

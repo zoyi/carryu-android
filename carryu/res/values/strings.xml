@@ -24,10 +24,20 @@
     <string name="load_failed">Failed</string>
     <string name="input_summoner_name">Summoner name</string>
     <string name="login_lol_account">Login with your LOL account</string>
+    <string name="choose_region_desc">Please choose the server region</string>
+    <string name="select_region">Server region change</string>
     <string name="searching_for_match">Searching for the Match</string>
     <string name="welcome_message">Start the game.\nThe stats of both team will show automatically.</string>
+
+    <string name="login_with_riot_account_desc">Login with LOL account bring game info automatically</string>
+    <string name="login_with_riot_account_btn_title">Login with LOL account</string>
+    <string name="login_with_summoner_name_desc">Quick login with summoner name \n research manually</string>
+    <string name="login_with_summoner_name_btn_title">Login with summoner name</string>
+    <string name="preview_sample_game_desc">If you want to know the real time game search results?</string>
+    <string name="signin_with_summoner_name_header">Please enter the summoner name you are searching for.</string>
+
     <string name="sample">Preview Sample</string>
-    <string name="not_support_ai_mode">AI battle not supported.</string>
+    <string name="can_not_find_active_game">AI battle not supported.</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="exit_app">Would you like to exit CarryU? (Your LOL chatting status may go offline when terminating the app. In this case, please turn your status back to online on your LOL client.)</string>

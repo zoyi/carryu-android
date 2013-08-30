@@ -6,6 +6,7 @@ import co.zoyi.Chat.Listeners.ChatStatusChangeListener;
 import co.zoyi.Chat.Listeners.FetchOurTeamNamesListener;
 import co.zoyi.Chat.Packets.OurTeamNamesIQ;
 import co.zoyi.Chat.Packets.UpdateStatusPresence;
+import co.zoyi.carryu.Application.Etc.CUUtil;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.filter.*;
 import org.jivesoftware.smack.packet.IQ;
@@ -105,21 +106,31 @@ public class ChatService {
         this.connection.sendPacket(new UpdateStatusPresence(lastPresence, this.defaultOnlineStatusMessage));
     }
 
-    public void login(String userId, String userPassword) {
+    public boolean login(String userId, String userPassword) {
+        CUUtil.log(this, "[DEBUG CU SMACK] connection:" + connection.isConnected());
         if (connection.isConnected()) {
             try {
                 connection.login(userId, "AIR_" + userPassword);
             } catch (XMPPException e) {
                 e.printStackTrace();
+                CUUtil.log(this, "[DEBUG CU SMACK]  " + e.toString());
             }
+
+            CUUtil.log(this, "[DEBUG CU SMACK] authenticate:" + connection.isAuthenticated());
 
             if (connection.isAuthenticated()) {
                 addPacketProcessors();
                 setStatus(Status.AUTHENTICATED);
+                CUUtil.log(this, "[DEBUG CU SMACK] setStatus AUTHENTICATED");
+                return true;
             } else {
                 setStatus(Status.FAILED_AUTHENTICATE);
+                CUUtil.log(this, "[DEBUG CU SMACK] setStatus FAILED_AUTHENTICATE");
+                return false;
             }
         }
+
+        return false;
     }
 
     private PacketListener packetListener = new PacketListener() {
@@ -182,6 +193,7 @@ public class ChatService {
         this.connectionConfiguration = new ConnectionConfiguration(chatServerInfo.host, chatServerInfo.port, "pvp.net");
         this.connectionConfiguration.setSASLAuthenticationEnabled(true);
         this.connectionConfiguration.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
+        this.connectionConfiguration.setCompressionEnabled(true);
         this.connectionConfiguration.setSocketFactory(new DummySSLSocketFactory());
         this.connectionConfiguration.setReconnectionAllowed(true);
         this.connectionConfiguration.setRosterLoadedAtLogin(false);

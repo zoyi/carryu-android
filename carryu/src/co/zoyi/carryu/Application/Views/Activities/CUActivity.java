@@ -27,7 +27,7 @@
 public abstract class CUActivity extends FragmentActivity {
     public static String CONFIRM_MESSAGE_INTENT_KEY = "confirm_message";
 
-    private static Summoner me;
+    protected Summoner me;
 //    private static String keepScreenOnKey = "keep_screen_on";
 
     private MessageDialog messageDialog;
@@ -122,6 +122,7 @@ public abstract class CUActivity extends FragmentActivity {
         switch (item.getItemId()) {
             case R.id.logout:
                 Registry.getChatService().disconnect();
+                ActivityDelegate.openServerSelectActivity(this);
                 break;
             case R.id.feedback:
                 ActivityDelegate.openFeedbackActivity(this);
@@ -242,19 +243,19 @@ public abstract class CUActivity extends FragmentActivity {
         return messageDialog;
     }
 
-    public static Summoner getMe() {
+    public Summoner getMe() {
         if (me == null) {
             fetchMe();
         }
         return me;
     }
 
-    public static void setMe(Summoner me) {
-        CUActivity.me = me;
+    public void setMe(Summoner me) {
+        this.me = me;
         EventBus.getDefault().post(new NotifyMeChangedEvent(me));
     }
 
-    private static void fetchMe() {
+    protected void fetchMe() {
         if (Registry.getChatService().getUserId() != null) {
             HttpRequestDelegate.fetchSummoner(Registry.getChatService().getUserId(), new DataCallback<Summoner>() {
                 @Override
@@ -306,9 +307,9 @@ public abstract class CUActivity extends FragmentActivity {
                 ActivityDelegate.openLobbyActivity(this);
             }
         } else if (status == ChatService.Status.CONNECTION_CLOSED){
-            if (getClass() != LoginActivity.class) {
-                ActivityDelegate.openLoginActivityWithConnectionClosedCrouton(this);
-            }
+//            if (getClass() != LoginActivity.class) {
+//                ActivityDelegate.openLoginActivityWithConnectionClosedCrouton(this);
+//            }
         }
     }
 
