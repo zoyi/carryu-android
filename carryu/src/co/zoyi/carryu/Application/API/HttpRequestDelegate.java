@@ -133,7 +133,7 @@ public class HttpRequestDelegate {
 
     public static void fetchActiveGame(final Summoner me, final DataCallback<ActiveGame> cb) {
         try {
-            getRtmp("/active_game/" + getEncodedSummonerName(me), null, new HttpResponseHandler(cb) {
+            get("/active_games/" + getEncodedSummonerName(me), null, new HttpResponseHandler(cb) {
                 @Override
                 public void onSuccess(String s) {
                     super.onSuccess(s);
