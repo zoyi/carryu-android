@@ -15,72 +15,81 @@
             android:layout_width="80dp" />
 
     <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:padding="@dimen/dim_10"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content">
 
-        <TextView
-                android:id="@+id/summoner_name"
-                android:textColor="@color/white"
-                android:textSize="@dimen/tex_size_normal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
         <LinearLayout
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:id="@+id/spell_container"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dim_5"
+                android:orientation="vertical">
 
-                <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content">
+            <com.loopj.android.image.SmartImageView
+                    android:id="@+id/first_spell"
+                    android:layout_marginBottom="@dimen/dim_5"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp" />
 
-                    <com.loopj.android.image.SmartImageView
-                            android:id="@+id/rank_icon"
-                            android:visibility="gone"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp" />
-
-                    <TextView
-                            android:id="@+id/ranked_stat"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/tex_size_small"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                        android:id="@+id/spell_container"
-                        android:visibility="gone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                    <com.loopj.android.image.SmartImageView
-                            android:id="@+id/first_spell"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp" />
-
-                    <com.loopj.android.image.SmartImageView
-                            android:id="@+id/second_spell"
-                            android:layout_marginLeft="@dimen/dim_5"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp" />
-
-                </LinearLayout>
+            <com.loopj.android.image.SmartImageView
+                    android:id="@+id/second_spell"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp" />
 
         </LinearLayout>
 
-        <TextView
-                android:id="@+id/summoner_stat"
-                android:textSize="@dimen/tex_size_small"
-                android:textColor="@color/gray_167"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dim_5"
+                android:orientation="vertical">
+
+
+            <TextView
+                    android:id="@+id/summoner_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/tex_size_normal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content">
+
+                        <com.loopj.android.image.SmartImageView
+                                android:id="@+id/rank_icon"
+                                android:visibility="gone"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp" />
+
+                        <TextView
+                                android:id="@+id/ranked_stat"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/tex_size_small"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/summoner_stat"
+                    android:textSize="@dimen/tex_size_small"
+                    android:textColor="@color/gray_167"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+        </LinearLayout>
 
     </LinearLayout>
 
