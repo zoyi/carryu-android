@@ -39,13 +39,13 @@
         <activity android:name=".Application.Views.Activities.SearchSummonerActivity"
                   android:theme="@style/AppTheme"/>
 
-        <activity android:name=".Application.Views.Activities.FeedbackActivity"
+        <activity android:name=".Application.Views.Activities.FacebookPageActivity"
                   android:theme="@style/AppTheme"/>
 
         <activity android:name=".Application.Views.Activities.LoginSelectActivity"
                   android:theme="@style/AppTheme"/>
 
-        <activity android:name=".Application.Views.Activities.SummonerIdLoginActivity"
+        <activity android:name=".Application.Views.Activities.SummonerNameLoginActivity"
                   android:theme="@style/AppTheme"/>
 
     </application>

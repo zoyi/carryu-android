@@ -79,6 +79,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
 
     @Override
     protected boolean shouldConfirmBeforeFinish() {
+        if (isSampleMode) return false;
         return isAvailableSession();
     }
 
@@ -195,7 +196,7 @@ public class InGameActivity extends CUActivity implements TabHost.OnTabChangeLis
                 if (isAvailableSession()) {
                     ActivityDelegate.openActivityWithConfirmMessage(this, LoginActivity.class, getString(R.string.can_not_find_active_game));
                 } else {
-                    ActivityDelegate.openActivityWithConfirmMessage(this, SummonerIdLoginActivity.class, getString(R.string.can_not_find_active_game));
+                    ActivityDelegate.openActivityWithConfirmMessage(this, SummonerNameLoginActivity.class, getString(R.string.can_not_find_active_game));
                 }
             } else {
                 ActivityDelegate.openActivityWithConfirmMessage(this, LobbyActivity.class, getString(R.string.no_response_error));

@@ -59,7 +59,7 @@
             <TextView
                     android:id="@+id/login_with_summoner_name_desc"
                     android:text="@string/login_with_summoner_name_desc"
-                    android:textSize="@dimen/tex_size_large"
+                    android:textSize="@dimen/tex_size_normal"
                     android:textColor="@color/gray_167"
                     android:gravity="center"
                     android:layout_margin="@dimen/dim_5"

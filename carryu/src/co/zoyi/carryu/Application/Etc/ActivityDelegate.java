@@ -47,7 +47,7 @@ public class ActivityDelegate {
         context.startActivity(intent);
     }
     static public void openSummonerIdLoginActivity(Context context) {
-        Intent intent = new Intent(context, SummonerIdLoginActivity.class);
+        Intent intent = new Intent(context, SummonerNameLoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -105,8 +105,8 @@ public class ActivityDelegate {
         context.startActivity(intent);
     }
 
-    static public void openFeedbackActivity(Context context) {
-        Intent intent = new Intent(context, FeedbackActivity.class);
+    static public void openFacebookPageActivity(Context context) {
+        Intent intent = new Intent(context, FacebookPageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }

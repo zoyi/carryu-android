@@ -40,7 +40,7 @@
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
     <string name="exit_app">캐리유를 종료하시겠습니까? (종료시 롤의 채팅 상태가 로그아웃으로 보일 수 있습니다. 이럴경우 LOL 클라이언트에서 채팅 상태를 온라인으로 변경해주시길 바랍니다.)</string>
-    <string name="feedback">피드백</string>
+    <string name="notice">공지사항</string>
     <string name="keep_screen_on">화면 켜두기 활성</string>
     <string name="keep_screen_off">화면 켜두기 비활성</string>
     <string name="search">소환사 검색</string>

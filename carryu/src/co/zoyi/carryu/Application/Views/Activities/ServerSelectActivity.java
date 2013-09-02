@@ -16,7 +16,6 @@ import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Etc.AssetReader;
 import co.zoyi.carryu.Application.Etc.CURouter;
-import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;
 import co.zoyi.carryu.Application.Views.Dialogs.SelectBoxDialog;
 import co.zoyi.carryu.R;
@@ -69,7 +68,7 @@ public class ServerSelectActivity extends CUActivity {
     }
 
     private void fetchServerInfo() {
-        HttpRequestDelegate.fetchServerInfo(this, new DataCallback<ServerList>() {
+        HttpRequestDelegate.fetchServerInfo(new DataCallback<ServerList>() {
             @Override
             public void onSuccess(ServerList serverList) {
                 super.onSuccess(serverList);

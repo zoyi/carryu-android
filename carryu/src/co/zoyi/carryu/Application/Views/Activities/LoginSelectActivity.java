@@ -1,19 +1,23 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import co.zoyi.Chat.Services.ChatService;
+import co.zoyi.carryu.Application.API.DataCallback;
+import co.zoyi.carryu.Application.API.HttpRequestDelegate;
+import co.zoyi.carryu.Application.Datas.ValueObjects.ServerStatus;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
-import co.zoyi.carryu.Application.Registries.Registry;
-import co.zoyi.carryu.Application.Views.Commons.Refreshable;
+import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
 import co.zoyi.carryu.R;
+import com.google.gson.Gson;
+
+import java.util.Map;
 
 
 public class LoginSelectActivity extends CUActivity {
+    AlertDialog alertDialog = null;
+
     private View.OnClickListener searchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -36,11 +40,36 @@ public class LoginSelectActivity extends CUActivity {
 
         findViewById(R.id.search).setOnClickListener(searchClickListener);
         Button.class.cast(findViewById(R.id.sample)).setOnClickListener(sampleClickListener);
+        fetchServerStatus();
     }
 
     @Override
     protected boolean shouldConfirmBeforeFinish() {
         return false;
+    }
+
+    private void showServerStatusUnavailable(ServerStatus serverStatus) {
+        String show_message = "";
+        for (Map<String, String> message : serverStatus.getErrors()) {
+            show_message = show_message.concat("\n" + message.get("message"));
+        }
+
+        if (alertDialog == null)
+            alertDialog = new AlertDialog(this, show_message);
+        if (!alertDialog.isShowing())
+            alertDialog.show();
+    }
+
+    private void fetchServerStatus() {
+        HttpRequestDelegate.fetchServerStatus(new DataCallback<ServerStatus>() {
+            @Override
+            public void onError(Throwable throwable, String s) {
+                super.onError(throwable, s);
+                Gson gson = new Gson();
+                ServerStatus serverStatus = gson.fromJson(s, ServerStatus.class);
+                showServerStatusUnavailable(serverStatus);
+            }
+        });
     }
 
     @Override

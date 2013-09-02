@@ -124,8 +124,8 @@ public abstract class CUActivity extends FragmentActivity {
                 Registry.getChatService().disconnect();
                 ActivityDelegate.openServerSelectActivity(this);
                 break;
-            case R.id.feedback:
-                ActivityDelegate.openFeedbackActivity(this);
+            case R.id.notice:
+                ActivityDelegate.openFacebookPageActivity(this);
                 break;
 //            case R.id.keep_screen_toggle:
 //                setKeepScreeOn(!getKeepScreenPreference().getBoolean(keepScreenOnKey, true));

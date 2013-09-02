@@ -1,19 +1,17 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import co.zoyi.Chat.Datas.ChatServerInfo;
 import co.zoyi.Chat.Services.ChatService;
-import co.zoyi.carryu.Application.API.DataCallback;
-import co.zoyi.carryu.Application.API.HttpRequestDelegate;
-import co.zoyi.carryu.Application.Datas.Serializers.JSONSerializer;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
-import co.zoyi.carryu.Application.Etc.*;
+import co.zoyi.carryu.Application.Etc.ActivityDelegate;
+import co.zoyi.carryu.Application.Etc.CURouter;
+import co.zoyi.carryu.Application.Etc.CUUtil;
+import co.zoyi.carryu.Application.Etc.ViewPreferenceManager;
 import co.zoyi.carryu.Application.Events.Errors.AuthenticateFailErrorEvent;
 import co.zoyi.carryu.Application.Events.Errors.ConnectionClosedErrorEvent;
 import co.zoyi.carryu.Application.Registries.Registry;
@@ -23,10 +21,6 @@ import de.greenrobot.event.EventBus;
 
 public class LoginActivity extends CUActivity {
     public static String CONNECTION_CLOSED_INTENT_KEY = "connection_closed";
-
-    private String SERVER_INFO_PREFERENCE_KEY = "server_info_pref";
-    private String SERVER_INFO_JSON_KEY = "server_info";
-    private String DEFAULT_SERVER_INFO_JSON_FILE = "default_server_info.json";
 
     private String NOTICE_PREFERENCE_KEY = "notice_pref";
     private String NOTICE_PASSWORD_KEY = "notice_password_key";
@@ -54,8 +48,6 @@ public class LoginActivity extends CUActivity {
          }
          initializeViews();
          restoreViewPreferences();
-         restoreServerInfo();
-         fetchServerInfo();
     }
 
     private void showPasswordNoticeDialog() {
@@ -81,17 +73,6 @@ public class LoginActivity extends CUActivity {
 
     }
 
-    private void fetchServerInfo() {
-        HttpRequestDelegate.fetchServerInfo(this, new DataCallback<ServerList>() {
-            @Override
-            public void onSuccess(ServerList serverList) {
-                super.onSuccess(serverList);
-                LoginActivity.this.serverList = serverList;
-                storeServerInfo();
-            }
-        });
-    }
-
     private void storeViewPreferences() {
         new ViewPreferenceManager.Storage(this)
             .save(R.id.user_id, "user_id")
@@ -102,22 +83,6 @@ public class LoginActivity extends CUActivity {
         new ViewPreferenceManager.Loader(this)
             .load(R.id.user_id, "user_id")
             .load(R.id.user_password, "user_password");
-    }
-
-    private void storeServerInfo() {
-        String serverListJsonString = JSONSerializer.getGsonInstance().toJson(this.serverList);
-        SharedPreferences.Editor editor = getSharedPreferences(SERVER_INFO_PREFERENCE_KEY, MODE_PRIVATE).edit();
-        editor.putString(SERVER_INFO_JSON_KEY, serverListJsonString);
-        editor.commit();
-    }
-
-    private void restoreServerInfo() {
-        SharedPreferences sharePreference = getSharedPreferences(SERVER_INFO_PREFERENCE_KEY, MODE_PRIVATE);
-        if (sharePreference.contains(SERVER_INFO_JSON_KEY) == false) {
-            this.serverList = Registry.getServerListJSONSerializer().toObject(AssetReader.readString(this, DEFAULT_SERVER_INFO_JSON_FILE), ServerList.class);
-        } else {
-            this.serverList = Registry.getServerListJSONSerializer().toObject(sharePreference.getString(SERVER_INFO_JSON_KEY, ""), ServerList.class);
-        }
     }
 
     @Override

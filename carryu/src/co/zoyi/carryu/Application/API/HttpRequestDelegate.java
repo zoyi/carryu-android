@@ -4,6 +4,7 @@ import android.content.Context;
 import co.zoyi.carryu.Application.Datas.Models.ActiveGame;
 import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
+import co.zoyi.carryu.Application.Datas.ValueObjects.ServerStatus;
 import co.zoyi.carryu.Application.Etc.CURouter;
 import co.zoyi.carryu.Application.Registries.Registry;
 import com.google.gson.Gson;
@@ -60,7 +61,7 @@ public class HttpRequestDelegate {
         client.get(CURouter.getRtmpHost() + url, params, responseHandler);
     }
 
-    public static void fetchServerInfo(final Context context, final DataCallback<ServerList> cb) {
+    public static void fetchServerInfo(final DataCallback<ServerList> cb) {
         client.get(BASE_END_POINTS, null, new HttpResponseHandler(cb) {
             @Override
             public void onSuccess(String s) {
@@ -68,6 +69,17 @@ public class HttpRequestDelegate {
                 Gson gson = new Gson();
                 ServerList serverList = gson.fromJson(s, ServerList.class);
                 cb.onSuccess(serverList);
+            }
+        });
+    }
+
+    public static void fetchServerStatus(final DataCallback<ServerStatus> cb) {
+        get("/status", null, new HttpResponseHandler(cb) {
+
+            @Override
+            public void onFailure(Throwable throwable, String s) {
+                super.onFailure(throwable, s);
+                cb.onError(throwable, s);
             }
         });
     }

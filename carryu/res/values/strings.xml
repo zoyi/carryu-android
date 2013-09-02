@@ -41,7 +41,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="exit_app">Would you like to exit CarryU? (Your LOL chatting status may go offline when terminating the app. In this case, please turn your status back to online on your LOL client.)</string>
-    <string name="feedback">Feedback</string>
+    <string name="notice">Notice</string>
     <string name="keep_screen_on">Keep screen on</string>
     <string name="keep_screen_off">Keep screen off</string>
     <string name="search">Search</string>

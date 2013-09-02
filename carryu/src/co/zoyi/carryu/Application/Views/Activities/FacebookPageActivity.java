@@ -6,7 +6,7 @@ import co.zoyi.carryu.Application.Views.Commons.Refreshable;
 import co.zoyi.carryu.Application.Views.Fragments.WebViewFragment;
 import co.zoyi.carryu.R;
 
-public class FeedbackActivity extends CUActivity implements Refreshable {
+public class FacebookPageActivity extends CUActivity implements Refreshable {
     private WebViewFragment webViewFragment;
 
     protected boolean shouldConfirmBeforeFinish() {
