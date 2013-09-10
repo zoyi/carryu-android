@@ -115,13 +115,26 @@ public class SummonerListFragment extends CUFragment implements Refreshable {
     }
 
     private void startFetchSummoner(final Summoner summoner) {
-        HttpRequestDelegate.fetchSummoner(summoner, new DataCallback<Summoner>() {
-            @Override
-            public void onSuccess(Summoner newSummoner) {
-                super.onSuccess(newSummoner);
-                summoner.update(newSummoner);
-                refreshViewsOnUiThread();
-            }
-        });
+        if (summoner.getChampion() != null) {
+            HttpRequestDelegate.fetchSummonerWithChampion(summoner, summoner.getChampion().getId(), new DataCallback<Summoner>() {
+                @Override
+                public void onSuccess(Summoner newSummoner) {
+                    super.onSuccess(newSummoner);
+                    summoner.update(newSummoner);
+                    refreshViewsOnUiThread();
+                }
+            });
+        } else {
+            HttpRequestDelegate.fetchSummoner(summoner, new DataCallback<Summoner>() {
+                @Override
+                public void onSuccess(Summoner newSummoner) {
+                    super.onSuccess(newSummoner);
+                    summoner.update(newSummoner);
+                    refreshViewsOnUiThread();
+                }
+            });
+        }
+
+
     }
 }

@@ -11,6 +11,7 @@ import co.zoyi.carryu.Application.Etc.ActivityDelegate;
 import co.zoyi.carryu.Application.Views.Dialogs.AlertDialog;
 import co.zoyi.carryu.R;
 import com.google.gson.Gson;
+import com.sbstrm.appirater.Appirater;
 
 import java.util.Map;
 
@@ -35,6 +36,7 @@ public class LoginSelectActivity extends CUActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Appirater.appLaunched(this);
 
         setContentView(R.layout.login_select_activity);
 

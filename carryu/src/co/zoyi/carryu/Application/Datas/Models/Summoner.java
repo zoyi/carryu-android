@@ -26,9 +26,9 @@ public class Summoner extends Model {
     @SerializedName("profile_icon_id")
     private int profileIconId;
     @SerializedName("ranked_solo_stat")
-    private RankStat ranked_solo_stat;
+    private RankStat rankedSoloStat;
     @SerializedName("unranked_stat")
-    private Stat unranked_stat;
+    private Stat unrankedStat;
     @SerializedName("champion")
     private Champion champion;
     @SerializedName("spell1")
@@ -89,10 +89,10 @@ public class Summoner extends Model {
     }
 
     public String getRankIconUrl() {
-        if (ranked_solo_stat == null) {
+        if (rankedSoloStat == null) {
             return "";
         }
-        return String.format("http://carryu.co/assets/league/%s_%d.png", ranked_solo_stat.getTier().toLowerCase(), ranked_solo_stat.getRank());
+        return String.format("http://carryu.co/assets/league/%s_%d.png", rankedSoloStat.getTier().toLowerCase(), rankedSoloStat.getRank());
     }
 
     public String getFirstSpellImageUrl() {
@@ -110,41 +110,53 @@ public class Summoner extends Model {
     }
 
     public String getDisplayRankedStat() {
-        if (ranked_solo_stat == null) {
+        if (rankedSoloStat == null) {
             if (level == 0) {
                 return "";
             }
             return String.format(CUApplication.getContext().getString(R.string.level_format), level);
         }
-        return String.format("%s %s", ranked_solo_stat.getTier(), ranked_solo_stat.getRomaNotationRank(), level);
+        return String.format("%s %s", rankedSoloStat.getTier(), rankedSoloStat.getRomaNotationRank(), level);
     }
 
     public String getDisplayStats() {
-        if (ranked_solo_stat == null) {
-            if (unranked_stat == null) {
+        if (rankedSoloStat == null) {
+            if (unrankedStat == null) {
                 return "";
             }
 
-            if (unranked_stat.getRating() <= 0.0) {
-                return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_format), unranked_stat.getWins());
+            if (unrankedStat.getRating() <= 0.0) {
+                return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_format), unrankedStat.getWins());
             }
 
-            return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_with_mmr_format), unranked_stat.getWins(), unranked_stat.getRating());
+            return String.format(CUApplication.getContext().getString(R.string.display_unranked_stat_with_mmr_format), unrankedStat.getWins(), unrankedStat.getRating());
         }
-        if (ranked_solo_stat.getRating() <= 0.0) {
-            return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_format), ranked_solo_stat.getWins());
+        if (rankedSoloStat.getRating() <= 0.0) {
+            return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_format), rankedSoloStat.getWins());
         }
-        return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_with_mmr_format), ranked_solo_stat.getWins(), ranked_solo_stat.getRating());
+        return String.format(CUApplication.getContext().getString(R.string.display_ranked_stat_with_mmr_format), rankedSoloStat.getWins(), rankedSoloStat.getRating());
+    }
+
+    public String getDisplayChampionStat() {
+        if (champion == null) return "";
+        if (champion.getRankedStat() == null) {
+            if (champion.getNormalStat() == null) {
+                 return CUApplication.getContext().getString(R.string.kda_not_found);
+            }
+            return String.format(CUApplication.getContext().getString(R.string.kda), champion.getNormalStat().getScore());
+        }
+        return String.format(CUApplication.getContext().getString(R.string.kda), champion.getRankedStat().getScore());
     }
 
     public void update(Summoner summoner) {
+        if (summoner.champion != null)  this.champion = summoner.champion;
         this.accountId = summoner.accountId;
         this.internalName = summoner.internalName;
         this.level = summoner.level;
         this.name = summoner.name;
         this.profileIconId = summoner.profileIconId;
-        this.ranked_solo_stat = summoner.ranked_solo_stat;
-        this.unranked_stat = summoner.unranked_stat;
+        this.rankedSoloStat = summoner.rankedSoloStat;
+        this.unrankedStat = summoner.unrankedStat;
         this.isUpdated = true;
     }
 }

@@ -41,6 +41,7 @@ public class SummonersArrayAdapter extends ArrayAdapter<Summoner> {
             SmartImageView.class.cast(rowView.findViewById(R.id.more_arrow)).setVisibility(View.VISIBLE);
             TextView.class.cast(rowView.findViewById(R.id.ranked_stat)).setText(summoner.getDisplayRankedStat());
             TextView.class.cast(rowView.findViewById(R.id.summoner_stat)).setText(summoner.getDisplayStats());
+            TextView.class.cast(rowView.findViewById(R.id.summoner_champion_stat)).setText(summoner.getDisplayChampionStat());
 
             if (summoner.getRankIconUrl().length() == 0) {
                 SmartImageView.class.cast(rowView.findViewById(R.id.rank_icon)).setVisibility(View.GONE);

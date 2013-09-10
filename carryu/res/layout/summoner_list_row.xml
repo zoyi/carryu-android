@@ -89,6 +89,13 @@
                     android:textColor="@color/gray_167"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
+            <TextView
+                    android:id="@+id/summoner_champion_stat"
+                    android:textSize="@dimen/tex_size_small"
+                    android:textColor="@color/gray_167"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
         </LinearLayout>
 
     </LinearLayout>

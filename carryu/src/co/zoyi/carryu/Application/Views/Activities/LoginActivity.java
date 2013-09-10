@@ -1,11 +1,13 @@
 package co.zoyi.carryu.Application.Views.Activities;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import co.zoyi.Chat.Datas.ChatServerInfo;
 import co.zoyi.Chat.Services.ChatService;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Etc.ActivityDelegate;
@@ -24,8 +26,6 @@ public class LoginActivity extends CUActivity {
 
     private String NOTICE_PREFERENCE_KEY = "notice_pref";
     private String NOTICE_PASSWORD_KEY = "notice_password_key";
-
-    private ServerList serverList;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,6 +94,7 @@ public class LoginActivity extends CUActivity {
 //            login();
         } else if (status == ChatService.Status.AUTHENTICATED) {
             storeViewPreferences();
+            hideProgressDialog();
         }  else if (status == ChatService.Status.OUT_OF_GAME) {
             hideProgressDialog();
         }
@@ -105,24 +106,40 @@ public class LoginActivity extends CUActivity {
         super.onStop();
     }
 
+    private void reconnect() {
+        ServerList.ServerInfo serverInfo = CURouter.getServerInfo();
+        Registry.getChatService().setServerInfo(new ChatServerInfo(serverInfo.getXmppHost(), serverInfo.getXmppPort()));
+        Registry.getChatService().connect();
+    }
+
     private void login() {
         showProgressDialog(getString(R.string.logging_in)).setCancelable(false);
 
-        boolean isLoginSuccess = Registry.getChatService().login(
-            EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
-            EditText.class.cast(findViewById(R.id.user_password)).getText().toString()
-        );
-
-        if (!isLoginSuccess) {
-            hideProgressDialog();
-            EventBus.getDefault().post(new AuthenticateFailErrorEvent());
-        }
+        new AsyncTask<ChatService, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(ChatService... chatServices) {
+                ChatService chatService = chatServices[0];
+                if (!chatService.isConnected()) {
+                    reconnect();
+                }
+                boolean isLoginSuccess = chatService.login(
+                        EditText.class.cast(findViewById(R.id.user_id)).getText().toString(),
+                        EditText.class.cast(findViewById(R.id.user_password)).getText().toString());
+                if (!isLoginSuccess) {
+                    hideProgressDialog();
+                    EventBus.getDefault().post(new AuthenticateFailErrorEvent());
+                    reconnect();
+                }
+                return new Boolean(isLoginSuccess);
+            }
+        }.execute(Registry.getChatService());
     }
 
     public void onLoginButtonClick(View loginButton) {
-        if (Registry.getChatService().isConnected() && Registry.getChatService().getChatServerInfo().getHost().equals( CURouter.getServerInfo().getXmppHost())) {
-            CUUtil.log(this, "[DEBUG CU]" + Registry.getChatService().getChatServerInfo().getHost() + " " + CURouter.getServerInfo().getXmppHost());
-            login();
+        if (Registry.getChatService().getChatServerInfo().getHost().equals( CURouter.getServerInfo().getXmppHost())) {
+            if (Registry.getChatService().isConnected()) {
+                login();
+            }
         }
     }
 }

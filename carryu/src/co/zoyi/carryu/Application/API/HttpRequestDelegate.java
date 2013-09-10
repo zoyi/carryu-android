@@ -6,6 +6,7 @@ import co.zoyi.carryu.Application.Datas.Models.Summoner;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerList;
 import co.zoyi.carryu.Application.Datas.ValueObjects.ServerStatus;
 import co.zoyi.carryu.Application.Etc.CURouter;
+import co.zoyi.carryu.Application.Etc.CUUtil;
 import co.zoyi.carryu.Application.Registries.Registry;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
@@ -96,6 +97,20 @@ public class HttpRequestDelegate {
     public static void fetchSummoner(final Summoner summoner, final DataCallback<Summoner> cb) {
         try {
             get("/summoners/" + getEncodedSummonerName(summoner), null, new HttpResponseHandler(cb){
+                @Override
+                public void onSuccess(String s) {
+                    super.onSuccess(s);
+                    cb.onSuccess(Registry.getSummonerSerializer().toObjectFromRooted(s, Summoner.Rooted.class));
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void fetchSummonerWithChampion(final Summoner summoner, final int championId, final DataCallback<Summoner> cb) {
+        try {
+            get(String.format("/summoners/%1$s/champions/%2$d", getEncodedSummonerName(summoner), championId), null, new HttpResponseHandler(cb) {
                 @Override
                 public void onSuccess(String s) {
                     super.onSuccess(s);

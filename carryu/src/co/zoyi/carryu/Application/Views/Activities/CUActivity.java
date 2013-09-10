@@ -22,6 +22,7 @@
     import co.zoyi.carryu.Application.Views.Dialogs.MessageDialog;
     import co.zoyi.carryu.R;
     import com.google.analytics.tracking.android.EasyTracker;
+    import com.sbstrm.appirater.Appirater;
     import de.greenrobot.event.EventBus;
 
 public abstract class CUActivity extends FragmentActivity {
